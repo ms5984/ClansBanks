@@ -29,6 +29,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         // Plugin startup logic
         instance = this;
         getConfig().addDefaults(Collections.singletonMap("default-balance", BigDecimal.ZERO));
+        saveConfig();
         final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             getLogger().severe("Unable to load Vault!");
