@@ -2,6 +2,7 @@ package com.github.ms5984.clans.clansbanks;
 
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
 import com.github.ms5984.clans.clansbanks.model.Bank;
 import com.youtube.hempfest.clans.metadata.ClanMeta;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
@@ -45,8 +46,9 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     @Override
     public ClanBank getBank(Clan clan) {
         HUID huid = clan.getId(META_ID);
+        final String clanId = clan.getClanID();
         if (huid == null) {
-            final PersistentClan persistentClan = new PersistentClan(clan.getClanID());
+            final PersistentClan persistentClan = new PersistentClan(clanId);
             persistentClan.storeTemp();
             new BukkitRunnable() {
                 @Override
@@ -59,7 +61,9 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             if (meta == null) {
                 meta = PersistentClan.loadSavedInstance(huid);
                 if (meta == null) {
-                    return new Bank();
+                    final Bank bank = new Bank(clanId);
+                    getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
+                    return bank;
                 }
             }
             try {
@@ -68,7 +72,9 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
                 e.printStackTrace();
             }
         }
-        return new Bank();
+        final Bank bank = new Bank(clanId);
+        getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
+        return bank;
     }
 
     @Override
