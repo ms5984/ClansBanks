@@ -41,4 +41,13 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
             success = false;
         }
     }
+
+    @Override
+    public boolean isSuccess() {
+        return this.success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 }

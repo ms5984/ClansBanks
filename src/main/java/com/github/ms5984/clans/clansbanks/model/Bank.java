@@ -29,7 +29,7 @@ public class Bank implements ClanBank, Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, JavaPlugin.getProvidingPlugin(Bank.class));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     protected void onDeposit(BankPreTransactionEvent event) {
         if (event.getClanBank() != this) return;
         final Player player = event.getPlayer();
@@ -37,16 +37,18 @@ public class Bank implements ClanBank, Listener {
         final boolean success = ECO.withdrawPlayer(player, player.getWorld().getName(),
                 amount.doubleValue()).transactionSuccess();
         if (success) balance = balance.add(amount);
+        if (!success) event.setSuccess(false);
         PM.callEvent(new BankTransactionEvent(player, this, amount, clanId, success, BankTransactionEvent.Type.DEPOSIT));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     protected void onWithdrawal(BankPreTransactionEvent event) {
         if (event.getClanBank() != this) return;
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
         final boolean success = ECO.depositPlayer(player, player.getWorld().getName(), amount.doubleValue()).transactionSuccess();
         if (success) balance = balance.subtract(amount);
+        if (!success) event.setSuccess(false);
         PM.callEvent(new BankTransactionEvent(player, this, amount, clanId, success, BankTransactionEvent.Type.WITHDRAWAL));
     }
 
