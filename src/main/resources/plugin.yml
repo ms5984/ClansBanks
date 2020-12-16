@@ -1,0 +1,10 @@
+name: ClansBanks
+version: ${project.version}
+main: com.github.ms5984.clans.clansbanks.ClansBanks
+prefix: 'Clans[Banks]'
+api-version: 1.15
+load: STARTUP
+depend: [ HempCore, Clans, Vault ]
+authors: [ ms5984 ]
+description: Adding Banks to Clans
+website: https://github.com/ms5984/ClansBanks
