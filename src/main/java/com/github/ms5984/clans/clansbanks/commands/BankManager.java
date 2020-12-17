@@ -24,8 +24,8 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
-        e.insert(Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_BALANCE);
-        e.insert(Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
+        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_BALANCE);
+        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
                 .replace("{banks.deposit}", Messages.DEPOSIT.toString())
                 .replace("{banks.withdraw}", Messages.WITHDRAW.toString())
                 .replace("{banks.amount}", Messages.AMOUNT.toString()));
@@ -51,23 +51,23 @@ public class BankManager implements Listener {
                         textComponents.add(textLib1_16.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit"
+                                "clan bank deposit "
                         ));
                         textComponents.add(textLib1_16.textSuggestable(
                                 "&7,",
                                 "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw"
+                                "clan bank withdraw "
                         ));
                     } else {
                         textComponents.add(Text_R2.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit"
+                                "clan bank deposit "
                         ));
                         textComponents.add(Text_R2.textSuggestable(
                                 "&7,",
                                 "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw"
+                                "clan bank withdraw "
                         ));
                     }
                     textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",

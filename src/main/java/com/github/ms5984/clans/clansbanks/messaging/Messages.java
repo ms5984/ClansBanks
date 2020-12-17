@@ -11,6 +11,7 @@ import java.util.Properties;
 
 public enum Messages {
     BANKS_HEADER("banks.header"),
+    CLANS_HELP_PREFIX("clans.help.prefix"),
     BANK_HELP_PREFIX("bank.help.prefix"),
     BANK_HELP_BALANCE("bank.help.balance"),
     BANK_HELP_AMOUNT_COMMANDS("bank.help.amount_commands"),
