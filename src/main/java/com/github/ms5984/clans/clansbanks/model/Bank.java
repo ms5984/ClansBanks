@@ -18,10 +18,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Bank implements ClanBank, Listener {
+public class Bank implements ClanBank, Listener, Serializable {
+    private static final long serialVersionUID = -5283828168295980464L;
     private static final Economy ECO = ClansBanks.getEconomy();
     private static final PluginManager PM = Bukkit.getServer().getPluginManager();
     private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
