@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class BankManager implements Listener {
                                 "clan bank deposit"
                         ));
                         textComponents.add(textLib1_16.textSuggestable(
-                                Messages.BANK_HELP_PREFIX + " &f<",
+                                "&7,",
                                 "&a" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw"
                         ));
@@ -65,11 +64,13 @@ public class BankManager implements Listener {
                                 "clan bank deposit"
                         ));
                         textComponents.add(Text_R2.textSuggestable(
-                                Messages.BANK_HELP_PREFIX + " &f<",
+                                "&7,",
                                 "&a" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw"
                         ));
                     }
+                    textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",
+                            ColoredString.ColorType.MC_COMPONENT).toComponent());
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                     break;
             }

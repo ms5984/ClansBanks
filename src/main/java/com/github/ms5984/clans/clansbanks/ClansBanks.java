@@ -2,6 +2,7 @@ package com.github.ms5984.clans.clansbanks;
 
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.commands.BankManager;
 import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
 import com.github.ms5984.clans.clansbanks.model.Bank;
 import com.youtube.hempfest.clans.metadata.ClanMeta;
@@ -37,6 +38,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             return;
         }
         this.economy = rsp.getProvider();
+        getServer().getPluginManager().registerEvents(new BankManager(), this);
     }
 
     @Override
