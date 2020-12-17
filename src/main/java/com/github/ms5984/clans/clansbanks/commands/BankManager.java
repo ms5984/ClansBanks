@@ -1,8 +1,10 @@
 package com.github.ms5984.clans.clansbanks.commands;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
+import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.HempfestClans;
+import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.clans.util.events.CommandHelpEvent;
 import com.youtube.hempfest.clans.util.events.SubCommandEvent;
 import com.youtube.hempfest.clans.util.events.TabInsertEvent;
@@ -38,10 +40,10 @@ public class BankManager implements Listener {
             if (!e.getArgs()[0].equalsIgnoreCase("bank")) {
                 return;
             }
+            final Player sender = e.getSender();
             switch (length) {
                 case 1: // "bank" print instructions
                     e.setReturn(true);
-                    final Player sender = e.getSender();
                     sendMessage(sender, Messages.BANKS_HEADER.toString());
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
                             + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
@@ -74,6 +76,23 @@ public class BankManager implements Listener {
                             ColoredString.ColorType.MC_COMPONENT).toComponent());
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                     break;
+                case 2: // "bank x" check if deposit/withdraw/balance
+                    e.setReturn(true);
+                    final Clan clan = HempfestClans.clanManager(sender);
+                    if (clan == null) return; // TODO: msg "u don't have a clan"
+                    final ClanBank bank = ClansBanks.getAPI().getBank(clan);
+                    final String arg = e.getArgs()[1];
+                    if (!arg.equalsIgnoreCase("balance")) {
+                        switch (arg.toLowerCase()) {
+                            case "deposit":
+                                // TODO: msg usage (need amount param)
+                                return;
+                            case "withdraw":
+                                // TODO: msg usage (need amount param)
+                                return;
+                        }
+                    }
+                    sender.sendMessage(bank.getBalance().toString()); // TODO: make this pretty
             }
         }
     }
