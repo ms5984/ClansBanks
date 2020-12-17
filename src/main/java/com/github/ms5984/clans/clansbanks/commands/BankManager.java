@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,10 +41,10 @@ public class BankManager implements Listener {
             if (!e.getArgs()[0].equalsIgnoreCase("bank")) {
                 return;
             }
+            e.setReturn(true);
             final Player sender = e.getSender();
             switch (length) {
                 case 1: // "bank" print instructions
-                    e.setReturn(true);
                     sendMessage(sender, Messages.BANKS_HEADER.toString());
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
                             + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
@@ -77,10 +78,8 @@ public class BankManager implements Listener {
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                     break;
                 case 2: // "bank x" check if deposit/withdraw/balance
-                    e.setReturn(true);
-                    final Clan clan = HempfestClans.clanManager(sender);
-                    if (clan == null) return; // TODO: msg "u don't have a clan"
-                    final ClanBank bank = ClansBanks.getAPI().getBank(clan);
+                    final ClanBank bank = testClan(sender);
+                    if (bank == null) return;
                     final String arg = e.getArgs()[1];
                     if (!arg.equalsIgnoreCase("balance")) {
                         switch (arg.toLowerCase()) {
@@ -93,6 +92,37 @@ public class BankManager implements Listener {
                         }
                     }
                     sender.sendMessage(bank.getBalance().toString()); // TODO: make this pretty
+                    break;
+                case 3:
+                    final String arg1 = e.getArgs()[1].toLowerCase();
+                    switch (arg1) {
+                        case "deposit":
+                        case "withdraw":
+                            break;
+                        default: // TODO: yell at the user and send usage msg
+                            return;
+                    }
+                    try {
+                        final BigDecimal amount = new BigDecimal(e.getArgs()[2]);
+                        final ClanBank theBank = testClan(sender);
+                        if (theBank == null) return;
+                        switch (arg1) {
+                            case "deposit":
+                                if (theBank.deposit(sender, amount)) {
+                                    sender.sendMessage("Success " + amount);
+                                }
+                                break;
+                            case "withdraw":
+                                if (theBank.withdraw(sender, amount)) {
+                                    sender.sendMessage("Success " + amount.negate());
+                                }
+                                break;
+                            default:
+                                // "invalid" message
+                        }
+                    } catch (NumberFormatException exception) {
+                        // TODO: send message "invalid number"
+                    }
             }
         }
     }
@@ -111,6 +141,12 @@ public class BankManager implements Listener {
             case 3:
                 e.add(3, "1");
         }
+    }
+
+    private ClanBank testClan(Player sender) {
+        final Clan clan = HempfestClans.clanManager(sender);
+        if (clan == null) return null; // TODO: msg "u don't have a clan"
+        return ClansBanks.getAPI().getBank(clan);
     }
 
     private void sendMessage(Player player, String message) {

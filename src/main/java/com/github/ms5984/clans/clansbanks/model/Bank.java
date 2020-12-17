@@ -32,11 +32,14 @@ public class Bank implements ClanBank, Listener, Serializable {
     private final String clanId;
     private transient PersistentClan meta = null;
 
+    {
+        Bukkit.getServer().getPluginManager().registerEvents(this, P);
+    }
+
     public Bank(@NotNull String clanId) {
         this.balance = Objects.requireNonNull(ClansBanks.getAPI()).defaultBalance();
         this.enabled = true;
         this.clanId = clanId;
-        Bukkit.getServer().getPluginManager().registerEvents(this, P);
     }
 
     @EventHandler
