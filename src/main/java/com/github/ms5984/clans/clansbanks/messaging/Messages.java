@@ -21,7 +21,10 @@ public enum Messages {
     WITHDRAW("withdraw"),
     AMOUNT("amount"),
     HOVER_DEPOSIT("banks.hover.deposit"),
-    HOVER_WITHDRAW("banks.hover.withdraw");
+    HOVER_WITHDRAW("banks.hover.withdraw"),
+    HOVER_NO_AMOUNT("banks.hover.no_amount"),
+    BANK_INVALID_SUBCOMMAND("bank.invalid_subcommand"),
+    BANK_USAGE("bank.usage");
 
     private static Properties properties;
 

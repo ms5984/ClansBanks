@@ -82,12 +82,57 @@ public class BankManager implements Listener {
                     if (bank == null) return;
                     final String arg = e.getArgs()[1];
                     if (!arg.equalsIgnoreCase("balance")) {
+                        sendMessage(sender, Messages.BANKS_HEADER.toString());
                         switch (arg.toLowerCase()) {
                             case "deposit":
                                 // TODO: msg usage (need amount param)
+                                sendMessage(sender, Messages.BANK_USAGE.toString());
+                                if (Bukkit.getServer().getVersion().contains("1.16")) {
+                                    sender.spigot().sendMessage(textLib1_16.textHoverable(
+                                            Messages.BANK_HELP_PREFIX + " ",
+                                            "&7<&f" + Messages.DEPOSIT + "&7>",
+                                            " ",
+                                            "&7<&c" + Messages.AMOUNT + "&7>",
+                                            Messages.HOVER_DEPOSIT.toString(),
+                                            Messages.HOVER_NO_AMOUNT.toString()
+                                    ));
+                                } else {
+                                    sender.spigot().sendMessage(Text_R2.textHoverable(
+                                            Messages.BANK_HELP_PREFIX + " ",
+                                            "&7<&f" + Messages.DEPOSIT + "&7>",
+                                            " ",
+                                            "&7<&c" + Messages.AMOUNT + "&7>",
+                                            Messages.HOVER_DEPOSIT.toString(),
+                                            Messages.HOVER_NO_AMOUNT.toString()
+                                    ));
+                                }
                                 return;
                             case "withdraw":
                                 // TODO: msg usage (need amount param)
+                                sendMessage(sender, Messages.BANK_USAGE.toString());
+                                if (Bukkit.getServer().getVersion().contains("1.16")) {
+                                    sender.spigot().sendMessage(textLib1_16.textHoverable(
+                                            Messages.BANK_HELP_PREFIX + " ",
+                                            "&7<&f" + Messages.WITHDRAW + "&7>",
+                                            " ",
+                                            "&7<&c" + Messages.AMOUNT + "&7>",
+                                            Messages.HOVER_WITHDRAW.toString(),
+                                            Messages.HOVER_NO_AMOUNT.toString()
+                                    ));
+                                } else {
+                                    sender.spigot().sendMessage(Text_R2.textHoverable(
+                                            Messages.BANK_HELP_PREFIX + " ",
+                                            "&7<&f" + Messages.WITHDRAW + "&7>",
+                                            " ",
+                                            "&7<&c" + Messages.AMOUNT + "&7>",
+                                            Messages.HOVER_WITHDRAW.toString(),
+                                            Messages.HOVER_NO_AMOUNT.toString()
+                                    ));
+                                }
+                                return;
+                            default:
+                                // TODO: msg usage (invalid subcommand)
+                                sendMessage(sender, "&c" + Messages.BANK_INVALID_SUBCOMMAND);
                                 return;
                         }
                     }
