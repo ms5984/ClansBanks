@@ -10,7 +10,17 @@ import java.util.Objects;
 import java.util.Properties;
 
 public enum Messages {
-    Message("");
+    BANKS_HEADER("banks.header"),
+    BANK_HELP_PREFIX("bank.help.prefix"),
+    BANK_HELP_BALANCE("bank.help.balance"),
+    BANK_HELP_AMOUNT_COMMANDS("bank.help.amount_commands"),
+    BANKS_CURRENT_BALANCE("banks.current_balance"),
+    BANKS_COMMAND_LIST("banks.command_list"),
+    DEPOSIT("deposit"),
+    WITHDRAW("withdraw"),
+    AMOUNT("amount"),
+    HOVER_DEPOSIT("banks.hover.deposit"),
+    HOVER_WITHDRAW("banks.hover.withdraw");
 
     private static Properties properties;
 
@@ -27,7 +37,7 @@ public enum Messages {
                 clansBanks.getResource("lang/messages" + locale + ".properties");
         try {
             properties.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             try {
                 properties.load(clansBanks.getResource("messages.properties"));
             } catch (IOException ioException) {
@@ -41,4 +51,11 @@ public enum Messages {
     public String get() {
         return properties.getProperty(s);
     }
+
+    @Override
+    public String toString() {
+        final String s = get();
+        return (s != null) ? s : "null";
+    }
+
 }
