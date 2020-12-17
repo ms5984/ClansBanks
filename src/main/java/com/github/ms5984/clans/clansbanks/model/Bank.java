@@ -45,9 +45,8 @@ public final class Bank implements ClanBank, Serializable {
     @Override
     public boolean withdraw(Player player, BigDecimal amount) {
         if (!enabled) return false;
-        final boolean has = this.balance.compareTo(amount) < 0;
         final BankPreTransactionEvent preTransactionEvent =
-                new BankPreTransactionEvent(player, this, amount, clanId, has, BankTransactionEvent.Type.WITHDRAWAL);
+                new BankPreTransactionEvent(player, this, amount, clanId, has(amount), BankTransactionEvent.Type.WITHDRAWAL);
         PM.callEvent(preTransactionEvent);
         return preTransactionEvent.isSuccess();
     }
