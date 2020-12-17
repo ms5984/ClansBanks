@@ -40,6 +40,7 @@ public class BankManager implements Listener {
             }
             switch (length) {
                 case 1: // "bank" print instructions
+                    e.setReturn(true);
                     final Player sender = e.getSender();
                     sendMessage(sender, Messages.BANKS_HEADER.toString());
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
@@ -54,7 +55,7 @@ public class BankManager implements Listener {
                         ));
                         textComponents.add(textLib1_16.textSuggestable(
                                 "&7,",
-                                "&a" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
+                                "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw"
                         ));
                     } else {
@@ -65,7 +66,7 @@ public class BankManager implements Listener {
                         ));
                         textComponents.add(Text_R2.textSuggestable(
                                 "&7,",
-                                "&a" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
+                                "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw"
                         ));
                     }
