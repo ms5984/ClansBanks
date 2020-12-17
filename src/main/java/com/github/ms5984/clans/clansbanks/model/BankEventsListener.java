@@ -24,6 +24,7 @@ public class BankEventsListener implements Listener {
     public void onCreate(NewBankEvent e) {
         final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
         final PersistentClan persistentClan;
+        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         if (huid != null) {
             PersistentClan.deleteInstance(huid);
         }
@@ -42,6 +43,7 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTransaction(BankTransactionEvent e) {
         if (e instanceof BankPreTransactionEvent) return;
+        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) e.getClanBank();
         final PersistentClan persistentClan = bank.getMeta();
         persistentClan.setValue(bank, MetaObject.BANK.id);
@@ -57,6 +59,7 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeposit(BankPreTransactionEvent event) {
         if (event.getType() != BankTransactionEvent.Type.DEPOSIT) return;
+        if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) event.getClanBank();
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
@@ -72,6 +75,7 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWithdrawal(BankPreTransactionEvent event) {
         if (event.getType() != BankTransactionEvent.Type.WITHDRAWAL) return;
+        if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) event.getClanBank();
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
