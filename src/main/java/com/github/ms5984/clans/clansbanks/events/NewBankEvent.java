@@ -11,12 +11,11 @@ public class NewBankEvent extends ClansBanksEvent {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final Clan clan;
-    private final ClanBank clanBank;
     private final BigDecimal startingBalance;
 
     public NewBankEvent(Clan clan, ClanBank clanBank) {
+        super(clanBank);
         this.clan = clan;
-        this.clanBank = clanBank;
         this.startingBalance = clanBank.getBalance();
     }
 
@@ -26,14 +25,6 @@ public class NewBankEvent extends ClansBanksEvent {
      */
     public Clan getClan() {
         return clan;
-    }
-
-    /**
-     * Get the ClanBank that was just created
-     * @return the new ClanBank
-     */
-    public ClanBank getClanBank() {
-        return clanBank;
     }
 
     /**

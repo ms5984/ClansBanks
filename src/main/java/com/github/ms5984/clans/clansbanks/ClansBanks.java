@@ -14,7 +14,6 @@ import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,7 +21,7 @@ import java.util.Collections;
 
 public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
-    public static final int META_ID = 100;
+    public static final int BANKS_META_ID = 100;
     private static ClansBanks instance;
     private Economy economy;
 
@@ -50,17 +49,12 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public ClanBank getBank(Clan clan) {
-        HUID huid = clan.getId(META_ID);
+        HUID huid = clan.getId(BANKS_META_ID);
         final String clanId = clan.getClanID();
         if (huid == null) {
-            final PersistentClan persistentClan = new PersistentClan(clanId);
-            persistentClan.storeTemp();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    persistentClan.saveMeta(META_ID);
-                }
-            }.runTask(this);
+            final Bank bank = new Bank(clanId);
+            getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
+            return bank;
         } else {
             ClanMeta meta = PersistentClan.loadTempInstance(huid);
             if (meta == null) {
@@ -72,14 +66,12 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
                 }
             }
             try {
-                return (Bank) new HFEncoded(meta.value()).deserialized();
+                return (Bank) new HFEncoded(meta.value(MetaObject.BANK.id)).deserialized();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                return null;
             }
         }
-        final Bank bank = new Bank(clanId);
-        getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
-        return bank;
     }
 
     @Override

@@ -1,15 +1,21 @@
 package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
+import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
+import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.youtube.hempfest.clans.metadata.PersistentClan;
+import com.youtube.hempfest.clans.util.construct.Clan;
+import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -18,15 +24,51 @@ import java.util.Objects;
 public class Bank implements ClanBank, Listener {
     private static final Economy ECO = ClansBanks.getEconomy();
     private static final PluginManager PM = Bukkit.getServer().getPluginManager();
+    private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
     private BigDecimal balance;
     private boolean enabled;
-    private String clanId;
+    private final String clanId;
+    private transient PersistentClan meta = null;
 
     public Bank(@NotNull String clanId) {
         this.balance = Objects.requireNonNull(ClansBanks.getAPI()).defaultBalance();
         this.enabled = true;
         this.clanId = clanId;
-        Bukkit.getServer().getPluginManager().registerEvents(this, JavaPlugin.getProvidingPlugin(Bank.class));
+        Bukkit.getServer().getPluginManager().registerEvents(this, P);
+    }
+
+    @EventHandler
+    protected void onCreate(NewBankEvent e) {
+        final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
+        if (e.getClanBank() != this) return;
+        final PersistentClan persistentClan;
+        if (huid != null) {
+            PersistentClan.deleteInstance(huid);
+        }
+        persistentClan = new PersistentClan(clanId);
+        persistentClan.setValue(this, MetaObject.BANK.id);
+        persistentClan.storeTemp();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
+            }
+        }.runTask(P);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    protected void onTransaction(BankTransactionEvent e) {
+        if (e instanceof BankPreTransactionEvent) return;
+        if (e.getClanBank() != this) return;
+        final PersistentClan persistentClan = getMeta();
+        persistentClan.setValue(this, MetaObject.BANK.id);
+        persistentClan.storeTemp();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
+            }
+        }.runTask(P);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -85,5 +127,16 @@ public class Bank implements ClanBank, Listener {
     @Override
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    private PersistentClan getMeta() {
+        if (meta != null) {
+            return meta;
+        }
+        final HUID huid = Clan.clanUtil.getClan(clanId).getId(ClansBanks.BANKS_META_ID);
+        if (huid != null) {
+            return meta = Objects.requireNonNull(PersistentClan.loadSavedInstance(huid));
+        }
+        return meta = new PersistentClan(clanId);
     }
 }
