@@ -54,23 +54,23 @@ public class BankManager implements Listener {
                         textComponents.add(textLib1_16.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit "
+                                "clan bank deposit 1"
                         ));
                         textComponents.add(textLib1_16.textSuggestable(
                                 "&7,",
                                 "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw "
+                                "clan bank withdraw 1"
                         ));
                     } else {
                         textComponents.add(Text_R2.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit "
+                                "clan bank deposit 1"
                         ));
                         textComponents.add(Text_R2.textSuggestable(
                                 "&7,",
                                 "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw "
+                                "clan bank withdraw 1"
                         ));
                     }
                     textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",
