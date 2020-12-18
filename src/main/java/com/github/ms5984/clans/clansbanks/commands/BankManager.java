@@ -43,9 +43,9 @@ public class BankManager implements Listener {
             }
             e.setReturn(true);
             final Player sender = e.getSender();
+            sendMessage(sender, Messages.BANKS_HEADER.toString());
             switch (length) {
                 case 1: // "bank" print instructions
-                    sendMessage(sender, Messages.BANKS_HEADER.toString());
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
                             + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
                     sendMessage(sender, Messages.BANKS_COMMAND_LIST.toString());
@@ -76,16 +76,15 @@ public class BankManager implements Listener {
                     textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",
                             ColoredString.ColorType.MC_COMPONENT).toComponent());
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
-                    break;
+                    return;
                 case 2: // "bank x" check if deposit/withdraw/balance
                     final ClanBank bank = testClan(sender);
                     if (bank == null) return;
                     final String arg = e.getArgs()[1];
                     if (!arg.equalsIgnoreCase("balance")) {
-                        sendMessage(sender, Messages.BANKS_HEADER.toString());
                         switch (arg.toLowerCase()) {
                             case "deposit":
-                                // TODO: msg usage (need amount param)
+                                // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
                                     sender.spigot().sendMessage(textLib1_16.textHoverable(
@@ -108,7 +107,7 @@ public class BankManager implements Listener {
                                 }
                                 return;
                             case "withdraw":
-                                // TODO: msg usage (need amount param)
+                                // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
                                     sender.spigot().sendMessage(textLib1_16.textHoverable(
@@ -131,44 +130,45 @@ public class BankManager implements Listener {
                                 }
                                 return;
                             default:
-                                // TODO: msg usage (invalid subcommand)
+                                // msg usage (invalid subcommand)
                                 sendMessage(sender, "&c" + Messages.BANK_INVALID_SUBCOMMAND);
                                 return;
                         }
                     }
                     sender.sendMessage(bank.getBalance().toString()); // TODO: make this pretty
-                    break;
+                    return;
                 case 3:
                     final String arg1 = e.getArgs()[1].toLowerCase();
                     switch (arg1) {
                         case "deposit":
                         case "withdraw":
-                            break;
-                        default: // TODO: yell at the user and send usage msg
+                            try {
+                                final BigDecimal amount = new BigDecimal(e.getArgs()[2]);
+                                final ClanBank theBank = testClan(sender);
+                                if (theBank == null) return;
+                                switch (arg1) {
+                                    case "deposit":
+                                        if (theBank.deposit(sender, amount)) {
+                                            sender.sendMessage("Success " + amount); // TODO: message
+                                        }
+                                        break;
+                                    case "withdraw":
+                                        if (theBank.withdraw(sender, amount)) {
+                                            sender.sendMessage("Success " + amount.negate()); // TODO: message
+                                        }
+                                        break;
+                                }
+                            } catch (NumberFormatException exception) {
+                                // TODO: send message "invalid number"
+                            }
                             return;
+                        default: // yell at the user and send usage msg
+                            break;
                     }
-                    try {
-                        final BigDecimal amount = new BigDecimal(e.getArgs()[2]);
-                        final ClanBank theBank = testClan(sender);
-                        if (theBank == null) return;
-                        switch (arg1) {
-                            case "deposit":
-                                if (theBank.deposit(sender, amount)) {
-                                    sender.sendMessage("Success " + amount);
-                                }
-                                break;
-                            case "withdraw":
-                                if (theBank.withdraw(sender, amount)) {
-                                    sender.sendMessage("Success " + amount.negate());
-                                }
-                                break;
-                            default:
-                                // "invalid" message
-                        }
-                    } catch (NumberFormatException exception) {
-                        // TODO: send message "invalid number"
-                    }
+                    break;
             }
+            // msg usage (invalid subcommand)
+            sendMessage(sender, "&c" + Messages.BANK_INVALID_SUBCOMMAND);
         }
     }
 
@@ -180,11 +180,12 @@ public class BankManager implements Listener {
                 e.add(1, "bank");
                 break;
             case 2:
+                e.add(2, "balance");
                 e.add(2, "deposit");
                 e.add(2, "withdraw");
                 break;
             case 3:
-                e.add(3, "1");
+                e.add(3, "10");
         }
     }
 
