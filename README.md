@@ -1,5 +1,5 @@
 # Clans\[Banks]
-[](https://i.imgur.com/nUK8WSV.png)
+![](https://i.imgur.com/nUK8WSV.png)
 ### An official [Clans\[Free\]](https://github.com/Hempfest/Clans) addon
 
 Development in progress
