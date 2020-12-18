@@ -60,6 +60,10 @@ public class BankEventsListener implements Listener {
     public void onDeposit(BankPreTransactionEvent event) {
         if (event.getType() != BankTransactionEvent.Type.DEPOSIT) return;
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        if (!event.isSuccess()) {
+            event.setCancelled(true);
+            return; // The player didn't have enough money or is not allowed, no transaction
+        }
         final Bank bank = (Bank) event.getClanBank();
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
@@ -76,6 +80,10 @@ public class BankEventsListener implements Listener {
     public void onWithdrawal(BankPreTransactionEvent event) {
         if (event.getType() != BankTransactionEvent.Type.WITHDRAWAL) return;
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        if (!event.isSuccess()) {
+            event.setCancelled(true);
+            return; // The bank didn't have enough money or is not allowed, no transaction
+        }
         final Bank bank = (Bank) event.getClanBank();
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
