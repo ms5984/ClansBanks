@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
@@ -87,5 +88,9 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     public static Economy getEconomy() {
         return instance.economy;
+    }
+
+    public static Logger log() {
+        return instance.getLogger();
     }
 }

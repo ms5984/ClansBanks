@@ -73,7 +73,7 @@ public class BankEventsListener implements Listener {
         if (!success) event.setSuccess(false);
         final BankTransactionEvent event1 = new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.DEPOSIT);
         Bank.PM.callEvent(event1);
-        System.out.println(event1.toString());
+        // TODO: listener for logging
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
