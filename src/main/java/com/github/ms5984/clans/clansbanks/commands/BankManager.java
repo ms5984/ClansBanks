@@ -18,12 +18,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class BankManager implements Listener {
 
     private final Text textLib1_16 = new Text();
+    private final List<String> tab2 = new LinkedList<>(Arrays.asList("balance", "deposit", "withdraw"));
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
@@ -178,18 +180,23 @@ public class BankManager implements Listener {
         final int length = commandArgs.length;
         switch (length) {
             case 1:
+                if (e.getArgs(1).contains("bank")) return;
                 e.add(1, "bank");
                 break;
             case 2:
                 if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-                e.add(2, "balance");
-                e.add(2, "deposit");
-                e.add(2, "withdraw");
+                for (String suggest : tab2) {
+                    if (!e.getArgs(2).contains(suggest)) {
+                        e.add(2, suggest);
+                    }
+                }
                 break;
             case 3:
                 if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-                if (!commandArgs[1].equalsIgnoreCase("balance")) return;
-                e.add(3, "10");
+                if (tab2.subList(1, 3).contains(commandArgs[1].toLowerCase())) {
+                    if (e.getArgs(3).contains("10")) return;
+                    e.add(3, "10");
+                }
         }
     }
 
