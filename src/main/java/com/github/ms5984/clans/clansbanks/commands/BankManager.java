@@ -4,6 +4,7 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.HempfestClans;
+import com.youtube.hempfest.clans.util.StringLibrary;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.clans.util.events.CommandHelpEvent;
 import com.youtube.hempfest.clans.util.events.SubCommandEvent;
@@ -26,10 +27,11 @@ public class BankManager implements Listener {
 
     private final Text textLib1_16 = new Text();
     private final List<String> tab2 = new LinkedList<>(Arrays.asList("balance", "deposit", "withdraw"));
+    private final String clans_prefix = new StringLibrary().getPrefix();
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
-        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_BALANCE);
+        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " &f" + Messages.BALANCE);
         e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
                 .replace("{banks.deposit}", Messages.DEPOSIT.toString())
                 .replace("{banks.withdraw}", Messages.WITHDRAW.toString())
@@ -45,14 +47,28 @@ public class BankManager implements Listener {
             }
             e.setReturn(true);
             final Player sender = e.getSender();
-            sendMessage(sender, Messages.BANKS_HEADER.toString());
+            sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
             switch (length) {
                 case 1: // "bank" print instructions
-                    sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
-                            + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
+                    if (Bukkit.getServer().getVersion().contains("1.16")) {
+                        sender.spigot().sendMessage(textLib1_16.textHoverable(
+                                Messages.BANKS_CURRENT_BALANCE + " ",
+                                "&a&l(hover)",
+                                ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance().toString())
+                        );
+                    } else {
+                        sender.spigot().sendMessage(Text_R2.textHoverable(
+                                Messages.BANKS_CURRENT_BALANCE + " ",
+                                "&a&l(hover)",
+                                ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance().toString())
+                        );
+                    }
                     sendMessage(sender, Messages.BANKS_COMMAND_LIST.toString());
                     final List<BaseComponent> textComponents = new LinkedList<>();
                     if (Bukkit.getServer().getVersion().contains("1.16")) {
+                        sender.spigot().sendMessage(textLib1_16.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
+                                "&7" + Messages.BALANCE, Messages.HOVER_BALANCE.toString(),
+                                "clan bank balance"));
                         textComponents.add(textLib1_16.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
@@ -64,6 +80,9 @@ public class BankManager implements Listener {
                                 "clan bank withdraw 1"
                         ));
                     } else {
+                        sender.spigot().sendMessage(Text_R2.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
+                                "&7" + Messages.BALANCE, Messages.HOVER_BALANCE.toString(),
+                                "clan bank balance"));
                         textComponents.add(Text_R2.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
                                 "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
@@ -137,7 +156,8 @@ public class BankManager implements Listener {
                                 return;
                         }
                     }
-                    sender.sendMessage(bank.getBalance().toString()); // TODO: make this pretty
+                    sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString() + ": &a"
+                            + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
                     return;
                 case 3:
                     final String arg1 = e.getArgs()[1].toLowerCase();
