@@ -50,4 +50,20 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    @Override
+    public String toString() { // TODO: lang
+        switch (type) {
+            case DEPOSIT:
+                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
+                        (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " deposited " + amount + " with clanId=" + clanId;
+            case WITHDRAWAL:
+                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
+                        (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " withdrawn " + amount + " from clanId=" + clanId;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+    }
 }

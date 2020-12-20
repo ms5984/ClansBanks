@@ -43,6 +43,13 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTransaction(BankTransactionEvent e) {
         if (e instanceof BankPreTransactionEvent) return;
+        switch (ClansBanks.getAPI().logToConsole()) {
+            case SILENT:
+                break;
+            case QUIET:
+            case VERBOSE:
+                ClansBanks.log().info(e.toString());
+        }
         if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) e.getClanBank();
         final PersistentClan persistentClan = bank.getMeta();
@@ -54,6 +61,19 @@ public class BankEventsListener implements Listener {
                 persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
             }
         }.runTask(P);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPreTransactionMonitor(BankPreTransactionEvent event) {
+        switch (ClansBanks.getAPI().logToConsole()) {
+            case SILENT:
+                return;
+            case QUIET:
+                if (event.isCancelled()) ClansBanks.log().info(event.toString()); // TODO: better toString
+                return;
+            case VERBOSE:
+                ClansBanks.log().info(event.toString());
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -73,7 +93,6 @@ public class BankEventsListener implements Listener {
         if (!success) event.setSuccess(false);
         final BankTransactionEvent event1 = new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.DEPOSIT);
         Bank.PM.callEvent(event1);
-        // TODO: listener for logging
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

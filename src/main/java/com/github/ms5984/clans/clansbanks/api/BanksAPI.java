@@ -5,10 +5,16 @@ import com.youtube.hempfest.clans.util.construct.Clan;
 import java.math.BigDecimal;
 
 public interface BanksAPI {
+    enum LogLevel {
+        VERBOSE, QUIET, SILENT
+    }
     default ClanBank getBank(Clan clan) {
         return null;
     }
     default BigDecimal defaultBalance() {
         return BigDecimal.ZERO;
+    }
+    default LogLevel logToConsole() {
+        return LogLevel.VERBOSE;
     }
 }

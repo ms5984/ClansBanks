@@ -87,6 +87,20 @@ public class BankTransactionEvent extends ClansBanksEvent {
         return type;
     }
 
+    @Override
+    public String toString() { // TODO: lang
+        switch (type) {
+            case DEPOSIT:
+                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " deposited " + amount + " with clanId=" + clanId;
+            case WITHDRAWAL:
+                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " withdraw " + amount + " from clanId=" + clanId;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+    }
+
     private static final HandlerList HANDLERS = new HandlerList();
 
     @Override
