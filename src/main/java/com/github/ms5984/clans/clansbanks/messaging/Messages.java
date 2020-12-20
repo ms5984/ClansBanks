@@ -24,8 +24,16 @@ public enum Messages {
     HOVER_DEPOSIT("banks.hover.deposit"),
     HOVER_WITHDRAW("banks.hover.withdraw"),
     HOVER_NO_AMOUNT("banks.hover.no_amount"),
+    BANK_USAGE("bank.usage"),
     BANK_INVALID_SUBCOMMAND("bank.invalid_subcommand"),
-    BANK_USAGE("bank.usage");
+    NOT_ON_CLAN_LAND("not_on_clan_land"),
+    DEPOSIT_MSG_PLAYER("deposit.message.player"),
+    DEPOSIT_MSG_ANNOUNCE("deposit.message.announce"),
+    WITHDRAW_MSG_PLAYER("withdraw.message.player"),
+    WITHDRAW_MSG_ANNOUNCE("withdraw.message.announce"),
+    DEPOSIT_ERR_PLAYER("deposit.error.player"),
+    WITHDRAW_ERR_PLAYER("withdraw.error.player"),
+    BANK_INVALID_AMOUNT("bank.invalid_amount");
 
     private static Properties properties;
 

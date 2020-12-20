@@ -171,17 +171,25 @@ public class BankManager implements Listener {
                                 switch (arg1) {
                                     case "deposit":
                                         if (theBank.deposit(sender, amount)) {
-                                            sender.sendMessage("Success " + amount); // TODO: message
+                                            sendMessage(sender, Messages.DEPOSIT_MSG_PLAYER.toString()
+                                            .replace("{0}", amount.toString()));
+                                        } else {
+                                            sendMessage(sender, Messages.DEPOSIT_ERR_PLAYER.toString()
+                                                    .replace("{0}", amount.toString()));
                                         }
                                         break;
                                     case "withdraw":
                                         if (theBank.withdraw(sender, amount)) {
-                                            sender.sendMessage("Success " + amount.negate()); // TODO: message
+                                            sendMessage(sender, Messages.WITHDRAW_MSG_PLAYER.toString()
+                                                    .replace("{0}", amount.toString()));
+                                        } else {
+                                            sendMessage(sender, Messages.WITHDRAW_ERR_PLAYER.toString()
+                                                    .replace("{0}", amount.toString()));
                                         }
                                         break;
                                 }
                             } catch (NumberFormatException exception) {
-                                // TODO: send message "invalid number"
+                                sendMessage(sender, "&c" + Messages.BANK_INVALID_AMOUNT);
                             }
                             return;
                         default: // yell at the user and send usage msg
