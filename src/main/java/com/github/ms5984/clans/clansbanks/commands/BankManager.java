@@ -33,9 +33,9 @@ public class BankManager implements Listener {
     private void onClansHelp(CommandHelpEvent e) {
         e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " &f" + Messages.BALANCE);
         e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
-                .replace("{banks.deposit}", Messages.DEPOSIT.toString())
-                .replace("{banks.withdraw}", Messages.WITHDRAW.toString())
-                .replace("{banks.amount}", Messages.AMOUNT.toString()));
+                .replace("{deposit}", Messages.DEPOSIT.toString())
+                .replace("{withdraw}", Messages.WITHDRAW.toString())
+                .replace("{amount}", Messages.AMOUNT.toString()));
     }
 
     @EventHandler
