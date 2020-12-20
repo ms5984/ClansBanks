@@ -174,17 +174,21 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onBankTab(TabInsertEvent e) {
-        final int length = e.getCommandArgs().length;
+        final String[] commandArgs = e.getCommandArgs();
+        final int length = commandArgs.length;
         switch (length) {
             case 1:
                 e.add(1, "bank");
                 break;
             case 2:
+                if (!commandArgs[0].equalsIgnoreCase("bank")) return;
                 e.add(2, "balance");
                 e.add(2, "deposit");
                 e.add(2, "withdraw");
                 break;
             case 3:
+                if (!commandArgs[0].equalsIgnoreCase("bank")) return;
+                if (!commandArgs[1].equalsIgnoreCase("balance")) return;
                 e.add(3, "10");
         }
     }
