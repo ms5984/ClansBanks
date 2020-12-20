@@ -230,7 +230,10 @@ public class BankManager implements Listener {
 
     private ClanBank testClan(Player sender) {
         final Clan clan = HempfestClans.clanManager(sender);
-        if (clan == null) return null; // TODO: msg "u don't have a clan"
+        if (clan == null) {
+            sendMessage(sender, "&c" + Messages.PLAYER_NO_CLAN);
+            return null;
+        }
         return ClansBanks.getAPI().getBank(clan);
     }
 

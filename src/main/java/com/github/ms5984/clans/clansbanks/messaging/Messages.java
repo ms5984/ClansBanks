@@ -33,7 +33,8 @@ public enum Messages {
     WITHDRAW_MSG_ANNOUNCE("withdraw.message.announce"),
     DEPOSIT_ERR_PLAYER("deposit.error.player"),
     WITHDRAW_ERR_PLAYER("withdraw.error.player"),
-    BANK_INVALID_AMOUNT("bank.invalid_amount");
+    BANK_INVALID_AMOUNT("bank.invalid_amount"),
+    PLAYER_NO_CLAN("player.no_clan");
 
     private static Properties properties;
 
