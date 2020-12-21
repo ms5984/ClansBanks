@@ -34,7 +34,15 @@ public enum Messages {
     DEPOSIT_ERR_PLAYER("deposit.error.player"),
     WITHDRAW_ERR_PLAYER("withdraw.error.player"),
     BANK_INVALID_AMOUNT("bank.invalid_amount"),
-    PLAYER_NO_CLAN("player.no_clan");
+    PLAYER_NO_CLAN("player.no_clan"),
+    TRANSACTION_DEPOSIT_PRE("transaction.deposit_pre"),
+    TRANSACTION_WITHDRAW_PRE("transaction.withdraw_pre"),
+    TRANSACTION_DEPOSIT("transaction.deposit"),
+    TRANSACTION_WITHDRAW("transaction.withdraw"),
+    SUCCESS_YES("success.yes"),
+    SUCCESS_NO("success.no"),
+    CANCELLED_YES("cancelled.yes"),
+    CANCELLED_NO("cancelled.no");
 
     private static Properties properties;
 

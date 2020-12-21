@@ -1,6 +1,7 @@
 package com.github.ms5984.clans.clansbanks.events;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -88,14 +89,24 @@ public class BankTransactionEvent extends ClansBanksEvent {
     }
 
     @Override
-    public String toString() { // TODO: lang
+    public String toString() {
         switch (type) {
             case DEPOSIT:
-                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " deposited " + amount + " with clanId=" + clanId;
+/*                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " deposited " + amount + " with clanId=" + clanId;*/
+                return Messages.TRANSACTION_DEPOSIT.toString()
+                        .replace("{0}", this.success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString())
+                        .replace("{1}", player.getName())
+                        .replace("{2}", amount.toString())
+                        .replace("{3}", clanId);
             case WITHDRAWAL:
-                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " withdraw " + amount + " from clanId=" + clanId;
+/*                return "Transaction [" + (success ? "SUCCESS" : "FAILED") + "]: " +
+                        player.getName() + " withdraw " + amount + " from clanId=" + clanId;*/
+                return Messages.TRANSACTION_WITHDRAW.toString()
+                        .replace("{0}", this.success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString())
+                        .replace("{1}", player.getName())
+                        .replace("{2}", amount.toString())
+                        .replace("{3}", clanId);
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }

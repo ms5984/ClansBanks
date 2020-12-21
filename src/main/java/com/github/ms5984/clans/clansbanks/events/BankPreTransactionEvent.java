@@ -1,6 +1,7 @@
 package com.github.ms5984.clans.clansbanks.events;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -52,16 +53,28 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
     }
 
     @Override
-    public String toString() { // TODO: lang
+    public String toString() {
         switch (type) {
             case DEPOSIT:
-                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
+/*                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
                         (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " deposited " + amount + " with clanId=" + clanId;
+                        player.getName() + " deposited " + amount + " with clanId=" + clanId;*/
+                return Messages.TRANSACTION_DEPOSIT_PRE.toString()
+                        .replace("{0}", (cancelled ? Messages.CANCELLED_YES.toString() : Messages.CANCELLED_NO.toString()))
+                        .replace("{1}", (success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString()))
+                        .replace("{2}", player.getName())
+                        .replace("{3}", amount.toString())
+                        .replace("{4}", clanId);
             case WITHDRAWAL:
-                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
+/*                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
                         (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " withdrawn " + amount + " from clanId=" + clanId;
+                        player.getName() + " withdrawn " + amount + " from clanId=" + clanId;*/
+                return Messages.TRANSACTION_WITHDRAW_PRE.toString()
+                        .replace("{0}", (cancelled ? Messages.CANCELLED_YES.toString() : Messages.CANCELLED_NO.toString()))
+                        .replace("{1}", (success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString()))
+                        .replace("{2}", player.getName())
+                        .replace("{3}", amount.toString())
+                        .replace("{4}", clanId);
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
