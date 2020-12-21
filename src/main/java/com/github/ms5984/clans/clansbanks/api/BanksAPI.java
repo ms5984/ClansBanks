@@ -17,9 +17,7 @@ public interface BanksAPI {
      * @param clan the desired clan
      * @return a Bank; if it does not exist it is created
      */
-    default ClanBank getBank(Clan clan) {
-        return null;
-    }
+    ClanBank getBank(Clan clan);
 
     /**
      * Set the default balance of newly-created Banks
