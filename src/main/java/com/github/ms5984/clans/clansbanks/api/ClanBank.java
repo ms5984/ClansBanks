@@ -34,4 +34,16 @@ public interface ClanBank {
      * @return balance as BigDecimal
      */
     BigDecimal getBalance();
+
+    /**
+     * Set the balance of the bank
+     * @param newBalance the desired balance as a double
+     */
+    void setBalanceDouble(double newBalance);
+
+    /**
+     * Set the balance of the bank
+     * @param newBalance the desired balance as BigDecimal
+     */
+    void setBalance(BigDecimal newBalance);
 }

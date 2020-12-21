@@ -66,6 +66,16 @@ public final class Bank implements ClanBank, Serializable {
         return balance;
     }
 
+    @Override
+    public void setBalanceDouble(double newBalance) {
+        balance = BigDecimal.valueOf(newBalance);
+    }
+
+    @Override
+    public void setBalance(BigDecimal newBalance) {
+        balance = newBalance;
+    }
+
     protected PersistentClan getMeta() {
         if (meta != null) {
             return meta;
