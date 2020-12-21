@@ -65,6 +65,14 @@ public class BankTransactionEvent extends ClansBanksEvent {
     }
 
     /**
+     * Get the direct clanId of this bank
+     * @return clanId as String
+     */
+    public String getClanId() {
+        return clanId;
+    }
+
+    /**
      * Get the Clan associated with this bank
      * @return the clan whose bank this is
      */
