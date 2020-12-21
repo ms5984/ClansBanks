@@ -50,7 +50,7 @@ public class BankEventsListener implements Listener {
                 if (event.isCancelled()) ClansBanks.log().info(event.toString());
                 return;
             case VERBOSE:
-                ClansBanks.log().info(event.toString() + " " +
+                ClansBanks.log().info(event.toString() +
                         Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
                         .replace("{0}", event.getClanId())
                 );
@@ -70,7 +70,7 @@ public class BankEventsListener implements Listener {
                         ClansBanks.log().info(e.toString());
                         break;
                     case VERBOSE:
-                        ClansBanks.log().info(e.toString() + " " +
+                        ClansBanks.log().info(e.toString() +
                                 Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
                                         .replace("{0}", e.getClanId())
                         );
