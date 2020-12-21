@@ -68,11 +68,13 @@ public final class Bank implements ClanBank, Serializable {
 
     @Override
     public void setBalanceDouble(double newBalance) {
+        ClanBank.super.setBalanceDouble(newBalance); // TODO: could be disabled
         balance = BigDecimal.valueOf(newBalance);
     }
 
     @Override
     public void setBalance(BigDecimal newBalance) {
+        ClanBank.super.setBalance(newBalance);
         balance = newBalance;
     }
 

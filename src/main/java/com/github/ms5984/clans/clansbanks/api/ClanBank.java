@@ -37,13 +37,21 @@ public interface ClanBank {
 
     /**
      * Set the balance of the bank
+     *
      * @param newBalance the desired balance as a double
+     * @throws IllegalArgumentException if desired balance is negative
      */
-    void setBalanceDouble(double newBalance);
+    default void setBalanceDouble(double newBalance) {
+        if (newBalance < 0d) throw new IllegalArgumentException();
+    }
 
     /**
      * Set the balance of the bank
+     *
      * @param newBalance the desired balance as BigDecimal
+     * @throws IllegalArgumentException if desired balance is negative
      */
-    void setBalance(BigDecimal newBalance);
+    default void setBalance(BigDecimal newBalance) {
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException();
+    }
 }
