@@ -13,12 +13,14 @@ import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.hempcore.library.HFEncoded;
 import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public final class ClansBanks extends JavaPlugin implements BanksAPI {
@@ -31,8 +33,10 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        getConfig().addDefaults(Collections.singletonMap("default-balance", BigDecimal.ZERO));
-        saveConfig();
+        getConfig();
+        if (!new File(getDataFolder(), "config.yml").exists()) {
+            saveDefaultConfig();
+        }
         final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             getLogger().severe("Unable to load Vault!");
@@ -80,6 +84,16 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     @Override
     public BigDecimal defaultBalance() {
         return (BigDecimal) getConfig().get("default-balance");
+    }
+
+    @Override
+    public LogLevel logToConsole() {
+        final int anInt = getConfig().getInt("log-level");
+        if (anInt < 0 || anInt > 2) {
+            getLogger().severe("Invalid log level! Using api default 1 - Quiet");
+            return BanksAPI.super.logToConsole();
+        }
+        return LogLevel.values()[anInt];
     }
 
     public static BanksAPI getAPI() {

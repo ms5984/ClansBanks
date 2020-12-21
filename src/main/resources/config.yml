@@ -1,0 +1,4 @@
+# This value sets
+default-balance: 0
+# 0 - Silent, 1 - Successful and cancelled transactions, 2 - ALL transactions
+log-level: 1

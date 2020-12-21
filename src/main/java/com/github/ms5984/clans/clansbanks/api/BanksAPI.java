@@ -9,7 +9,7 @@ public interface BanksAPI {
      * Describes a level of output logged to the console
      */
     enum LogLevel {
-        VERBOSE, QUIET, SILENT
+        SILENT, QUIET, VERBOSE
     }
 
     /**
@@ -34,6 +34,6 @@ public interface BanksAPI {
      * @return a {@link LogLevel} representing desired verbosity
      */
     default LogLevel logToConsole() {
-        return LogLevel.VERBOSE;
+        return LogLevel.QUIET;
     }
 }
