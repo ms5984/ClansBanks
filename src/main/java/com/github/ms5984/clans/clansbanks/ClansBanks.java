@@ -13,8 +13,6 @@ import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.hempcore.library.HFEncoded;
 import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
