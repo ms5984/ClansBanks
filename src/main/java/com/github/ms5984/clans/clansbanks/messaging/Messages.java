@@ -43,6 +43,7 @@ public enum Messages {
     SUCCESS_YES("success.yes"),
     SUCCESS_NO("success.no"),
     SUCCESS_PENDING("success.pending"),
+    SUCCESS_DENIED("success.denied"),
     CANCELLED_YES("cancelled.yes"),
     CANCELLED_NO("cancelled.no");
 
