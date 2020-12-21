@@ -5,6 +5,7 @@ import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.hempcore.library.HUID;
 import org.bukkit.entity.Player;
@@ -41,15 +42,41 @@ public class BankEventsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onTransaction(BankTransactionEvent e) {
-        if (e instanceof BankPreTransactionEvent) return;
+    public void onPreTransactionMonitor(BankPreTransactionEvent event) {
         switch (ClansBanks.getAPI().logToConsole()) {
             case SILENT:
-                break;
+                return;
             case QUIET:
+                if (event.isCancelled()) ClansBanks.log().info(event.toString());
+                return;
             case VERBOSE:
-                ClansBanks.log().info(e.toString());
+                ClansBanks.log().info(event.toString() + " " +
+                        Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                        .replace("{0}", event.getClanId())
+                );
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTransaction(BankTransactionEvent e) {
+        if (e instanceof BankPreTransactionEvent) return;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                switch (ClansBanks.getAPI().logToConsole()) {
+                    case SILENT:
+                        break;
+                    case QUIET:
+                        ClansBanks.log().info(e.toString());
+                        break;
+                    case VERBOSE:
+                        ClansBanks.log().info(e.toString() + " " +
+                                Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                                        .replace("{0}", e.getClanId())
+                        );
+                }
+            }
+        }.runTask(P);
         if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) e.getClanBank();
         final PersistentClan persistentClan = bank.getMeta();
@@ -61,19 +88,6 @@ public class BankEventsListener implements Listener {
                 persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
             }
         }.runTask(P);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPreTransactionMonitor(BankPreTransactionEvent event) {
-        switch (ClansBanks.getAPI().logToConsole()) {
-            case SILENT:
-                return;
-            case QUIET:
-                if (event.isCancelled()) ClansBanks.log().info(event.toString()); // TODO: better toString
-                return;
-            case VERBOSE:
-                ClansBanks.log().info(event.toString());
-        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

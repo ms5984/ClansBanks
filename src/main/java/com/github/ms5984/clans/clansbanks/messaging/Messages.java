@@ -39,8 +39,10 @@ public enum Messages {
     TRANSACTION_WITHDRAW_PRE("transaction.withdraw_pre"),
     TRANSACTION_DEPOSIT("transaction.deposit"),
     TRANSACTION_WITHDRAW("transaction.withdraw"),
+    TRANSACTION_VERBOSE_CLAN_ID("transaction.verbose.id"),
     SUCCESS_YES("success.yes"),
     SUCCESS_NO("success.no"),
+    SUCCESS_PENDING("success.pending"),
     CANCELLED_YES("cancelled.yes"),
     CANCELLED_NO("cancelled.no");
 
