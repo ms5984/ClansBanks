@@ -16,7 +16,7 @@ public enum Permissions {
         this.node = s;
     }
 
-    public boolean test(CommandSender sender) {
-        return sender.hasPermission(node);
+    public boolean not(CommandSender sender) {
+        return !sender.hasPermission(node);
     }
 }

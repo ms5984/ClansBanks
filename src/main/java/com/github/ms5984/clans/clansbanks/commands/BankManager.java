@@ -3,6 +3,7 @@ package com.github.ms5984.clans.clansbanks.commands;
 import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
+import com.github.ms5984.clans.clansbanks.util.Permissions;
 import com.youtube.hempfest.clans.HempfestClans;
 import com.youtube.hempfest.clans.util.StringLibrary;
 import com.youtube.hempfest.clans.util.construct.Clan;
@@ -47,6 +48,9 @@ public class BankManager implements Listener {
             }
             e.setReturn(true);
             final Player sender = e.getSender();
+            if (Permissions.BANKS_USE.not(sender)) { // TODO: send no permissions msg
+                return;
+            }
             sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
             switch (length) {
                 case 1: // "bank" print instructions
@@ -105,6 +109,9 @@ public class BankManager implements Listener {
                     if (!arg.equalsIgnoreCase("balance")) {
                         switch (arg.toLowerCase()) {
                             case "deposit":
+                                if (Permissions.BANKS_DEPOSIT.not(sender)) { // TODO: Send no permission message
+                                    return;
+                                }
                                 // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
@@ -128,6 +135,9 @@ public class BankManager implements Listener {
                                 }
                                 return;
                             case "withdraw":
+                                if (Permissions.BANKS_WITHDRAW.not(sender)) { // TODO: Send no permission message
+                                    return;
+                                }
                                 // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
@@ -156,6 +166,9 @@ public class BankManager implements Listener {
                                 return;
                         }
                     }
+                    if (Permissions.BANKS_BALANCE.not(sender)) { // TODO: Send no permission message
+                        return;
+                    }
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString() + ": &a"
                             + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
                     return;
@@ -170,6 +183,9 @@ public class BankManager implements Listener {
                                 if (theBank == null) return;
                                 switch (arg1) {
                                     case "deposit":
+                                        if (Permissions.BANKS_DEPOSIT.not(sender)) { // TODO: Send no permission message
+                                            return;
+                                        }
                                         if (theBank.deposit(sender, amount)) {
                                             sendMessage(sender, Messages.DEPOSIT_MSG_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
@@ -179,6 +195,9 @@ public class BankManager implements Listener {
                                         }
                                         break;
                                     case "withdraw":
+                                        if (Permissions.BANKS_WITHDRAW.not(sender)) { // TODO: Send no permission message
+                                            return;
+                                        }
                                         if (theBank.withdraw(sender, amount)) {
                                             sendMessage(sender, Messages.WITHDRAW_MSG_PLAYER.toString()
                                                     .replace("{0}", amount.toString()));
