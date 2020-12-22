@@ -52,7 +52,7 @@ public class BankManager implements Listener {
                 sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                 return;
             }
-            sendMessage(sender, "\n" + clans_prefix + Messages.BANKS_HEADER);
+            sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
             switch (length) {
                 case 1: // "bank" print instructions
                     final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
