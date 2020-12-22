@@ -1,4 +1,9 @@
-# This value sets
+# This value sets the initial balance of new banks
 default-balance: 0
+
 # 0 - Silent, 1 - Successful and cancelled transactions, 2 - ALL transactions
 log-level: 1
+
+### Language select
+# (blank) = English (US)
+lang: # More to come, can leave blank for now :)

@@ -37,6 +37,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
+        saveConfig();
         setupPermissions();
         final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -45,7 +46,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             return;
         }
         this.economy = rsp.getProvider();
-        Messages.setup(this, null);
+        Messages.setup(this, getConfig().getString("lang"));
         getServer().getPluginManager().registerEvents(new BankManager(), this);
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);
     }
