@@ -8,7 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class BankMenu extends Menu {
+import java.util.HashMap;
+import java.util.Map;
+
+public class BankMenu extends Menu { // TODO: finish gui for next release
+
+    private static Map<Integer, ItemStack> items = new HashMap<>();
 
     public BankMenu(Player player) {
         super(new GuiLibrary(player));
@@ -26,12 +31,14 @@ public class BankMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent e) {
-
     }
 
     @Override
     public void setMenuItems() {
-        final ItemStack exit = makeItem(Material.BARRIER, MenuText.GLOBAL_EXIT.getRaw());
-        inventory.setItem(0, exit); // top-left slot
+    }
+
+    private void initMap() {
+        //        inventory.setItem(0, exit); // top-left slot
+        items.putIfAbsent(13, makeItem(Material.BARRIER, MenuText.GLOBAL_EXIT.getRaw()));
     }
 }
