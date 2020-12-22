@@ -48,24 +48,44 @@ public class BankManager implements Listener {
             }
             e.setReturn(true);
             final Player sender = e.getSender();
-            if (Permissions.BANKS_USE.not(sender)) { // TODO: send no permissions msg
+            if (Permissions.BANKS_USE.not(sender)) {
+                sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                 return;
             }
-            sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
+            sendMessage(sender, "\n" + clans_prefix + Messages.BANKS_HEADER);
             switch (length) {
                 case 1: // "bank" print instructions
+                    final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
+                    final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
                     if (Bukkit.getServer().getVersion().contains("1.16")) {
-                        sender.spigot().sendMessage(textLib1_16.textHoverable(
-                                Messages.BANKS_CURRENT_BALANCE + " ",
-                                "&a&l(hover)",
-                                ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance().toString())
-                        );
+                        if (Permissions.BANKS_BALANCE.not(sender)) {
+                            sender.spigot().sendMessage(textLib1_16.textHoverable(
+                                    split[0], "&o" + sender.getName(), split[1],
+                                    greetingHover.substring(0, greetingHover.indexOf("\n"))
+                                            .replace("{0}", HempfestClans.clanManager(sender).getClanTag()))
+                            );
+                        } else {
+                            sender.spigot().sendMessage(textLib1_16.textRunnable(
+                                    split[0], "&o" + sender.getName(), split[1],
+                                    greetingHover.replace("{0}", HempfestClans.clanManager(sender).getClanTag()),
+                                    "clan bank balance")
+                            );
+                        }
                     } else {
-                        sender.spigot().sendMessage(Text_R2.textHoverable(
-                                Messages.BANKS_CURRENT_BALANCE + " ",
-                                "&a&l(hover)",
-                                ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance().toString())
-                        );
+                        if (Permissions.BANKS_BALANCE.not(sender)) {
+                            sender.spigot().sendMessage(Text_R2.textHoverable(
+                                    split[0], "&o" + sender.getName(), split[1],
+//                                    greetingHover.replaceFirst("(\\\\n).*", "")
+                                    greetingHover.substring(0, greetingHover.indexOf("\n"))
+                                            .replace("{0}", HempfestClans.clanManager(sender).getClanTag()))
+                            );
+                        } else {
+                            sender.spigot().sendMessage(Text_R2.textRunnable(
+                                    split[0], "&o" + sender.getName(), split[1],
+                                    greetingHover.replace("{0}", HempfestClans.clanManager(sender).getClanTag()),
+                                    "clan bank balance")
+                            );
+                        }
                     }
                     sendMessage(sender, Messages.BANKS_COMMAND_LIST.toString());
                     final List<BaseComponent> textComponents = new LinkedList<>();
@@ -109,7 +129,8 @@ public class BankManager implements Listener {
                     if (!arg.equalsIgnoreCase("balance")) {
                         switch (arg.toLowerCase()) {
                             case "deposit":
-                                if (Permissions.BANKS_DEPOSIT.not(sender)) { // TODO: Send no permission message
+                                if (Permissions.BANKS_DEPOSIT.not(sender)) {
+                                    sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
                                 // msg usage (need amount param)
@@ -135,7 +156,8 @@ public class BankManager implements Listener {
                                 }
                                 return;
                             case "withdraw":
-                                if (Permissions.BANKS_WITHDRAW.not(sender)) { // TODO: Send no permission message
+                                if (Permissions.BANKS_WITHDRAW.not(sender)) {
+                                    sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
                                 // msg usage (need amount param)
@@ -166,7 +188,8 @@ public class BankManager implements Listener {
                                 return;
                         }
                     }
-                    if (Permissions.BANKS_BALANCE.not(sender)) { // TODO: Send no permission message
+                    if (Permissions.BANKS_BALANCE.not(sender)) {
+                        sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                         return;
                     }
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString() + ": &a"
@@ -183,7 +206,8 @@ public class BankManager implements Listener {
                                 if (theBank == null) return;
                                 switch (arg1) {
                                     case "deposit":
-                                        if (Permissions.BANKS_DEPOSIT.not(sender)) { // TODO: Send no permission message
+                                        if (Permissions.BANKS_DEPOSIT.not(sender)) {
+                                            sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                             return;
                                         }
                                         if (theBank.deposit(sender, amount)) {
@@ -195,7 +219,8 @@ public class BankManager implements Listener {
                                         }
                                         break;
                                     case "withdraw":
-                                        if (Permissions.BANKS_WITHDRAW.not(sender)) { // TODO: Send no permission message
+                                        if (Permissions.BANKS_WITHDRAW.not(sender)) {
+                                            sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                             return;
                                         }
                                         if (theBank.withdraw(sender, amount)) {

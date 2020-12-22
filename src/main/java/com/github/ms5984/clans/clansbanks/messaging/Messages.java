@@ -19,7 +19,10 @@ public enum Messages {
     BALANCE("balance"),
     DEPOSIT("deposit"),
     WITHDRAW("withdraw"),
+    HOVER("hover"),
     AMOUNT("amount"),
+    BANKS_GREETING("banks.greeting"),
+    BANKS_GREETING_HOVER("banks.greeting.hover"),
     HOVER_BALANCE("banks.hover.balance"),
     HOVER_DEPOSIT("banks.hover.deposit"),
     HOVER_WITHDRAW("banks.hover.withdraw"),
@@ -45,7 +48,9 @@ public enum Messages {
     SUCCESS_PENDING("success.pending"),
     SUCCESS_DENIED("success.denied"),
     CANCELLED_YES("cancelled.yes"),
-    CANCELLED_NO("cancelled.no");
+    CANCELLED_NO("cancelled.no"),
+    PERM_NOT_PLAYER_COMMAND("permissions.not.player.command"),
+    PERM_NOT_PLAYER_ACTION("permissions.not.player.action");
 
     private static Properties properties;
 
