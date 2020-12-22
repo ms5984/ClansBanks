@@ -1,9 +1,12 @@
 package com.github.ms5984.clans.clansbanks.gui;
 
+import com.github.ms5984.clans.clansbanks.gui.util.MenuText;
 import com.youtube.hempfest.hempcore.gui.GuiLibrary;
 import com.youtube.hempfest.hempcore.gui.Menu;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BankMenu extends Menu {
 
@@ -13,12 +16,12 @@ public class BankMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return null;
+        return MenuText.MAIN_TITLE.toString();
     }
 
     @Override
     public int getSlots() {
-        return 0;
+        return 27;
     }
 
     @Override
@@ -28,6 +31,7 @@ public class BankMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-
+        final ItemStack exit = makeItem(Material.BARRIER, MenuText.GLOBAL_EXIT.getRaw());
+        inventory.setItem(0, exit); // top-left slot
     }
 }

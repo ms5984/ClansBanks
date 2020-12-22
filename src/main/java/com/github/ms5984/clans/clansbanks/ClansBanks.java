@@ -4,6 +4,7 @@ import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.commands.BankManager;
 import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.github.ms5984.clans.clansbanks.gui.util.MenuText;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.Bank;
@@ -47,6 +48,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         }
         this.economy = rsp.getProvider();
         Messages.setup(this, getConfig().getString("lang"));
+        MenuText.setup(this, getConfig().getString("lang"));
         getServer().getPluginManager().registerEvents(new BankManager(), this);
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);
     }
