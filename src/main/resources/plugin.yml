@@ -6,5 +6,5 @@ api-version: 1.15
 load: POSTWORLD
 depend: [ Vault, HempCore, Clans ]
 authors: [ ms5984 ]
-description: Adding Banks to Clans
-website: https://github.com/ms5984/ClansBanks
+description: ${project.description}
+website: ${project.url}
