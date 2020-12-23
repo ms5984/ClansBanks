@@ -33,11 +33,10 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        getConfig();
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
-        saveConfig();
+        getConfig();
         setupPermissions();
         final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -105,7 +104,19 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public BigDecimal defaultBalance() {
-        return (BigDecimal) getConfig().get("default-balance");
+        final String string = getConfig().getString("default-balance");
+        if (string == null) {
+            getLogger().severe("Error reading default-balance, returning 0!");
+        } else {
+            try {
+                return new BigDecimal(string);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                getLogger().severe("Improperly formatted default-balance!");
+                getLogger().info("Using 0.");
+            }
+        }
+        return BigDecimal.ZERO;
     }
 
     @Override
