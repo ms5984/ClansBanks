@@ -17,6 +17,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,6 +118,21 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             }
         }
         return BigDecimal.ZERO;
+    }
+
+    @Override
+    public @Nullable BigDecimal maxBalance() {
+        final String string = getConfig().getString("maximum-balance");
+        if (string != null) {
+            try {
+                return new BigDecimal(string);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                getLogger().severe("Improperly formatted maximum-balance!");
+                getLogger().info("Maximum not set.");
+            }
+        }
+        return null;
     }
 
     @Override

@@ -2,15 +2,13 @@ package com.github.ms5984.clans.clansbanks.events;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
-import com.youtube.hempfest.clans.util.construct.Clan;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
-import java.util.concurrent.CompletableFuture;
 
-public class BankTransactionEvent extends ClansBanksEvent {
+public class BankTransactionEvent extends BankActionEvent {
 
     public enum Type {
         DEPOSIT, WITHDRAWAL
@@ -18,23 +16,20 @@ public class BankTransactionEvent extends ClansBanksEvent {
 
     protected final Player player;
     protected final BigDecimal amount;
-    protected final String clanId;
     protected final boolean success;
     protected final Type type;
 
     public BankTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, Type type) {
-        super(clanBank);
+        super(clanBank, clanId);
         this.player = player;
         this.amount = amount;
-        this.clanId = clanId;
         this.success = success;
         this.type = type;
     }
     public BankTransactionEvent(BankTransactionEvent event) {
-        super(event.clanBank);
+        super(event.clanBank, event.clanId);
         this.player = event.player;
         this.amount = event.amount;
-        this.clanId = event.clanId;
         this.success = event.success;
         this.type = event.type;
     }
@@ -62,22 +57,6 @@ public class BankTransactionEvent extends ClansBanksEvent {
      */
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    /**
-     * Get the direct clanId of this bank
-     * @return clanId as String
-     */
-    public String getClanId() {
-        return clanId;
-    }
-
-    /**
-     * Get the Clan associated with this bank
-     * @return the clan whose bank this is
-     */
-    public Clan getClan() {
-        return CompletableFuture.supplyAsync(() -> Clan.clanUtil.getClan(clanId)).join();
     }
 
     /**

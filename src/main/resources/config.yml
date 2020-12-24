@@ -1,6 +1,9 @@
 # This value sets the initial balance of new banks
 default-balance: 0
 
+# Optionally set the maximum allowed balance of clan banks
+#maximum-balance: 10000000000.00 # Uncomment this line to activate
+
 # 0 - Silent, 1 - Successful and cancelled transactions, 2 - ALL transactions
 log-level: 1
 

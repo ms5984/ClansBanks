@@ -3,6 +3,7 @@ package com.github.ms5984.clans.clansbanks.model;
 import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
+import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.clans.util.construct.Clan;
@@ -68,14 +69,14 @@ public final class Bank implements ClanBank, Serializable {
 
     @Override
     public void setBalanceDouble(double newBalance) {
-        ClanBank.super.setBalanceDouble(newBalance); // TODO: could be disabled
-        balance = BigDecimal.valueOf(newBalance);
+        ClanBank.super.setBalanceDouble(newBalance);
+        PM.callEvent(new BankSetBalanceEvent(this, clanId, BigDecimal.valueOf(newBalance)));
     }
 
     @Override
     public void setBalance(BigDecimal newBalance) {
         ClanBank.super.setBalance(newBalance);
-        balance = newBalance;
+        PM.callEvent(new BankSetBalanceEvent(this, clanId, newBalance));
     }
 
     protected PersistentClan getMeta() {

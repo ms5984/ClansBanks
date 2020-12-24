@@ -3,6 +3,7 @@ package com.github.ms5984.clans.clansbanks.model;
 import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
+import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
@@ -99,14 +100,20 @@ public class BankEventsListener implements Listener {
             return; // The player didn't have enough money or is not allowed, no transaction
         }
         final Bank bank = (Bank) event.getClanBank();
+        final BigDecimal maxBalance = ClansBanks.getAPI().maxBalance();
+        if (maxBalance != null) {
+            if (bank.balance.add(event.getAmount()).compareTo(maxBalance) > 0) {
+                event.setCancelled(true);
+                return;
+            }
+        }
         final Player player = event.getPlayer();
         final BigDecimal amount = event.getAmount();
         final boolean success = Bank.ECO.withdrawPlayer(player, player.getWorld().getName(),
                 amount.doubleValue()).transactionSuccess();
         if (success) bank.balance = bank.balance.add(amount);
         if (!success) event.setSuccess(false);
-        final BankTransactionEvent event1 = new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.DEPOSIT);
-        Bank.PM.callEvent(event1);
+        Bank.PM.callEvent(new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.DEPOSIT));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -124,6 +131,24 @@ public class BankEventsListener implements Listener {
         if (success) bank.balance = bank.balance.subtract(amount);
         if (!success) event.setSuccess(false);
         Bank.PM.callEvent(new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.WITHDRAWAL));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSetBalance(BankSetBalanceEvent event) {
+        if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        final Bank bank = (Bank) event.getClanBank();
+        final BigDecimal maxBalance = ClansBanks.getAPI().maxBalance();
+        if (maxBalance != null) {
+            if (bank.balance.add(event.getNewBalance()).compareTo(maxBalance) > 0) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSetBalanceMonitor(BankSetBalanceEvent event) {
+        if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        ((Bank) event.getClanBank()).balance = event.getNewBalance();
     }
 
 }

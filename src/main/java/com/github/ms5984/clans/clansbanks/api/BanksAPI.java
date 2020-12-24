@@ -1,6 +1,7 @@
 package com.github.ms5984.clans.clansbanks.api;
 
 import com.youtube.hempfest.clans.util.construct.Clan;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -25,6 +26,16 @@ public interface BanksAPI {
      */
     default BigDecimal defaultBalance() {
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * This value reflects the maximum balance of Banks if configured.
+     * Returns null if no set maximum
+     * @return the maximum balance or null
+     */
+    @Nullable
+    default BigDecimal maxBalance() {
+        return null;
     }
 
     /**
