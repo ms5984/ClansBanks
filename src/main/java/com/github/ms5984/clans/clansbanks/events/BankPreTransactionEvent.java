@@ -38,7 +38,7 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
-        if (!cancel && success) {
+        if (cancel && success) { // don't flip cancel, this is meant to set success to false on cancel = true
             success = false;
         }
     }
