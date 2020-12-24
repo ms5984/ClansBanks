@@ -14,6 +14,7 @@ import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.hempcore.library.HFEncoded;
 import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 
 public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
+    private static final int STATS_ID = 9743;
     public static final int BANKS_META_ID = 100;
     private static ClansBanks instance;
     private Economy economy;
@@ -49,6 +51,15 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         Messages.setup(this, getConfig().getString("lang"));
         getServer().getPluginManager().registerEvents(new BankManager(), this);
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);
+        Metrics metrics = new Metrics(this, STATS_ID);
+        metrics.addCustomChart(new Metrics.SimplePie("lang", () -> getConfig().getString("lang", "en-US")));
+        metrics.addCustomChart(new Metrics.SimplePie("log_level", () -> String.valueOf(logToConsole().ordinal())));
+        metrics.addCustomChart(new Metrics.SimplePie("starting_bank_balance", () -> defaultBalance().toString())); // regex filter: \d+(\.\d*){0,1}
+        metrics.addCustomChart(new Metrics.SimplePie("maximum_clan_balance", () -> {
+            final BigDecimal maxBalance = maxBalance();
+            if (maxBalance == null) return "None";
+            return maxBalance.toString();
+        }));
     }
 
     @Override
