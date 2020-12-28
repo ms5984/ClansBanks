@@ -1,7 +1,9 @@
 # Clans\[Banks]
 ### An official [Clans\[Free\]](https://github.com/Hempfest/Clans) addon
 
-~~Development in progress~~
+~~Development in progress~~ It's alive! :D
+
+[![Release](https://jitpack.io/v/ms5984/ClansBanks.svg)](https://jitpack.io/#ms5984/ClansBanks)
 
 Officially released!
 Pick it up right [here](https://github.com/ms5984/ClansBanks/releases)!
