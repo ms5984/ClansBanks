@@ -17,9 +17,9 @@ contacted by the Utility bot in the `welcome` channel of the
 react with a wrench to gain access to the ---\| SUPPORT \|--- category.
 
 Currently you may find the following channels under SUPPORT:
-- **\[𝑯𝑬𝑳𝑷]** For general plugin assistance
-- **\[𝑺𝑼𝑮𝑮𝑬𝑺𝑻]** Type out plugin suggestions and a bot will start a vote
-- **\[𝑶𝑷𝑬𝑵-𝑻𝑰𝑪𝑲𝑬𝑻]** For detailed help. Use the format `-new <message>` to
+- \[𝑯𝑬𝑳𝑷] For general plugin assistance
+- \[𝑺𝑼𝑮𝑮𝑬𝑺𝑻] Type out plugin suggestions and a bot will start a vote
+- \[𝑶𝑷𝑬𝑵-𝑻𝑰𝑪𝑲𝑬𝑻] For detailed help. Use the format `-new <message>` to
 rapidly share information with us as soon as possible as we may not be able
 respond immediately.
 
