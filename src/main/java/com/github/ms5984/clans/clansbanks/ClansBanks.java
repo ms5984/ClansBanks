@@ -16,6 +16,7 @@ import com.youtube.hempfest.hempcore.library.HUID;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     }
 
     private void setupPermissions() {
+        final PluginManager pm = getServer().getPluginManager();
         final Permission balance = new Permission(Permissions.BANKS_BALANCE.node);
         final Permission deposit = new Permission(Permissions.BANKS_DEPOSIT.node);
         final Permission withdraw = new Permission(Permissions.BANKS_WITHDRAW.node);
@@ -79,12 +81,36 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         withdraw.addParent(useStar, true);
         final Permission star = new Permission(Permissions.BANKS_STAR.node);
         useStar.addParent(star, true);
-        getServer().getPluginManager().addPermission(star);
-        getServer().getPluginManager().addPermission(useStar);
-        getServer().getPluginManager().addPermission(use);
-        getServer().getPluginManager().addPermission(deposit);
-        getServer().getPluginManager().addPermission(withdraw);
-        getServer().getPluginManager().addPermission(balance);
+        pm.addPermission(star);
+        pm.addPermission(useStar);
+        pm.addPermission(use);
+        pm.addPermission(deposit);
+        pm.addPermission(withdraw);
+        pm.addPermission(balance);
+        // Lending
+        final Permission lending = new Permission(Permissions.BANKS_LENDING.node);
+        final Permission lendingStar = new Permission(Permissions.BANKS_LENDING_STAR.node);
+        lending.addParent(lendingStar, true);
+        final Permission canBorrow = new Permission(Permissions.BANKS_CAN_BORROW.node);
+        final Permission useBorrow = new Permission(Permissions.BANKS_BORROW.node);
+        useBorrow.addParent(canBorrow, true);
+        canBorrow.addParent(lending, true);
+        final Permission canLend = new Permission(Permissions.BANKS_CAN_LEND.node);
+        final Permission useLoan = new Permission(Permissions.BANKS_LOAN.node);
+        useLoan.addParent(canLend, true);
+        canLend.addParent(lendingStar, true);
+        final Permission voteLoan = new Permission(Permissions.BANKS_LOAN_VOTE.node);
+        voteLoan.addParent(lending, true);
+        final Permission underwriteLoan = new Permission(Permissions.BANKS_LOAN_UNDERWRITE.node);
+        underwriteLoan.addParent(lendingStar, true);
+        pm.addPermission(lending);
+        pm.addPermission(lendingStar);
+        pm.addPermission(canBorrow);
+        pm.addPermission(useBorrow);
+        pm.addPermission(canLend);
+        pm.addPermission(useLoan);
+        pm.addPermission(voteLoan);
+        pm.addPermission(underwriteLoan);
     }
 
     @Override
