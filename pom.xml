@@ -45,7 +45,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>com.github.ms5984.clans.clansbanks</shadedPattern>
+                            <shadedPattern>com.github.ms5984.clans.clansbanks.org.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
