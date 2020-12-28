@@ -1,12 +1,13 @@
 # Clans\[Banks]
 ### An official [Clans\[Free\]](https://github.com/Hempfest/Clans) addon
-
-~~Development in progress~~ It's alive! :D
+[![banks-banner](banks.png)](https://www.spigotmc.org/resources/clans-banks-addon-for-clans-free.87018/)
 
 [![Release](https://jitpack.io/v/ms5984/ClansBanks.svg)](https://jitpack.io/#ms5984/ClansBanks)
 
 Officially released!
 Pick it up right [here](https://github.com/ms5984/ClansBanks/releases)!
+
+Spigot page: https://www.spigotmc.org/resources/clans-banks-addon-for-clans-free.87018/
 
 Stay tuned for updates. We announce changes and offer assistance
 with plugin setup on our support Discord: https://discord.gg/hubcommunity
