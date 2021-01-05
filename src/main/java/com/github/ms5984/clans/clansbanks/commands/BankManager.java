@@ -231,7 +231,7 @@ public class BankManager implements Listener {
                                         break;
                                 }
                             } catch (NumberFormatException exception) {
-                                sendMessage(sender, "&c" + Messages.BANK_INVALID_AMOUNT);
+                                sendMessage(sender, Messages.BANK_INVALID_AMOUNT.toString());
                             }
                             return;
                         default: // yell at the user and send usage msg
@@ -273,7 +273,7 @@ public class BankManager implements Listener {
     private ClanBank testClan(Player sender) {
         final Clan clan = HempfestClans.clanManager(sender);
         if (clan == null) {
-            sendMessage(sender, "&c" + Messages.PLAYER_NO_CLAN);
+            sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
             return null;
         }
         return ClansBanks.getAPI().getBank(clan);
