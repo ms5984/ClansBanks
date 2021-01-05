@@ -56,25 +56,17 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
     public String toString() {
         switch (type) {
             case DEPOSIT:
-/*                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
-                        (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " deposited " + amount + " with clanId=" + clanId;*/
-                return Messages.TRANSACTION_DEPOSIT_PRE.toString()
-                        .replace("{0}", (cancelled ? Messages.CANCELLED_YES.toString() : Messages.CANCELLED_NO.toString()))
-                        .replace("{1}", (success ? Messages.SUCCESS_PENDING.toString() : Messages.SUCCESS_DENIED.toString()))
-                        .replace("{2}", player.getName())
-                        .replace("{3}", amount.toString())
-                        .replace("{4}", getClan().getClanTag());
+                return (cancelled ? Messages.TRANSACTION_DEPOSIT_PRE_CANCELLED : Messages.TRANSACTION_DEPOSIT_PRE).toString()
+                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                        .replace("{1}", player.getName())
+                        .replace("{2}", amount.toString())
+                        .replace("{3}", getClan().getClanTag());
             case WITHDRAWAL:
-/*                return "Transaction " + (cancelled ? "-CANCELLED" : "PRE-ACCEPTED") + " [" +
-                        (success ? "SUCCESS" : "FAILED") + "]: " +
-                        player.getName() + " withdrawn " + amount + " from clanId=" + clanId;*/
-                return Messages.TRANSACTION_WITHDRAW_PRE.toString()
-                        .replace("{0}", (cancelled ? Messages.CANCELLED_YES.toString() : Messages.CANCELLED_NO.toString()))
-                        .replace("{1}", (success ? Messages.SUCCESS_PENDING.toString() : Messages.SUCCESS_DENIED.toString()))
-                        .replace("{2}", player.getName())
-                        .replace("{3}", amount.toString())
-                        .replace("{4}", getClan().getClanTag());
+                return (cancelled ? Messages.TRANSACTION_WITHDRAW_PRE_CANCELLED : Messages.TRANSACTION_WITHDRAW_PRE).toString()
+                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                        .replace("{1}", player.getName())
+                        .replace("{2}", amount.toString())
+                        .replace("{3}", getClan().getClanTag());
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
