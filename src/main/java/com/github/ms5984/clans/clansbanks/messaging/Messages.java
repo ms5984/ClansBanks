@@ -60,7 +60,7 @@ public enum Messages {
         properties = new Properties();
         final InputStream inputStream = (locale == null) ?
                 clansBanks.getResource("messages.properties") :
-                clansBanks.getResource("lang/messages" + locale + ".properties");
+                clansBanks.getResource("lang/messages_" + locale + ".properties");
         try {
             properties.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
             System.out.println("Loaded " + ((locale == null) ? "default" : "\"" + locale + "\"") + " lang file.");
