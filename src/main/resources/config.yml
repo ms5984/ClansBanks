@@ -8,5 +8,5 @@ default-balance: 0
 log-level: 1
 
 ### Language select
-# (blank) = English (US)
+# (blank) = English (US), 'fr' = French
 lang: # More to come, can leave blank for now :)
