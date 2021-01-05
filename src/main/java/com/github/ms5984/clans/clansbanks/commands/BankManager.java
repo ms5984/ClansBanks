@@ -32,10 +32,8 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
-        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " &f" + Messages.BALANCE);
+        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " &fbalance");
         e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
-                .replace("{deposit}", Messages.DEPOSIT.toString())
-                .replace("{withdraw}", Messages.WITHDRAW.toString())
                 .replace("{amount}", Messages.AMOUNT.toString()));
     }
 
@@ -87,34 +85,34 @@ public class BankManager implements Listener {
                             );
                         }
                     }
-                    sendMessage(sender, Messages.BANKS_COMMAND_LIST.toString());
+                    sendMessage(sender, Messages.BANKS_COMMAND_LISTING.toString());
                     final List<BaseComponent> textComponents = new LinkedList<>();
                     if (Bukkit.getServer().getVersion().contains("1.16")) {
                         sender.spigot().sendMessage(textLib1_16.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
-                                "&7" + Messages.BALANCE, Messages.HOVER_BALANCE.toString(),
+                                "&7balance", Messages.HOVER_BALANCE.toString(),
                                 "clan bank balance"));
                         textComponents.add(textLib1_16.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
-                                "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
+                                "&adeposit", Messages.HOVER_DEPOSIT.toString(),
                                 "clan bank deposit 1"
                         ));
                         textComponents.add(textLib1_16.textSuggestable(
                                 "&7,",
-                                "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
+                                "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw 1"
                         ));
                     } else {
                         sender.spigot().sendMessage(Text_R2.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
-                                "&7" + Messages.BALANCE, Messages.HOVER_BALANCE.toString(),
+                                "&7balance", Messages.HOVER_BALANCE.toString(),
                                 "clan bank balance"));
                         textComponents.add(Text_R2.textSuggestable(
                                 Messages.BANK_HELP_PREFIX + " &f<",
-                                "&a" + Messages.DEPOSIT, Messages.HOVER_DEPOSIT.toString(),
+                                "&adeposit", Messages.HOVER_DEPOSIT.toString(),
                                 "clan bank deposit 1"
                         ));
                         textComponents.add(Text_R2.textSuggestable(
                                 "&7,",
-                                "&c" + Messages.WITHDRAW, Messages.HOVER_WITHDRAW.toString(),
+                                "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
                                 "clan bank withdraw 1"
                         ));
                     }
@@ -138,7 +136,7 @@ public class BankManager implements Listener {
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
                                     sender.spigot().sendMessage(textLib1_16.textHoverable(
                                             Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&f" + Messages.DEPOSIT + "&7>",
+                                            "&7<&fdeposit&7>",
                                             " ",
                                             "&7<&c" + Messages.AMOUNT + "&7>",
                                             Messages.HOVER_DEPOSIT.toString(),
@@ -147,7 +145,7 @@ public class BankManager implements Listener {
                                 } else {
                                     sender.spigot().sendMessage(Text_R2.textHoverable(
                                             Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&f" + Messages.DEPOSIT + "&7>",
+                                            "&7<&fdeposit&7>",
                                             " ",
                                             "&7<&c" + Messages.AMOUNT + "&7>",
                                             Messages.HOVER_DEPOSIT.toString(),
@@ -165,7 +163,7 @@ public class BankManager implements Listener {
                                 if (Bukkit.getServer().getVersion().contains("1.16")) {
                                     sender.spigot().sendMessage(textLib1_16.textHoverable(
                                             Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&f" + Messages.WITHDRAW + "&7>",
+                                            "&7<&fwithdraw&7>",
                                             " ",
                                             "&7<&c" + Messages.AMOUNT + "&7>",
                                             Messages.HOVER_WITHDRAW.toString(),
@@ -174,7 +172,7 @@ public class BankManager implements Listener {
                                 } else {
                                     sender.spigot().sendMessage(Text_R2.textHoverable(
                                             Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&f" + Messages.WITHDRAW + "&7>",
+                                            "&7<&fwithdraw&7>",
                                             " ",
                                             "&7<&c" + Messages.AMOUNT + "&7>",
                                             Messages.HOVER_WITHDRAW.toString(),
@@ -184,7 +182,7 @@ public class BankManager implements Listener {
                                 return;
                             default:
                                 // msg usage (invalid subcommand)
-                                sendMessage(sender, "&c" + Messages.BANK_INVALID_SUBCOMMAND);
+                                sendMessage(sender, Messages.BANK_INVALID_SUBCOMMAND.toString());
                                 return;
                         }
                     }
@@ -242,7 +240,7 @@ public class BankManager implements Listener {
                     break;
             }
             // msg usage (invalid subcommand)
-            sendMessage(sender, "&c" + Messages.BANK_INVALID_SUBCOMMAND);
+            sendMessage(sender, Messages.BANK_INVALID_SUBCOMMAND.toString());
         }
     }
 

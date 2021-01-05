@@ -80,13 +80,13 @@ public class BankTransactionEvent extends BankActionEvent {
         switch (type) {
             case DEPOSIT:
                 return Messages.TRANSACTION_DEPOSIT.toString()
-                        .replace("{0}", this.success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString())
+                        .replace("{0}", this.success ? Messages.TRANSACTION_SUCCESS.toString() : Messages.TRANSACTION_FAILED.toString())
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());
             case WITHDRAWAL:
                 return Messages.TRANSACTION_WITHDRAW.toString()
-                        .replace("{0}", this.success ? Messages.SUCCESS_YES.toString() : Messages.SUCCESS_NO.toString())
+                        .replace("{0}", this.success ? Messages.TRANSACTION_SUCCESS.toString() : Messages.TRANSACTION_FAILED.toString())
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());
