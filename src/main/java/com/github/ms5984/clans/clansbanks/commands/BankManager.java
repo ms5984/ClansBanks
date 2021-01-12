@@ -23,12 +23,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class BankManager implements Listener {
 
     private final Text textLib1_16 = new Text();
     private final List<String> tab2 = new LinkedList<>(Arrays.asList("balance", "deposit", "withdraw"));
     private final String clans_prefix = new StringLibrary().getPrefix();
+
+    private Optional<Clan> optionalClan(Player player) {
+        return Optional.ofNullable(HempfestClans.getInstance().playerClan.get(player.getUniqueId()))
+                .map(s -> HempfestClans.clanManager(player));
+    }
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
@@ -53,6 +59,11 @@ public class BankManager implements Listener {
             sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
             switch (length) {
                 case 1: // "bank" print instructions
+                    final Optional<Clan> optionalClan = optionalClan(sender);
+                    if (!optionalClan.isPresent()) {
+                        sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
+                        return;
+                    }
                     final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
                     final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
                     if (Bukkit.getServer().getVersion().contains("1.16")) {
@@ -60,12 +71,12 @@ public class BankManager implements Listener {
                             sender.spigot().sendMessage(textLib1_16.textHoverable(
                                     split[0], "&o" + sender.getName(), split[1],
                                     greetingHover.substring(0, greetingHover.indexOf("\n"))
-                                            .replace("{0}", HempfestClans.clanManager(sender).getClanTag()))
+                                            .replace("{0}", optionalClan.get().getClanTag()))
                             );
                         } else {
                             sender.spigot().sendMessage(textLib1_16.textRunnable(
                                     split[0], "&o" + sender.getName(), split[1],
-                                    greetingHover.replace("{0}", HempfestClans.clanManager(sender).getClanTag()),
+                                    greetingHover.replace("{0}", optionalClan.get().getClanTag()),
                                     "clan bank balance")
                             );
                         }
@@ -75,12 +86,12 @@ public class BankManager implements Listener {
                                     split[0], "&o" + sender.getName(), split[1],
 //                                    greetingHover.replaceFirst("(\\\\n).*", "")
                                     greetingHover.substring(0, greetingHover.indexOf("\n"))
-                                            .replace("{0}", HempfestClans.clanManager(sender).getClanTag()))
+                                            .replace("{0}", optionalClan.get().getClanTag()))
                             );
                         } else {
                             sender.spigot().sendMessage(Text_R2.textRunnable(
                                     split[0], "&o" + sender.getName(), split[1],
-                                    greetingHover.replace("{0}", HempfestClans.clanManager(sender).getClanTag()),
+                                    greetingHover.replace("{0}", optionalClan.get().getClanTag()),
                                     "clan bank balance")
                             );
                         }
@@ -191,7 +202,7 @@ public class BankManager implements Listener {
                         return;
                     }
                     sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString() + ": &a"
-                            + ClansBanks.getAPI().getBank(HempfestClans.clanManager(sender)).getBalance());
+                            + bank.getBalance());
                     return;
                 case 3:
                     final String arg1 = e.getArgs()[1].toLowerCase();
@@ -271,12 +282,12 @@ public class BankManager implements Listener {
     }
 
     private ClanBank testClan(Player sender) {
-        final Clan clan = HempfestClans.clanManager(sender);
-        if (clan == null) {
+        final Optional<Clan> clanOptional = optionalClan(sender);
+        if (!clanOptional.isPresent()) {
             sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
             return null;
         }
-        return ClansBanks.getAPI().getBank(clan);
+        return ClansBanks.getAPI().getBank(clanOptional.get());
     }
 
     private void sendMessage(Player player, String message) {
