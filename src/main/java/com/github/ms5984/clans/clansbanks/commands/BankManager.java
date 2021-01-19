@@ -23,17 +23,15 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.util.Permissions;
+import com.github.ms5984.clans.clansbanks.util.TextLib;
 import com.youtube.hempfest.clans.HempfestClans;
 import com.youtube.hempfest.clans.util.StringLibrary;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.clans.util.events.CommandHelpEvent;
 import com.youtube.hempfest.clans.util.events.SubCommandEvent;
 import com.youtube.hempfest.clans.util.events.TabInsertEvent;
-import com.youtube.hempfest.hempcore.formatting.component.Text;
-import com.youtube.hempfest.hempcore.formatting.component.Text_R2;
 import com.youtube.hempfest.hempcore.formatting.string.ColoredString;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,7 +44,7 @@ import java.util.Optional;
 
 public class BankManager implements Listener {
 
-    private final Text textLib1_16 = new Text();
+    private final TextLib textLib = TextLib.getInstance();
     private final List<String> tab2 = new LinkedList<>(Arrays.asList("balance", "deposit", "withdraw"));
     private final String clans_prefix = new StringLibrary().getPrefix();
 
@@ -85,67 +83,35 @@ public class BankManager implements Listener {
                     }
                     final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
                     final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
-                    if (Bukkit.getServer().getVersion().contains("1.16")) {
-                        if (Permissions.BANKS_BALANCE.not(sender)) {
-                            sender.spigot().sendMessage(textLib1_16.textHoverable(
-                                    split[0], "&o" + sender.getName(), split[1],
-                                    greetingHover.substring(0, greetingHover.indexOf("\n"))
-                                            .replace("{0}", optionalClan.get().getClanTag()))
-                            );
-                        } else {
-                            sender.spigot().sendMessage(textLib1_16.textRunnable(
-                                    split[0], "&o" + sender.getName(), split[1],
-                                    greetingHover.replace("{0}", optionalClan.get().getClanTag()),
-                                    "clan bank balance")
-                            );
-                        }
-                    } else {
-                        if (Permissions.BANKS_BALANCE.not(sender)) {
-                            sender.spigot().sendMessage(Text_R2.textHoverable(
-                                    split[0], "&o" + sender.getName(), split[1],
+                    if (Permissions.BANKS_BALANCE.not(sender)) {
+                        sender.spigot().sendMessage(textLib.textHoverable(
+                                split[0], "&o" + sender.getName(), split[1],
 //                                    greetingHover.replaceFirst("(\\\\n).*", "")
-                                    greetingHover.substring(0, greetingHover.indexOf("\n"))
-                                            .replace("{0}", optionalClan.get().getClanTag()))
-                            );
-                        } else {
-                            sender.spigot().sendMessage(Text_R2.textRunnable(
-                                    split[0], "&o" + sender.getName(), split[1],
-                                    greetingHover.replace("{0}", optionalClan.get().getClanTag()),
-                                    "clan bank balance")
-                            );
-                        }
+                                greetingHover.substring(0, greetingHover.indexOf("\n"))
+                                        .replace("{0}", optionalClan.get().getClanTag()))
+                        );
+                    } else {
+                        sender.spigot().sendMessage(textLib.textRunnable(
+                                split[0], "&o" + sender.getName(), split[1],
+                                greetingHover.replace("{0}", optionalClan.get().getClanTag()),
+                                "clan bank balance")
+                        );
                     }
                     sendMessage(sender, Messages.BANKS_COMMAND_LISTING.toString());
                     final List<BaseComponent> textComponents = new LinkedList<>();
-                    if (Bukkit.getServer().getVersion().contains("1.16")) {
-                        sender.spigot().sendMessage(textLib1_16.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
-                                "&7balance", Messages.HOVER_BALANCE.toString(),
-                                "clan bank balance"));
-                        textComponents.add(textLib1_16.textSuggestable(
-                                Messages.BANK_HELP_PREFIX + " &f<",
-                                "&adeposit", Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit 1"
-                        ));
-                        textComponents.add(textLib1_16.textSuggestable(
-                                "&7,",
-                                "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw 1"
-                        ));
-                    } else {
-                        sender.spigot().sendMessage(Text_R2.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
-                                "&7balance", Messages.HOVER_BALANCE.toString(),
-                                "clan bank balance"));
-                        textComponents.add(Text_R2.textSuggestable(
-                                Messages.BANK_HELP_PREFIX + " &f<",
-                                "&adeposit", Messages.HOVER_DEPOSIT.toString(),
-                                "clan bank deposit 1"
-                        ));
-                        textComponents.add(Text_R2.textSuggestable(
-                                "&7,",
-                                "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
-                                "clan bank withdraw 1"
-                        ));
-                    }
+                    sender.spigot().sendMessage(textLib.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
+                            "&7balance", Messages.HOVER_BALANCE.toString(),
+                            "clan bank balance"));
+                    textComponents.add(textLib.textSuggestable(
+                            Messages.BANK_HELP_PREFIX + " &f<",
+                            "&adeposit", Messages.HOVER_DEPOSIT.toString(),
+                            "clan bank deposit 1"
+                    ));
+                    textComponents.add(textLib.textSuggestable(
+                            "&7,",
+                            "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
+                            "clan bank withdraw 1"
+                    ));
                     textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",
                             ColoredString.ColorType.MC_COMPONENT).toComponent());
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
@@ -163,25 +129,14 @@ public class BankManager implements Listener {
                                 }
                                 // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
-                                if (Bukkit.getServer().getVersion().contains("1.16")) {
-                                    sender.spigot().sendMessage(textLib1_16.textHoverable(
-                                            Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&fdeposit&7>",
-                                            " ",
-                                            "&7<&c" + Messages.AMOUNT + "&7>",
-                                            Messages.HOVER_DEPOSIT.toString(),
-                                            Messages.HOVER_NO_AMOUNT.toString()
-                                    ));
-                                } else {
-                                    sender.spigot().sendMessage(Text_R2.textHoverable(
-                                            Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&fdeposit&7>",
-                                            " ",
-                                            "&7<&c" + Messages.AMOUNT + "&7>",
-                                            Messages.HOVER_DEPOSIT.toString(),
-                                            Messages.HOVER_NO_AMOUNT.toString()
-                                    ));
-                                }
+                                sender.spigot().sendMessage(textLib.textHoverable(
+                                        Messages.BANK_HELP_PREFIX + " ",
+                                        "&7<&fdeposit&7>",
+                                        " ",
+                                        "&7<&c" + Messages.AMOUNT + "&7>",
+                                        Messages.HOVER_DEPOSIT.toString(),
+                                        Messages.HOVER_NO_AMOUNT.toString()
+                                ));
                                 return;
                             case "withdraw":
                                 if (Permissions.BANKS_WITHDRAW.not(sender)) {
@@ -190,25 +145,14 @@ public class BankManager implements Listener {
                                 }
                                 // msg usage (need amount param)
                                 sendMessage(sender, Messages.BANK_USAGE.toString());
-                                if (Bukkit.getServer().getVersion().contains("1.16")) {
-                                    sender.spigot().sendMessage(textLib1_16.textHoverable(
-                                            Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&fwithdraw&7>",
-                                            " ",
-                                            "&7<&c" + Messages.AMOUNT + "&7>",
-                                            Messages.HOVER_WITHDRAW.toString(),
-                                            Messages.HOVER_NO_AMOUNT.toString()
-                                    ));
-                                } else {
-                                    sender.spigot().sendMessage(Text_R2.textHoverable(
-                                            Messages.BANK_HELP_PREFIX + " ",
-                                            "&7<&fwithdraw&7>",
-                                            " ",
-                                            "&7<&c" + Messages.AMOUNT + "&7>",
-                                            Messages.HOVER_WITHDRAW.toString(),
-                                            Messages.HOVER_NO_AMOUNT.toString()
-                                    ));
-                                }
+                                sender.spigot().sendMessage(textLib.textHoverable(
+                                        Messages.BANK_HELP_PREFIX + " ",
+                                        "&7<&fwithdraw&7>",
+                                        " ",
+                                        "&7<&c" + Messages.AMOUNT + "&7>",
+                                        Messages.HOVER_WITHDRAW.toString(),
+                                        Messages.HOVER_NO_AMOUNT.toString()
+                                ));
                                 return;
                             default:
                                 // msg usage (invalid subcommand)
