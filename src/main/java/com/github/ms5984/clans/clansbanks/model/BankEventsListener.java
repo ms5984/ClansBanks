@@ -43,19 +43,18 @@ public class BankEventsListener implements Listener {
 
     @EventHandler
     public void onCreate(AsyncNewBankEvent e) {
-        final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
-        final PersistentClan persistentClan;
         if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        if (huid != null) {
-            PersistentClan.deleteInstance(huid);
-        }
-        final Bank bank = (Bank) e.getClanBank();
-        persistentClan = new PersistentClan(bank.clanId);
-        persistentClan.setValue(bank, MetaObject.BANK.id);
-        persistentClan.storeTemp();
+        final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (huid != null) {
+                    PersistentClan.deleteInstance(huid);
+                }
+                final Bank bank = (Bank) e.getClanBank();
+                final PersistentClan persistentClan = new PersistentClan(bank.clanId);
+                persistentClan.setValue(bank, MetaObject.BANK.id);
+                persistentClan.storeTemp();
                 persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
             }
         }.runTask(P);
