@@ -26,7 +26,8 @@ public abstract class ClansBanksEvent extends Event {
 
     protected final ClanBank clanBank;
 
-    protected ClansBanksEvent(ClanBank clanBank) {
+    protected ClansBanksEvent(ClanBank clanBank, boolean async) {
+        super(async);
         this.clanBank = clanBank;
     }
 

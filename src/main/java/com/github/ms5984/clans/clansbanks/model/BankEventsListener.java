@@ -24,7 +24,7 @@ import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
-import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.hempcore.library.HUID;
@@ -42,7 +42,7 @@ public class BankEventsListener implements Listener {
     private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
 
     @EventHandler
-    public void onCreate(NewBankEvent e) {
+    public void onCreate(AsyncNewBankEvent e) {
         final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
         final PersistentClan persistentClan;
         if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation

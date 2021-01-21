@@ -22,7 +22,7 @@ package com.github.ms5984.clans.clansbanks;
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.commands.BankManager;
-import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.Bank;
@@ -37,6 +37,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -110,27 +111,28 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public ClanBank getBank(Clan clan) {
         HUID huid = clan.getId(BANKS_META_ID);
         final String clanId = clan.getClanID();
-        if (huid == null) {
-            final Bank bank = new Bank(clanId);
-            getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
-            return bank;
-        } else {
+        if (huid != null) {
             ClanMeta meta = PersistentClan.loadTempInstance(huid);
             if (meta == null) {
                 meta = PersistentClan.loadSavedInstance(huid);
-                if (meta == null) {
-                    final Bank bank = new Bank(clanId);
-                    getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
-                    return bank;
+                if (meta != null) {
+                    try {
+                        return (Bank) new HFEncoded(meta.value(MetaObject.BANK.id)).deserialized();
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
             }
-            try {
-                return (Bank) new HFEncoded(meta.value(MetaObject.BANK.id)).deserialized();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
+        final Bank bank = new Bank(clanId);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                getServer().getPluginManager().callEvent(new AsyncNewBankEvent(clan, bank));
+            }
+        }.runTaskAsynchronously(this);
+        return bank;
     }
 
     @Override
