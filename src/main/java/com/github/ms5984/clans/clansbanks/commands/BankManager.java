@@ -74,13 +74,13 @@ public class BankManager implements Listener {
                 return;
             }
             sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
+            final Optional<Clan> optionalClan = optionalClan(sender);
+            if (!optionalClan.isPresent()) {
+                sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
+                return;
+            }
             switch (length) {
                 case 1: // "bank" print instructions
-                    final Optional<Clan> optionalClan = optionalClan(sender);
-                    if (!optionalClan.isPresent()) {
-                        sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
-                        return;
-                    }
                     final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
                     final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
                     if (Permissions.BANKS_BALANCE.not(sender)) {
@@ -117,7 +117,7 @@ public class BankManager implements Listener {
                     sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                     return;
                 case 2: // "bank x" check if deposit/withdraw/balance
-                    final ClanBank bank = testClan(sender);
+                    final ClanBank bank = ClansBanks.getAPI().getBank(optionalClan.get());
                     if (bank == null) return;
                     final String arg = e.getArgs()[1];
                     if (!arg.equalsIgnoreCase("balance")) {
@@ -174,7 +174,7 @@ public class BankManager implements Listener {
                         case "withdraw":
                             try {
                                 final BigDecimal amount = new BigDecimal(e.getArgs()[2]);
-                                final ClanBank theBank = testClan(sender);
+                                final ClanBank theBank = ClansBanks.getAPI().getBank(optionalClan.get());
                                 if (theBank == null) return;
                                 switch (arg1) {
                                     case "deposit":
@@ -242,15 +242,6 @@ public class BankManager implements Listener {
                     e.add(3, "10");
                 }
         }
-    }
-
-    private ClanBank testClan(Player sender) {
-        final Optional<Clan> clanOptional = optionalClan(sender);
-        if (!clanOptional.isPresent()) {
-            sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
-            return null;
-        }
-        return ClansBanks.getAPI().getBank(clanOptional.get());
     }
 
     private void sendMessage(Player player, String message) {
