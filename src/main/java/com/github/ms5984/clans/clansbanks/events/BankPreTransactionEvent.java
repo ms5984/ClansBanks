@@ -28,14 +28,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-public class BankPreTransactionEvent extends BankTransactionEvent implements Cancellable {
+public class BankPreTransactionEvent extends AsyncBankTransactionEvent implements Cancellable {
 
-    private boolean success;
+    private boolean tempSuccess;
     private boolean cancelled;
 
-    public BankPreTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, BankTransactionEvent.Type type) {
-        super(player, clanBank, amount, clanId, success, type);
-        this.success = success;
+    public BankPreTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, AsyncBankTransactionEvent.Type type) {
+        super(player, clanBank, amount, clanId, success, type, false);
+        this.tempSuccess = success;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -57,18 +57,18 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
-        if (cancel && success) { // don't flip cancel, this is meant to set success to false on cancel = true
-            success = false;
+        if (cancel && tempSuccess) { // don't flip cancel, this is meant to set success to false on cancel = true
+            tempSuccess = false;
         }
     }
 
     @Override
     public boolean isSuccess() {
-        return this.success;
+        return this.tempSuccess;
     }
 
     public void setSuccess(boolean success) {
-        this.success = success;
+        this.tempSuccess = success;
     }
 
     @Override
@@ -76,13 +76,13 @@ public class BankPreTransactionEvent extends BankTransactionEvent implements Can
         switch (type) {
             case DEPOSIT:
                 return (cancelled ? Messages.TRANSACTION_DEPOSIT_PRE_CANCELLED : Messages.TRANSACTION_DEPOSIT_PRE).toString()
-                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                        .replace("{0}", (tempSuccess ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());
             case WITHDRAWAL:
                 return (cancelled ? Messages.TRANSACTION_WITHDRAW_PRE_CANCELLED : Messages.TRANSACTION_WITHDRAW_PRE).toString()
-                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                        .replace("{0}", (tempSuccess ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());

@@ -34,7 +34,7 @@ public class BankSetBalanceEvent extends BankActionEvent implements Cancellable 
     private boolean cancelled = false;
 
     public BankSetBalanceEvent(ClanBank clanBank, String clanId, BigDecimal newBalance) {
-        super(clanBank, clanId);
+        super(clanBank, clanId, false);
         this.newBalance = newBalance;
     }
 

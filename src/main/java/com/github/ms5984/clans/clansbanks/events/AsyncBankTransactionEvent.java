@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-public class BankTransactionEvent extends BankActionEvent {
+public class AsyncBankTransactionEvent extends BankActionEvent {
 
     public enum Type {
         DEPOSIT, WITHDRAWAL
@@ -38,19 +38,15 @@ public class BankTransactionEvent extends BankActionEvent {
     protected final boolean success;
     protected final Type type;
 
-    public BankTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, Type type) {
-        super(clanBank, clanId);
+    public AsyncBankTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, Type type) {
+        this(player, clanBank, amount, clanId, success, type, true);
+    }
+    protected AsyncBankTransactionEvent(Player player, ClanBank clanBank, BigDecimal amount, String clanId, boolean success, Type type, boolean async) {
+        super(clanBank, clanId, async);
         this.player = player;
         this.amount = amount;
         this.success = success;
         this.type = type;
-    }
-    public BankTransactionEvent(BankTransactionEvent event) {
-        super(event.clanBank, event.clanId);
-        this.player = event.player;
-        this.amount = event.amount;
-        this.success = event.success;
-        this.type = event.type;
     }
 
     /**

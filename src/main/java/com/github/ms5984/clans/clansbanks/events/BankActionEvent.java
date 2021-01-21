@@ -28,8 +28,8 @@ public abstract class BankActionEvent extends ClansBanksEvent {
 
     protected final String clanId;
 
-    protected BankActionEvent(ClanBank clanBank, String clanId) {
-        super(clanBank, false);
+    protected BankActionEvent(ClanBank clanBank, String clanId, boolean async) {
+        super(clanBank, async);
         this.clanId = clanId;
     }
 
