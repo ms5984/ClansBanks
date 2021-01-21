@@ -7,6 +7,15 @@ default-balance: 0
 # 0 - Silent, 1 - Successful and cancelled transactions, 2 - ALL transactions
 log-level: 1
 
+# Configure required player clan rank to perform bank functions
+default-required-rank:
+  # Who can see the clan bank balance? (requires clans.banks.use node)
+  balance: 0
+  # Who can deposit to the clan bank? (requires clans.banks.use.deposit)
+  deposit: 1
+  # Who can withdraw from the clan bank? (requires clans.banks.use.withdraw)
+  withdraw: 2
+
 ### Language select
 # (blank) = English (US), 'fr' = French
 lang: # More to come, can leave blank for now :)

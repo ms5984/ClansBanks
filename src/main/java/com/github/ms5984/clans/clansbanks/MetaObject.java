@@ -20,7 +20,8 @@
 package com.github.ms5984.clans.clansbanks;
 
 public enum MetaObject {
-    BANK(0);
+    BANK(0),
+    RANK_ACCESS(1);
 
     public final int id;
 
