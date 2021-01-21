@@ -23,7 +23,7 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
-import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
+import com.github.ms5984.clans.clansbanks.events.AsyncBankTransactionEvent;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.hempcore.library.HUID;
@@ -57,7 +57,7 @@ public final class Bank implements ClanBank, Serializable {
         if (!enabled) return false;
         final boolean has = ECO.has(player, player.getWorld().getName(), amount.doubleValue());
         final BankPreTransactionEvent preTransactionEvent =
-                new BankPreTransactionEvent(player, this, amount, clanId, has, BankTransactionEvent.Type.DEPOSIT);
+                new BankPreTransactionEvent(player, this, amount, clanId, has, AsyncBankTransactionEvent.Type.DEPOSIT);
         PM.callEvent(preTransactionEvent);
         return preTransactionEvent.isSuccess();
     }
@@ -66,7 +66,7 @@ public final class Bank implements ClanBank, Serializable {
     public boolean withdraw(Player player, BigDecimal amount) {
         if (!enabled) return false;
         final BankPreTransactionEvent preTransactionEvent =
-                new BankPreTransactionEvent(player, this, amount, clanId, has(amount), BankTransactionEvent.Type.WITHDRAWAL);
+                new BankPreTransactionEvent(player, this, amount, clanId, has(amount), AsyncBankTransactionEvent.Type.WITHDRAWAL);
         PM.callEvent(preTransactionEvent);
         return preTransactionEvent.isSuccess();
     }

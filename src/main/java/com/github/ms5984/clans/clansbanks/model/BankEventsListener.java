@@ -23,7 +23,7 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
-import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
+import com.github.ms5984.clans.clansbanks.events.AsyncBankTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
@@ -78,7 +78,7 @@ public class BankEventsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onTransaction(BankTransactionEvent e) {
+    public void onTransaction(AsyncBankTransactionEvent e) {
         if (e instanceof BankPreTransactionEvent) return;
         new BukkitRunnable() {
             @Override
@@ -112,7 +112,7 @@ public class BankEventsListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeposit(BankPreTransactionEvent event) {
-        if (event.getType() != BankTransactionEvent.Type.DEPOSIT) return;
+        if (event.getType() != AsyncBankTransactionEvent.Type.DEPOSIT) return;
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         if (!event.isSuccess()) {
             event.setCancelled(true);
@@ -132,12 +132,17 @@ public class BankEventsListener implements Listener {
                 amount.doubleValue()).transactionSuccess();
         if (success) bank.balance = bank.balance.add(amount);
         if (!success) event.setSuccess(false);
-        Bank.PM.callEvent(new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.DEPOSIT));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bank.PM.callEvent(new AsyncBankTransactionEvent(player, bank, amount, bank.clanId, success, AsyncBankTransactionEvent.Type.DEPOSIT));
+            }
+        }.runTaskAsynchronously(P);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWithdrawal(BankPreTransactionEvent event) {
-        if (event.getType() != BankTransactionEvent.Type.WITHDRAWAL) return;
+        if (event.getType() != AsyncBankTransactionEvent.Type.WITHDRAWAL) return;
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         if (!event.isSuccess()) {
             event.setCancelled(true);
@@ -149,10 +154,16 @@ public class BankEventsListener implements Listener {
         final boolean success = Bank.ECO.depositPlayer(player, player.getWorld().getName(), amount.doubleValue()).transactionSuccess();
         if (success) bank.balance = bank.balance.subtract(amount);
         if (!success) event.setSuccess(false);
-        Bank.PM.callEvent(new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.WITHDRAWAL));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bank.PM.callEvent(new AsyncBankTransactionEvent(player, bank, amount, bank.clanId, success, AsyncBankTransactionEvent.Type.WITHDRAWAL));
+            }
+        }.runTaskAsynchronously(P);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    // Check if setBalance is higher than max balance
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSetBalance(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) event.getClanBank();
@@ -164,7 +175,8 @@ public class BankEventsListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    // Set balance to new balance
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSetBalanceMonitor(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         ((Bank) event.getClanBank()).balance = event.getNewBalance();
