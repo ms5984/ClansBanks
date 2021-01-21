@@ -164,8 +164,8 @@ public class BankManager implements Listener {
                         sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                         return;
                     }
-                    sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString() + ": &a"
-                            + bank.getBalance());
+                    sendMessage(sender,Messages.BANKS_CURRENT_BALANCE.toString()
+                            .replace("{0}", bank.getBalance().toPlainString()));
                     return;
                 case 3:
                     final String arg1 = e.getArgs()[1].toLowerCase();
