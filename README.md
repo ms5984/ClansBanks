@@ -3,6 +3,7 @@
 [![banks-banner](banks.png)](https://www.spigotmc.org/resources/clans-banks-addon-for-clans-free.87018/)
 
 [![Release](https://jitpack.io/v/ms5984/ClansBanks.svg)](https://jitpack.io/#ms5984/ClansBanks)
+[![Build Status](https://travis-ci.com/ms5984/ClansBanks.svg?branch=master)](https://travis-ci.com/ms5984/ClansBanks)
 
 Officially released!
 Pick it up right [here](https://github.com/ms5984/ClansBanks/releases)!
