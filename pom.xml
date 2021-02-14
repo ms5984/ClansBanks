@@ -98,6 +98,19 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>env.CI</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <!-- finalName + deployment config here -->
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>spigotmc-repo</id>
