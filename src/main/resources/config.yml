@@ -19,3 +19,6 @@ default-required-rank:
 ### Language select
 # (blank) = English (US), 'fr' = French
 lang: # More to come, can leave blank for now :)
+
+# Config version (version of the plugin when this file was generated)
+version: ${project.version}
