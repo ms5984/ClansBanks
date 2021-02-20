@@ -11,6 +11,12 @@
 
     <artifactId>clans-banks</artifactId>
 
+    <properties>
+        <sonar.projectKey>ms5984_ClansBanks</sonar.projectKey>
+        <sonar.organization>ms5984</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
