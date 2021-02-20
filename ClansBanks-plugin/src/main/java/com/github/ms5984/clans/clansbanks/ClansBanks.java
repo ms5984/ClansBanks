@@ -22,15 +22,10 @@ package com.github.ms5984.clans.clansbanks;
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.commands.BankManager;
-import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
-import com.github.ms5984.clans.clansbanks.model.Bank;
+import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.util.Permissions;
-import com.github.sanctum.labyrinth.library.HFEncoded;
-import com.github.sanctum.labyrinth.library.HUID;
-import com.youtube.hempfest.clans.metadata.ClanMeta;
-import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -41,14 +36,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
 public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     private static final int STATS_ID = 9743;
-    public static final int BANKS_META_ID = 100;
     private static ClansBanks instance;
     private Economy economy;
 
@@ -86,6 +79,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        BankMeta.clearManagerCache();
     }
 
     private void setupPermissions() {
@@ -110,44 +104,27 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public ClanBank getBank(Clan clan) {
-        HUID huid = clan.getId(BANKS_META_ID);
-        final String clanId = clan.getClanID();
-        if (huid == null) {
-            final Bank bank = new Bank(clanId);
-            getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
-            return bank;
-        } else {
-            ClanMeta meta = PersistentClan.loadTempInstance(huid);
-            if (meta == null) {
-                meta = PersistentClan.loadSavedInstance(huid);
-                if (meta == null) {
-                    final Bank bank = new Bank(clanId);
-                    getServer().getPluginManager().callEvent(new NewBankEvent(clan, bank));
-                    return bank;
-                }
-            }
-            try {
-                return (Bank) new HFEncoded(meta.value(MetaObject.BANK.id)).deserialized();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
+        return BankMeta.get(clan).getBank().orElseThrow(NullPointerException::new);
     }
 
     @Override
     public BigDecimal startingBalance() {
-        final String string = getConfig().getString("default-balance");
+        String string = getConfig().getString("starting-balance");
         if (string == null) {
-            getLogger().severe("Error reading default-balance, returning 0!");
-        } else {
-            try {
-                return new BigDecimal(string);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                getLogger().severe("Improperly formatted default-balance!");
-                getLogger().info("Using 0.");
+            getLogger().warning("Unable to read starting-balance, looking for default-balance");
+            string = getConfig().getString("default-balance");
+            if (string == null) {
+                getLogger().severe("Error reading default-balance or starting-balance, returning 0!");
+                return BigDecimal.ZERO;
+            } else {
+                getLogger().warning("default-balance found; please change your config to starting-balance");
             }
+        }
+        try {
+            return new BigDecimal(string);
+        } catch (NumberFormatException e) {
+            getLogger().severe("Improperly formatted starting balance!");
+            getLogger().info("Using 0.");
         }
         return BigDecimal.ZERO;
     }
@@ -159,7 +136,6 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             try {
                 return new BigDecimal(string);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 getLogger().severe("Improperly formatted maximum-balance!");
                 getLogger().info("Maximum not set.");
             }
