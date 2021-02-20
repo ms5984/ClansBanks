@@ -19,7 +19,7 @@
  */
 package com.github.ms5984.clans.clansbanks.messaging;
 
-import com.github.ms5984.clans.clansbanks.ClansBanks;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ public enum Messages {
         s = key;
     }
 
-    public static void setup(ClansBanks clansBanks, String locale) {
+    public static void setup(JavaPlugin clansBanks, String locale) {
         properties = new Properties();
         final InputStream inputStream = (locale == null) ?
                 clansBanks.getResource("messages.properties") :

@@ -5,16 +5,16 @@
  *  This file is part of ClansBanks.
  *
  *  ClansBanks is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ *  it under the terms of the GNU General Public License as published
+ *  by the Free Software Foundation, either version 3 of the License,
+ *  or (at your option) any later version.
  *
  *  ClansBanks is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU Lesser General Public License
+ *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.github.ms5984.clans.clansbanks;
@@ -36,6 +36,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +68,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             return;
         }
         this.economy = rsp.getProvider();
+        getServer().getServicesManager().register(BanksAPI.class, this, this, ServicePriority.Normal);
         Messages.setup(this, getConfig().getString("lang"));
         getServer().getPluginManager().registerEvents(new BankManager(), this);
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);

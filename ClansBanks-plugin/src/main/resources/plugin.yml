@@ -6,5 +6,5 @@ api-version: 1.15
 load: POSTWORLD
 depend: [ Vault, HempCore, Clans ]
 authors: [ ms5984 ]
-description: ${project.description}
-website: ${project.url}
+description: ${project.parent.description}
+website: ${project.parent.url}

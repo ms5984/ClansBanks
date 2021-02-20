@@ -20,6 +20,8 @@
 package com.github.ms5984.clans.clansbanks.api;
 
 import com.youtube.hempfest.clans.util.construct.Clan;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -63,5 +65,15 @@ public interface BanksAPI {
      */
     default LogLevel logToConsole() {
         return LogLevel.QUIET;
+    }
+
+    /**
+     * Retrieve the API instance via Bukkit's ServicesManager.
+     * @return BanksAPI provider
+     */
+    static BanksAPI getInstance() {
+        final RegisteredServiceProvider<BanksAPI> rsp = Bukkit.getServicesManager().getRegistration(BanksAPI.class);
+        if (rsp == null) throw new IllegalStateException("Clans[Banks] is not loaded!");
+        return rsp.getProvider();
     }
 }
