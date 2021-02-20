@@ -26,14 +26,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-public final class NewBankEvent extends ClansBanksEvent {
+public final class AsyncNewBankEvent extends BankEvent {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final Clan clan;
     private final BigDecimal startingBalance;
 
-    public NewBankEvent(Clan clan, ClanBank clanBank) {
-        super(clanBank);
+    public AsyncNewBankEvent(Clan clan, ClanBank clanBank) {
+        super(clanBank, true);
         this.clan = clan;
         this.startingBalance = clanBank.getBalance();
     }
