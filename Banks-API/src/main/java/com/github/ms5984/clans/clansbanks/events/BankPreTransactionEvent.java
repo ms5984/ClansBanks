@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-public class BankPreTransactionEvent extends BankTransactionEvent implements Cancellable {
+public final class BankPreTransactionEvent extends BankTransactionEvent implements Cancellable {
 
     private boolean success;
     private boolean cancelled;
