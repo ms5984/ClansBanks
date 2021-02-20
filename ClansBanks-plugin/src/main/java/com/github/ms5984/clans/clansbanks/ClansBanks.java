@@ -75,7 +75,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         Metrics metrics = new Metrics(this, STATS_ID);
         metrics.addCustomChart(new Metrics.SimplePie("lang", () -> getConfig().getString("lang", "en-US")));
         metrics.addCustomChart(new Metrics.SimplePie("log_level", () -> String.valueOf(logToConsole().ordinal())));
-        metrics.addCustomChart(new Metrics.SimplePie("starting_bank_balance", () -> defaultBalance().toString())); // regex filter: \d+(\.\d*){0,1}
+        metrics.addCustomChart(new Metrics.SimplePie("starting_bank_balance", () -> startingBalance().toString())); // regex filter: \d+(\.\d*){0,1}
         metrics.addCustomChart(new Metrics.SimplePie("maximum_clan_balance", () -> {
             final BigDecimal maxBalance = maxBalance();
             if (maxBalance == null) return "None";
@@ -136,7 +136,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     }
 
     @Override
-    public BigDecimal defaultBalance() {
+    public BigDecimal startingBalance() {
         final String string = getConfig().getString("default-balance");
         if (string == null) {
             getLogger().severe("Error reading default-balance, returning 0!");

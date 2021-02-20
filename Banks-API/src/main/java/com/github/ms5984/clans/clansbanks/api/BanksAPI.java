@@ -45,7 +45,7 @@ public interface BanksAPI {
      * Set the default balance of newly-created Banks
      * @return the starting balance of new banks
      */
-    default BigDecimal defaultBalance() {
+    default BigDecimal startingBalance() {
         return BigDecimal.ZERO;
     }
 
@@ -54,8 +54,7 @@ public interface BanksAPI {
      * Returns null if no set maximum
      * @return the maximum balance or null
      */
-    @Nullable
-    default BigDecimal maxBalance() {
+    default @Nullable BigDecimal maxBalance() {
         return null;
     }
 

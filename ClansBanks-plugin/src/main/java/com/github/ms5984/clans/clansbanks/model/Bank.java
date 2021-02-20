@@ -47,7 +47,7 @@ public final class Bank implements ClanBank, Serializable {
     private transient PersistentClan meta = null;
 
     public Bank(@NotNull String clanId) {
-        this.balance = Objects.requireNonNull(ClansBanks.getAPI()).defaultBalance();
+        this.balance = Objects.requireNonNull(ClansBanks.getAPI()).startingBalance();
         this.enabled = true;
         this.clanId = clanId;
     }
