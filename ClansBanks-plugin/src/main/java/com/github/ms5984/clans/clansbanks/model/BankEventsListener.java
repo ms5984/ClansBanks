@@ -20,14 +20,11 @@
 package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
-import com.github.ms5984.clans.clansbanks.MetaObject;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
-import com.github.ms5984.clans.clansbanks.events.NewBankEvent;
+import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
-import com.github.sanctum.labyrinth.library.HUID;
-import com.youtube.hempfest.clans.metadata.PersistentClan;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,21 +39,12 @@ public class BankEventsListener implements Listener {
     private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
 
     @EventHandler
-    public void onCreate(NewBankEvent e) {
-        final HUID huid = e.getClan().getId(ClansBanks.BANKS_META_ID);
-        final PersistentClan persistentClan;
+    public void onCreate(AsyncNewBankEvent e) {
         if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        if (huid != null) {
-            PersistentClan.deleteInstance(huid);
-        }
-        final Bank bank = (Bank) e.getClanBank();
-        persistentClan = new PersistentClan(bank.clanId);
-        persistentClan.setValue(bank, MetaObject.BANK.id);
-        persistentClan.storeTemp();
         new BukkitRunnable() {
             @Override
             public void run() {
-                persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
+                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
             }
         }.runTask(P);
     }
@@ -67,10 +55,10 @@ public class BankEventsListener implements Listener {
             case SILENT:
                 return;
             case QUIET:
-                if (event.isCancelled()) ClansBanks.log().info(event.toString());
+                if (event.isCancelled()) ClansBanks.log().info(event::toString);
                 return;
             case VERBOSE:
-                ClansBanks.log().info(event.toString() + " " +
+                ClansBanks.log().info(() -> event.toString() + " " +
                         Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
                         .replace("{0}", event.getClanId())
                 );
@@ -87,27 +75,28 @@ public class BankEventsListener implements Listener {
                     case SILENT:
                         break;
                     case QUIET:
-                        ClansBanks.log().info(e.toString());
+                        ClansBanks.log().info(e::toString);
                         break;
                     case VERBOSE:
-                        ClansBanks.log().info(e.toString() + " " +
+                        ClansBanks.log().info(() -> e.toString() + " " +
                                 Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
                                         .replace("{0}", e.getClanId())
                         );
                 }
+                if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
             }
         }.runTask(P);
-        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        final Bank bank = (Bank) e.getClanBank();
-        final PersistentClan persistentClan = bank.getMeta();
-        persistentClan.setValue(bank, MetaObject.BANK.id);
-        persistentClan.storeTemp();
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTransactionInGameLog(BankTransactionEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                persistentClan.saveMeta(ClansBanks.BANKS_META_ID);
+                BankLog.getForClan(e.getClan()).addTransaction(e);
             }
-        }.runTask(P);
+        }.runTaskAsynchronously(P);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -164,10 +153,17 @@ public class BankEventsListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSetBalanceMonitor(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        ((Bank) event.getClanBank()).balance = event.getNewBalance();
+        final Bank bank = (Bank) event.getClanBank();
+        bank.balance = event.getNewBalance();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                BankMeta.get(event.getClan()).storeBank(bank);
+            }
+        }.runTask(P);
     }
 
 }

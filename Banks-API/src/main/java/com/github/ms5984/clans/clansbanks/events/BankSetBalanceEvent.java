@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-public class BankSetBalanceEvent extends BankActionEvent implements Cancellable {
+public final class BankSetBalanceEvent extends BankActionEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 

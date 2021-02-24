@@ -26,18 +26,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BankActionEvent extends ClansBanksEvent {
+public abstract class BankActionEvent extends BankEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
     protected final String clanId;
 
     protected BankActionEvent(ClanBank clanBank, String clanId) {
-        super(clanBank);
+        super(clanBank, false);
         this.clanId = clanId;
     }
 
     /**
-     * Get the direct clanId for this event
+     * Get the direct clanId for this event.
      * @return clanId as String
      */
     public String getClanId() {
@@ -45,7 +45,7 @@ public abstract class BankActionEvent extends ClansBanksEvent {
     }
 
     /**
-     * Get the clan associated with this bank event
+     * Get the clan associated with this bank event.
      * @return the Clan whose bank this is
      */
     public Clan getClan() {

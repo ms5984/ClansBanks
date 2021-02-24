@@ -22,11 +22,15 @@ package com.github.ms5984.clans.clansbanks.events;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import org.bukkit.event.Event;
 
-public abstract class ClansBanksEvent extends Event {
+/**
+ * A base class for all bank related events.
+ */
+public abstract class BankEvent extends Event {
 
     protected final ClanBank clanBank;
 
-    protected ClansBanksEvent(ClanBank clanBank) {
+    protected BankEvent(ClanBank clanBank, boolean async) {
+        super(async);
         this.clanBank = clanBank;
     }
 

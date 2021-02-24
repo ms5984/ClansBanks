@@ -82,13 +82,13 @@ public enum Messages {
                 clansBanks.getResource("lang/messages_" + locale + ".properties");
         try {
             properties.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
-            System.out.println("Loaded " + ((locale == null) ? "default" : "\"" + locale + "\"") + " lang file.");
+            clansBanks.getLogger().info(() -> "Loaded " + ((locale == null) ? "default" : "\"" + locale + "\"") + " lang file.");
         } catch (IOException | NullPointerException e) {
             try {
                 properties.load(clansBanks.getResource("messages.properties"));
-                System.out.println("Something went wrong, loading default lang.");
+                clansBanks.getLogger().info("Something went wrong, loading default lang.");
             } catch (IOException ioException) {
-                ioException.printStackTrace();
+                throw new IllegalStateException("Unable to load messages from jar.", ioException);
             }
             throw new IllegalArgumentException("Invalid region: " + locale, e);
         }

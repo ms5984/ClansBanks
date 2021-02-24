@@ -1,5 +1,5 @@
-# This value sets the initial balance of new banks
-default-balance: 0
+# Configure starting balance of clan banks
+starting-balance: 0
 
 # Optionally set the maximum allowed balance of clan banks
 #maximum-balance: 10000000000.00 # Uncomment this line to activate
@@ -10,3 +10,14 @@ log-level: 1
 ### Language select
 # (blank) = English (US), 'fr' = French
 lang: # More to come, can leave blank for now :)
+
+### NEW in 1.2.0: Custom access permissions. Clan leaders configure per clan.
+# Manage default clan bank access permissions
+default-access:
+  balance: 0  # Clan rank 0 or higher can access bank balance
+  deposit: 1  # Clan rank 1 or higher can deposit
+  withdraw: 2 # Clan rank 2 can withdraw
+  view-log: 3 # Clan rank 3 can view transaction log
+
+### Config version
+version: ${project.version}

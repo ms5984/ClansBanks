@@ -54,7 +54,7 @@ public class BankTransactionEvent extends BankActionEvent {
     }
 
     /**
-     * Get the player associated with this transaction
+     * Get the player associated with this transaction.
      * @return Player
      */
     public Player getPlayer() {
@@ -62,7 +62,7 @@ public class BankTransactionEvent extends BankActionEvent {
     }
 
     /**
-     * Get the ClanBank associated with this transaction
+     * Get the ClanBank associated with this transaction.
      * @return the ClanBank
      */
     @Override
@@ -71,7 +71,7 @@ public class BankTransactionEvent extends BankActionEvent {
     }
 
     /**
-     * Get the amount involved with this transaction
+     * Get the amount involved with this transaction.
      * @return a BigDecimal amount
      */
     public BigDecimal getAmount() {
@@ -79,7 +79,7 @@ public class BankTransactionEvent extends BankActionEvent {
     }
 
     /**
-     * Denotes whether or not the transaction was successful
+     * Denotes whether or not the transaction was successful.
      * @return true if successful
      */
     public boolean isSuccess() {
@@ -87,7 +87,7 @@ public class BankTransactionEvent extends BankActionEvent {
     }
 
     /**
-     * A transaction may constitute a deposit or withdrawal
+     * A transaction may constitute a deposit or withdrawal.
      * @return {@link Type} representing this transaction
      */
     public Type getType() {
