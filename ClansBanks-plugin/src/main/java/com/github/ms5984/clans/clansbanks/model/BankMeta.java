@@ -40,7 +40,7 @@ public final class BankMeta implements Serializable {
     public static final int BANKS_META_ID = 100;
     private static final long serialVersionUID = 4445662686153606368L;
     private static final Map<Clan, BankMeta> instances = new HashMap<>();
-    private transient final JavaPlugin providingPlugin = JavaPlugin.getProvidingPlugin(BankMeta.class);
+    private final transient JavaPlugin providingPlugin = JavaPlugin.getProvidingPlugin(BankMeta.class);
     private transient Clan clan;
     private final String clanId;
     private String bank = "";
@@ -90,15 +90,16 @@ public final class BankMeta implements Serializable {
 
     public Optional<Bank> getBank() {
         if (bank.isEmpty()) {
-            final Bank bank = new Bank(clanId);
-            final Clan clan = getClan();
+            final Bank newBankObject = new Bank(clanId);
+            final AsyncNewBankEvent event = new AsyncNewBankEvent(Optional.ofNullable(clan)
+                    .orElseGet(this::getClan), newBankObject);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Bukkit.getPluginManager().callEvent(new AsyncNewBankEvent(clan, bank));
+                    Bukkit.getPluginManager().callEvent(event);
                 }
             }.runTaskAsynchronously(providingPlugin);
-            return Optional.of(bank);
+            return Optional.of(newBankObject);
         }
         try {
             return Optional.ofNullable((Bank) new HFEncoded(bank).deserialized());

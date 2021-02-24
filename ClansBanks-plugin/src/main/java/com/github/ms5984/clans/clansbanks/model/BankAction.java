@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,7 +42,7 @@ public enum BankAction {
 
     public static final class AccessMap implements Serializable {
         private static final long serialVersionUID = -265409254564104601L;
-        private final Map<BankAction, Integer> acl = new HashMap<>();
+        private final Map<BankAction, Integer> acl = new EnumMap<>(BankAction.class);
 
         public AccessMap() {
             for (BankAction value : BankAction.values()) {
