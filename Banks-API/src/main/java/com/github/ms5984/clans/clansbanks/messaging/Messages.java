@@ -41,6 +41,8 @@ public enum Messages {
     HOVER_BALANCE("banks.hover.balance"),
     HOVER_DEPOSIT("banks.hover.deposit"),
     HOVER_WITHDRAW("banks.hover.withdraw"),
+    HOVER_VIEW_LOG("banks.hover.view_log"),
+    HOVER_SET_PERM("banks.hover.set_perm"),
     HOVER_NO_AMOUNT("banks.hover.no_amount"),
     BANK_USAGE("bank.usage"),
     BANK_INVALID_SUBCOMMAND("bank.invalid_subcommand"),

@@ -18,6 +18,7 @@ default-access:
   deposit: 1  # Clan rank 1 or higher can deposit
   withdraw: 2 # Clan rank 2 can withdraw
   view-log: 3 # Clan rank 3 can view transaction log
+  set-perm: 3 # Clan rank 3 can set the above levels for their own clan
 
 ### Config version
 version: ${project.version}
