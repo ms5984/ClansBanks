@@ -64,7 +64,8 @@ public final class BankMeta implements Serializable {
         try {
             this.bank = new HFEncoded(bank).serialize();
         } catch (IOException e) {
-            e.printStackTrace();
+            providingPlugin.getLogger().warning(() -> "Unable to store bank for clanId" + clanId);
+            providingPlugin.getLogger().warning(e::getMessage);
         }
         storeMetaToClan();
     }
@@ -72,7 +73,8 @@ public final class BankMeta implements Serializable {
         try {
             this.accessMap = new HFEncoded(accessMap).serialize();
         } catch (IOException e) {
-            e.printStackTrace();
+            providingPlugin.getLogger().warning(() -> "Unable to store bank access map for clanId" + clanId);
+            providingPlugin.getLogger().warning(e::getMessage);
         }
         storeMetaToClan();
     }
@@ -80,7 +82,8 @@ public final class BankMeta implements Serializable {
         try {
             this.bank = new HFEncoded(bankLog).serialize();
         } catch (IOException e) {
-            e.printStackTrace();
+            providingPlugin.getLogger().warning(() -> "Unable to store bank log for clanId" + clanId);
+            providingPlugin.getLogger().warning(e::getMessage);
         }
         storeMetaToClan();
     }
