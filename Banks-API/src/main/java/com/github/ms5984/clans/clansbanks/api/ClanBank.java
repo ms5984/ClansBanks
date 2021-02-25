@@ -25,19 +25,27 @@ import java.math.BigDecimal;
 
 public interface ClanBank {
     /**
-     * Take an amount from the player and deposit into the bank
+     * Take an amount from the player and deposit into the bank.
+     *
+     * @param player player to take amount from
+     * @param amount amount to deposit
      * @return true if successful
      */
     boolean deposit(Player player, BigDecimal amount);
 
     /**
-     * Withdraw an amount from the bank and give to the player
+     * Withdraw an amount from the bank and give to the player.
+     *
+     * @param player player to give amount to
+     * @param amount amount to withdraw
      * @return true if successful
      */
     boolean withdraw(Player player, BigDecimal amount);
 
     /**
-     * Check if the bank has an amount
+     * Check if the bank has an amount.
+     *
+     * @param amount amount to test
      * @return true if the bank has at least amount
      */
     boolean has(BigDecimal amount);
