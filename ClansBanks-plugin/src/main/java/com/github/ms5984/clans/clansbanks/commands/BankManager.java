@@ -322,21 +322,7 @@ public class BankManager implements Listener {
             e.add(1, "bank");
         } else if (length == 2) {
             if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-            if (!e.getArgs(2).contains("balance")) {
-                e.add(2, "balance");
-            }
-            if (!e.getArgs(2).contains("deposit")) {
-                e.add(2, "deposit");
-            }
-            if (!e.getArgs(2).contains("withdraw")) {
-                e.add(2, "withdraw");
-            }
-            if (!e.getArgs(2).contains("viewlog")) {
-                e.add(2, "viewlog");
-            }
-            if (!e.getArgs(2).contains("setperm")) {
-                e.add(2, "setperm");
-            }
+            setPermTabComplete(e, 2);
             if (!e.getArgs(2).contains("viewperms")) {
                 e.add(2, "viewperms");
             }
@@ -348,22 +334,26 @@ public class BankManager implements Listener {
                     e.add(3, "10");
                 }
             } else if ("setperm".equals(firstArg)) {
-                if (!e.getArgs(3).contains("balance")) {
-                    e.add(3, "balance");
-                }
-                if (!e.getArgs(3).contains("deposit")) {
-                    e.add(3, "deposit");
-                }
-                if (!e.getArgs(3).contains("withdraw")) {
-                    e.add(3, "withdraw");
-                }
-                if (!e.getArgs(3).contains("viewlog")) {
-                    e.add(3, "viewlog");
-                }
-                if (!e.getArgs(3).contains("setperm")) {
-                    e.add(3, "setperm");
-                }
+                setPermTabComplete(e, 3);
             }
+        }
+    }
+
+    private void setPermTabComplete(TabInsertEvent e, int index) {
+        if (!e.getArgs(index).contains("balance")) {
+            e.add(index, "balance");
+        }
+        if (!e.getArgs(index).contains("deposit")) {
+            e.add(index, "deposit");
+        }
+        if (!e.getArgs(index).contains("withdraw")) {
+            e.add(index, "withdraw");
+        }
+        if (!e.getArgs(index).contains("viewlog")) {
+            e.add(index, "viewlog");
+        }
+        if (!e.getArgs(index).contains("setperm")) {
+            e.add(index, "setperm");
         }
     }
 
