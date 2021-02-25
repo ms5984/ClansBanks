@@ -44,7 +44,6 @@ import java.util.*;
 public class BankManager implements Listener {
 
     private final TextLib textLib = TextLib.getInstance();
-    private final List<String> tab2 = new LinkedList<>(Arrays.asList("balance", "deposit", "withdraw"));
     private final String clans_prefix = new StringLibrary().getPrefix();
 
     @EventHandler
@@ -232,14 +231,15 @@ public class BankManager implements Listener {
                             case "setperm":
                                 sender.spigot().sendMessage(textLib.textHoverable(
                                         Messages.BANK_HELP_PREFIX + " setperm " + arg2,
-                                        "&7<&c" + Messages.PERM + "&7>",
+                                        "&7<&c" + Messages.LEVEL + "&7>",
                                         Messages.VALID_LEVELS.toString()
                                 ));
                                 break;
                             default:
                                 sender.spigot().sendMessage(textLib.textHoverable(
-                                        "&7<&c" + Messages.PERM + "&7>",
-                                        " &7<&f" + Messages.LEVEL + "&7>",
+                                        Messages.BANK_HELP_PREFIX + " setperm &7<&c",
+                                        Messages.PERM.toString(),
+                                        "&7> &7<&f" + Messages.LEVEL + "&7>",
                                         "&6" + Messages.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
                                 ));
                         }
@@ -317,25 +317,53 @@ public class BankManager implements Listener {
     private void onBankTab(TabInsertEvent e) {
         final String[] commandArgs = e.getCommandArgs();
         final int length = commandArgs.length;
-        switch (length) {
-            case 1:
-                if (e.getArgs(1).contains("bank")) return;
-                e.add(1, "bank");
-                break;
-            case 2:
-                if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-                for (String suggest : tab2) {
-                    if (!e.getArgs(2).contains(suggest)) {
-                        e.add(2, suggest);
-                    }
-                }
-                break;
-            case 3:
-                if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-                if (tab2.subList(1, 3).contains(commandArgs[1].toLowerCase())) {
-                    if (e.getArgs(3).contains("10")) return;
+        if (length == 1) {
+            if (e.getArgs(1).contains("bank")) return;
+            e.add(1, "bank");
+        } else if (length == 2) {
+            if (!commandArgs[0].equalsIgnoreCase("bank")) return;
+            if (!e.getArgs(2).contains("balance")) {
+                e.add(2, "balance");
+            }
+            if (!e.getArgs(2).contains("deposit")) {
+                e.add(2, "deposit");
+            }
+            if (!e.getArgs(2).contains("withdraw")) {
+                e.add(2, "withdraw");
+            }
+            if (!e.getArgs(2).contains("viewlog")) {
+                e.add(2, "viewlog");
+            }
+            if (!e.getArgs(2).contains("setperm")) {
+                e.add(2, "setperm");
+            }
+            if (!e.getArgs(2).contains("viewperms")) {
+                e.add(2, "viewperms");
+            }
+        } else if (length == 3) {
+            if (!commandArgs[0].equalsIgnoreCase("bank")) return;
+            final String firstArg = commandArgs[1].toLowerCase();
+            if ("deposit".equals(firstArg) || "withdraw".equals(firstArg)) {
+                if (!e.getArgs(3).contains("10")) {
                     e.add(3, "10");
                 }
+            } else if ("setperm".equals(firstArg)) {
+                if (!e.getArgs(3).contains("balance")) {
+                    e.add(3, "balance");
+                }
+                if (!e.getArgs(3).contains("deposit")) {
+                    e.add(3, "deposit");
+                }
+                if (!e.getArgs(3).contains("withdraw")) {
+                    e.add(3, "withdraw");
+                }
+                if (!e.getArgs(3).contains("viewlog")) {
+                    e.add(3, "viewlog");
+                }
+                if (!e.getArgs(3).contains("setperm")) {
+                    e.add(3, "setperm");
+                }
+            }
         }
     }
 
