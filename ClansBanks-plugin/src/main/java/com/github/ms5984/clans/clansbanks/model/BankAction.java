@@ -32,7 +32,8 @@ public enum BankAction {
     BALANCE("balance"),
     DEPOSIT("deposit"),
     WITHDRAW("withdraw"),
-    VIEW_LOG("view-log");
+    VIEW_LOG("view-log"),
+    SET_PERM("set-perm");
 
     private final String label;
 

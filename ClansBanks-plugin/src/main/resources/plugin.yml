@@ -4,7 +4,7 @@ main: com.github.ms5984.clans.clansbanks.ClansBanks
 prefix: 'Clans[Banks]'
 api-version: 1.15
 load: POSTWORLD
-depend: [ Vault, HempCore, Clans ]
+depend: [ Vault, Clans ]
 authors: [ ms5984 ]
 description: ${project.parent.description}
 website: ${project.parent.url}
