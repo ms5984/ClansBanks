@@ -134,7 +134,12 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         final String string = getConfig().getString("maximum-balance");
         if (string != null) {
             try {
-                return new BigDecimal(string);
+                final BigDecimal bigDecimal = new BigDecimal(string);
+                if (bigDecimal.signum() == -1) {
+                    getLogger().info("Negative maximum balance given, leaving unset.");
+                    return null;
+                }
+                return bigDecimal;
             } catch (NumberFormatException e) {
                 getLogger().severe("Improperly formatted maximum-balance!");
                 getLogger().info("Maximum not set.");
