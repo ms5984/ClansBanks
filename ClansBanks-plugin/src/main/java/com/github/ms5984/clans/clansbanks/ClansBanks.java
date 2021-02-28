@@ -26,13 +26,13 @@ import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
-import com.github.ms5984.clans.clansbanks.util.Permissions;
+import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -49,23 +49,34 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        // write default config
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
         getConfig();
         // Permission setup moved into static method
-        Permissions.setup(getServer().getPluginManager());
-        final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            getLogger().severe("Unable to load Vault!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        this.economy = rsp.getProvider();
+        BanksPermission.setup(getServer().getPluginManager());
+        // load economy provider on first tick
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                final Economy eco = getServer().getServicesManager().load(Economy.class);
+                if (eco == null) {
+                    getLogger().severe("Unable to load Vault economy provider!");
+                    getServer().getPluginManager().disablePlugin(ClansBanks.this);
+                }
+                economy = eco;
+            }
+        }.runTask(this);
+        // register as BanksAPI provider
         getServer().getServicesManager().register(BanksAPI.class, this, this, ServicePriority.Normal);
+        // initialize messages
         Messages.setup(this, getConfig().getString("lang"));
+        // register command event listeners
         getServer().getPluginManager().registerEvents(new BankManager(), this);
+        // register bank event listeners
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);
+        // setup bStats
         Metrics metrics = new Metrics(this, STATS_ID);
         metrics.addCustomChart(new Metrics.SimplePie("lang", () -> getConfig().getString("lang", "en-US")));
         metrics.addCustomChart(new Metrics.SimplePie("log_level", () -> String.valueOf(logToConsole().ordinal())));
@@ -75,6 +86,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             if (maxBalance == null) return "None";
             return maxBalance.toString();
         }));
+        // register placeholders
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new BanksPlaceholders(this).register();
         }

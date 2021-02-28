@@ -24,7 +24,7 @@ import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.BankAction;
 import com.github.ms5984.clans.clansbanks.model.BankLog;
-import com.github.ms5984.clans.clansbanks.util.Permissions;
+import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import com.github.sanctum.labyrinth.formatting.string.ColoredString;
 import com.github.sanctum.labyrinth.library.TextLib;
 import com.youtube.hempfest.clans.HempfestClans;
@@ -63,7 +63,7 @@ public class BankManager implements Listener {
             }
             e.setReturn(true);
             final Player sender = e.getSender();
-            if (Permissions.BANKS_USE.not(sender)) {
+            if (BanksPermission.USE.not(sender)) {
                 sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                 return;
             }
@@ -75,7 +75,7 @@ public class BankManager implements Listener {
             if (length == 1) { // "bank" print instructions
                 final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
                 final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
-                if (Permissions.BANKS_BALANCE.not(sender)) {
+                if (BanksPermission.USE_BALANCE.not(sender)) {
                     sender.spigot().sendMessage(textLib.textHoverable(
                             split[0], "&o" + sender.getName(), split[1],
                             greetingHover.substring(0, greetingHover.indexOf("\n"))
@@ -126,7 +126,7 @@ public class BankManager implements Listener {
                 final String arg = args[1];
                 if (!arg.equalsIgnoreCase("balance")) {
                     if ("deposit".equalsIgnoreCase(arg)) {
-                        if (Permissions.BANKS_DEPOSIT.not(sender)) {
+                        if (BanksPermission.USE_DEPOSIT.not(sender)) {
                             sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                             return;
                         }
@@ -142,7 +142,7 @@ public class BankManager implements Listener {
                         ));
                         return;
                     } else if ("withdraw".equalsIgnoreCase(arg)) {
-                        if (Permissions.BANKS_WITHDRAW.not(sender)) {
+                        if (BanksPermission.USE_WITHDRAW.not(sender)) {
                             sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                             return;
                         }
@@ -177,7 +177,7 @@ public class BankManager implements Listener {
                     sendMessage(sender, Messages.BANK_INVALID_SUBCOMMAND.toString());
                     return;
                 }
-                if (Permissions.BANKS_BALANCE.not(sender) || !BankAction.BALANCE.testForPlayer(clan, sender)) {
+                if (BanksPermission.USE_BALANCE.not(sender) || !BankAction.BALANCE.testForPlayer(clan, sender)) {
                     sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                     return;
                 }
@@ -193,7 +193,7 @@ public class BankManager implements Listener {
                             if (!testBank.isPresent()) return;
                             final ClanBank theBank = testBank.get();
                             if ("deposit".equals(arg1)) {
-                                if (Permissions.BANKS_DEPOSIT.not(sender)) {
+                                if (BanksPermission.USE_DEPOSIT.not(sender)) {
                                     sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
@@ -205,7 +205,7 @@ public class BankManager implements Listener {
                                             .replace("{0}", amount.toString()));
                                 }
                             } else {
-                                if (Permissions.BANKS_WITHDRAW.not(sender)) {
+                                if (BanksPermission.USE_WITHDRAW.not(sender)) {
                                     sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
