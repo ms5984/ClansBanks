@@ -25,6 +25,7 @@ import com.github.ms5984.clans.clansbanks.commands.BankManager;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
 import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.BankMeta;
+import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
 import com.github.ms5984.clans.clansbanks.util.Permissions;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import net.milkbowl.vault.economy.Economy;
@@ -74,6 +75,9 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             if (maxBalance == null) return "None";
             return maxBalance.toString();
         }));
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new BanksPlaceholders(this).register();
+        }
     }
 
     @Override
