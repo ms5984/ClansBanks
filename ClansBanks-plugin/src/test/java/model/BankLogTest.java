@@ -5,13 +5,11 @@ import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.github.ms5984.clans.clansbanks.model.BankLog;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -23,12 +21,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(MockitoJUnitRunner.class)
 public class BankLogTest {
 
     @Spy
     BankLog bankLog = new BankLog();
-    @Mock
+    @Mock(lenient = true)
     Player player;
     final String fakePlayerName = "Bob";
     @Mock
@@ -37,24 +34,20 @@ public class BankLogTest {
     final BigDecimal testAmount2 = BigDecimal.ONE;
     final String testId = "test";
     final BankTransactionEvent.Type transactionType = BankTransactionEvent.Type.DEPOSIT;
-    BankTransactionEvent e;
-    BankTransactionEvent e2;
     final LocalDateTime aTime = LocalDateTime.now();
 
-    @Before
+    @BeforeEach
     public void initMocks() {
         // override call to BankMeta
-        doNothing().when(bankLog).saveForClan(any());
+        lenient().doNothing().when(bankLog).saveForClan(any());
         // setup fake player display name
         when(player.getDisplayName()).thenReturn(fakePlayerName);
-        // initialize events
-        this.e = new BankTransactionEvent(player, clanBank, testAmount, testId, true, transactionType);
-        this.e2 = new BankTransactionEvent(player, clanBank, testAmount2, testId, true, transactionType);
     }
 
     @Test
     public void testAddTransaction() {
-        bankLog.addTransaction(e);
+        // initialize events
+        bankLog.addTransaction(new BankTransactionEvent(player, clanBank, testAmount, testId, true, transactionType));
         assertTrue(bankLog.getTransactions().stream().anyMatch(transaction -> {
             if (!transaction.entity.equals(fakePlayerName)) return false;
             if (!transaction.type.equals(transactionType)) return false;
@@ -64,7 +57,7 @@ public class BankLogTest {
 
     @Test
     public void testAddTransactionWithTime() {
-        bankLog.addTransaction(e2, aTime);
+        bankLog.addTransaction(new BankTransactionEvent(player, clanBank, testAmount2, testId, true, transactionType), aTime);
         assertTrue(bankLog.getTransactions().stream().anyMatch(transaction -> {
             if (!transaction.entity.equals(fakePlayerName)) return false;
             if (!transaction.type.equals(transactionType)) return false;
