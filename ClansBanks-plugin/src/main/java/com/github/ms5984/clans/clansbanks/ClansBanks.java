@@ -30,7 +30,6 @@ import com.github.ms5984.clans.clansbanks.util.Permissions;
 import com.youtube.hempfest.clans.util.construct.Clan;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,7 +53,8 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             saveDefaultConfig();
         }
         getConfig();
-        setupPermissions();
+        // Permission setup moved into static method
+        Permissions.setup(getServer().getPluginManager());
         final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             getLogger().severe("Unable to load Vault!");
@@ -84,26 +84,6 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public void onDisable() {
         // Plugin shutdown logic
         BankMeta.clearManagerCache();
-    }
-
-    private void setupPermissions() {
-        final Permission balance = new Permission(Permissions.BANKS_BALANCE.node);
-        final Permission deposit = new Permission(Permissions.BANKS_DEPOSIT.node);
-        final Permission withdraw = new Permission(Permissions.BANKS_WITHDRAW.node);
-        final Permission use = new Permission(Permissions.BANKS_USE.node);
-        balance.addParent(use, true);
-        final Permission useStar = new Permission(Permissions.BANKS_USE_STAR.node);
-        use.addParent(useStar, true);
-        deposit.addParent(useStar, true);
-        withdraw.addParent(useStar, true);
-        final Permission star = new Permission(Permissions.BANKS_STAR.node);
-        useStar.addParent(star, true);
-        getServer().getPluginManager().addPermission(star);
-        getServer().getPluginManager().addPermission(useStar);
-        getServer().getPluginManager().addPermission(use);
-        getServer().getPluginManager().addPermission(deposit);
-        getServer().getPluginManager().addPermission(withdraw);
-        getServer().getPluginManager().addPermission(balance);
     }
 
     @Override
