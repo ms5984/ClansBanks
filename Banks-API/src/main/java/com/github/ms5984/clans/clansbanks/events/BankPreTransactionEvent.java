@@ -20,7 +20,7 @@
 package com.github.ms5984.clans.clansbanks.events;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
+import com.github.ms5984.clans.clansbanks.messaging.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -75,14 +75,14 @@ public final class BankPreTransactionEvent extends BankTransactionEvent implemen
     public String toString() {
         switch (type) {
             case DEPOSIT:
-                return (cancelled ? Messages.TRANSACTION_DEPOSIT_PRE_CANCELLED : Messages.TRANSACTION_DEPOSIT_PRE).toString()
-                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                return (cancelled ? Message.TRANSACTION_DEPOSIT_PRE_CANCELLED : Message.TRANSACTION_DEPOSIT_PRE).toString()
+                        .replace("{0}", (success ? Message.PRETRANSACTION_PENDING.toString() : Message.PRETRANSACTION_FAILURE.toString()))
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());
             case WITHDRAWAL:
-                return (cancelled ? Messages.TRANSACTION_WITHDRAW_PRE_CANCELLED : Messages.TRANSACTION_WITHDRAW_PRE).toString()
-                        .replace("{0}", (success ? Messages.PRETRANSACTION_PENDING.toString() : Messages.PRETRANSACTION_FAILURE.toString()))
+                return (cancelled ? Message.TRANSACTION_WITHDRAW_PRE_CANCELLED : Message.TRANSACTION_WITHDRAW_PRE).toString()
+                        .replace("{0}", (success ? Message.PRETRANSACTION_PENDING.toString() : Message.PRETRANSACTION_FAILURE.toString()))
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());

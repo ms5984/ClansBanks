@@ -20,7 +20,7 @@
 package com.github.ms5984.clans.clansbanks.events;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
+import com.github.ms5984.clans.clansbanks.messaging.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -98,14 +98,14 @@ public class BankTransactionEvent extends BankActionEvent {
     public String toString() {
         switch (type) {
             case DEPOSIT:
-                return Messages.TRANSACTION_DEPOSIT.toString()
-                        .replace("{0}", this.success ? Messages.TRANSACTION_SUCCESS.toString() : Messages.TRANSACTION_FAILED.toString())
+                return Message.TRANSACTION_DEPOSIT.toString()
+                        .replace("{0}", this.success ? Message.TRANSACTION_SUCCESS.toString() : Message.TRANSACTION_FAILED.toString())
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());
             case WITHDRAWAL:
-                return Messages.TRANSACTION_WITHDRAW.toString()
-                        .replace("{0}", this.success ? Messages.TRANSACTION_SUCCESS.toString() : Messages.TRANSACTION_FAILED.toString())
+                return Message.TRANSACTION_WITHDRAW.toString()
+                        .replace("{0}", this.success ? Message.TRANSACTION_SUCCESS.toString() : Message.TRANSACTION_FAILED.toString())
                         .replace("{1}", player.getName())
                         .replace("{2}", amount.toString())
                         .replace("{3}", getClan().getClanTag());

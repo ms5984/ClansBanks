@@ -21,7 +21,7 @@ package com.github.ms5984.clans.clansbanks.commands;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
+import com.github.ms5984.clans.clansbanks.messaging.Message;
 import com.github.ms5984.clans.clansbanks.model.BankAction;
 import com.github.ms5984.clans.clansbanks.model.BankLog;
 import com.github.ms5984.clans.clansbanks.util.BanksPermission;
@@ -48,9 +48,9 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
-        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " &fbalance");
-        e.insert(Messages.CLANS_HELP_PREFIX + " " + Messages.BANK_HELP_PREFIX + " " + Messages.BANK_HELP_AMOUNT_COMMANDS.toString()
-                .replace("{amount}", Messages.AMOUNT.toString()));
+        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.BANK_HELP_PREFIX + " &fbalance");
+        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.BANK_HELP_PREFIX + " " + Message.BANK_HELP_AMOUNT_COMMANDS.toString()
+                .replace("{amount}", Message.AMOUNT.toString()));
     }
 
     @EventHandler
@@ -64,17 +64,17 @@ public class BankManager implements Listener {
             e.setReturn(true);
             final Player sender = e.getSender();
             if (BanksPermission.USE.not(sender)) {
-                sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                 return;
             }
             final Optional<Clan> optionalClan = testClan(sender);
             if (!optionalClan.isPresent()) return;
             final Clan clan = optionalClan.get();
             final Optional<ClanBank> testBank = optionalClan.map(ClansBanks.getAPI()::getBank);
-            sendMessage(sender, clans_prefix + Messages.BANKS_HEADER);
+            sendMessage(sender, clans_prefix + Message.BANKS_HEADER);
             if (length == 1) { // "bank" print instructions
-                final String[] split = Messages.BANKS_GREETING.toString().split("\\{0}");
-                final String greetingHover = Messages.BANKS_GREETING_HOVER.toString();
+                final String[] split = Message.BANKS_GREETING.toString().split("\\{0}");
+                final String greetingHover = Message.BANKS_GREETING_HOVER.toString();
                 if (BanksPermission.USE_BALANCE.not(sender)) {
                     sender.spigot().sendMessage(textLib.textHoverable(
                             split[0], "&o" + sender.getName(), split[1],
@@ -88,35 +88,35 @@ public class BankManager implements Listener {
                             "clan bank balance")
                     );
                 }
-                sendMessage(sender, Messages.BANKS_COMMAND_LISTING.toString());
+                sendMessage(sender, Message.BANKS_COMMAND_LISTING.toString());
                 final List<BaseComponent> textComponents = new ArrayList<>();
-                sender.spigot().sendMessage(textLib.textSuggestable(Messages.BANK_HELP_PREFIX + " ",
-                        "&7balance", Messages.HOVER_BALANCE.toString(),
+                sender.spigot().sendMessage(textLib.textSuggestable(Message.BANK_HELP_PREFIX + " ",
+                        "&7balance", Message.HOVER_BALANCE.toString(),
                         "clan bank balance"));
                 textComponents.add(textLib.textSuggestable(
-                        Messages.BANK_HELP_PREFIX + " &f<",
-                        "&adeposit", Messages.HOVER_DEPOSIT.toString(),
+                        Message.BANK_HELP_PREFIX + " &f<",
+                        "&adeposit", Message.HOVER_DEPOSIT.toString(),
                         "clan bank deposit 1"
                 ));
                 textComponents.add(textLib.textSuggestable(
                         "&7,",
-                        "&cwithdraw", Messages.HOVER_WITHDRAW.toString(),
+                        "&cwithdraw", Message.HOVER_WITHDRAW.toString(),
                         "clan bank withdraw 1"
                 ));
-                textComponents.add(new ColoredString("&f> <&7" + Messages.AMOUNT + "&f>",
+                textComponents.add(new ColoredString("&f> <&7" + Message.AMOUNT + "&f>",
                         ColoredString.ColorType.MC_COMPONENT).toComponent());
                 sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                 if (BankAction.VIEW_LOG.testForPlayer(clan, sender)) {
                     sender.spigot().sendMessage(textLib.textSuggestable(
-                            Messages.BANK_HELP_PREFIX + " ",
-                            "&7viewlog", Messages.HOVER_VIEW_LOG.toString(),
+                            Message.BANK_HELP_PREFIX + " ",
+                            "&7viewlog", Message.HOVER_VIEW_LOG.toString(),
                             "clan bank viewlog"
                     ));
                 }
                 if (BankAction.SET_PERM.testForPlayer(clan, sender)) {
                     sender.spigot().sendMessage(textLib.textSuggestable(
-                            Messages.BANK_HELP_PREFIX + " ",
-                            "&7setperm", Messages.HOVER_SET_PERM.toString(),
+                            Message.BANK_HELP_PREFIX + " ",
+                            "&7setperm", Message.HOVER_SET_PERM.toString(),
                             "clan bank viewlog"
                     ));
                 }
@@ -127,40 +127,40 @@ public class BankManager implements Listener {
                 if (!arg.equalsIgnoreCase("balance")) {
                     if ("deposit".equalsIgnoreCase(arg)) {
                         if (BanksPermission.USE_DEPOSIT.not(sender)) {
-                            sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                            sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                             return;
                         }
                         // msg usage (need amount param)
-                        sendMessage(sender, Messages.BANK_USAGE.toString());
+                        sendMessage(sender, Message.BANK_USAGE.toString());
                         sender.spigot().sendMessage(textLib.textHoverable(
-                                Messages.BANK_HELP_PREFIX + " ",
+                                Message.BANK_HELP_PREFIX + " ",
                                 "&7<&fdeposit&7>",
                                 " ",
-                                "&7<&c" + Messages.AMOUNT + "&7>",
-                                Messages.HOVER_DEPOSIT.toString(),
-                                Messages.HOVER_NO_AMOUNT.toString()
+                                "&7<&c" + Message.AMOUNT + "&7>",
+                                Message.HOVER_DEPOSIT.toString(),
+                                Message.HOVER_NO_AMOUNT.toString()
                         ));
                         return;
                     } else if ("withdraw".equalsIgnoreCase(arg)) {
                         if (BanksPermission.USE_WITHDRAW.not(sender)) {
-                            sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                            sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                             return;
                         }
                         // msg usage (need amount param)
-                        sendMessage(sender, Messages.BANK_USAGE.toString());
+                        sendMessage(sender, Message.BANK_USAGE.toString());
                         sender.spigot().sendMessage(textLib.textHoverable(
-                                Messages.BANK_HELP_PREFIX + " ",
+                                Message.BANK_HELP_PREFIX + " ",
                                 "&7<&fwithdraw&7>",
                                 " ",
-                                "&7<&c" + Messages.AMOUNT + "&7>",
-                                Messages.HOVER_WITHDRAW.toString(),
-                                Messages.HOVER_NO_AMOUNT.toString()
+                                "&7<&c" + Message.AMOUNT + "&7>",
+                                Message.HOVER_WITHDRAW.toString(),
+                                Message.HOVER_NO_AMOUNT.toString()
                         ));
                         return;
                     } else if ("viewlog".equalsIgnoreCase(arg)) {
                         // display log
                         if (!BankAction.VIEW_LOG.testForPlayer(clan, sender)) {
-                            sendMessage(sender, Messages.PERM_NOT_PLAYER_ACTION.toString());
+                            sendMessage(sender, Message.PERM_NOT_PLAYER_ACTION.toString());
                             return;
                         }
                         sender.sendMessage(BankLog.getForClan(clan).getTransactions().stream().map(Object::toString).toArray(String[]::new));
@@ -174,14 +174,14 @@ public class BankManager implements Listener {
                         sendMessage(sender, "ViewLog&e=&7[&f" + BankAction.VIEW_LOG.getValueInClan(clan) + "&7]");
                         return;
                     }// msg usage (invalid subcommand)
-                    sendMessage(sender, Messages.BANK_INVALID_SUBCOMMAND.toString());
+                    sendMessage(sender, Message.BANK_INVALID_SUBCOMMAND.toString());
                     return;
                 }
                 if (BanksPermission.USE_BALANCE.not(sender) || !BankAction.BALANCE.testForPlayer(clan, sender)) {
-                    sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                    sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                     return;
                 }
-                sendMessage(sender, Messages.BANKS_CURRENT_BALANCE.toString() + ": &a" + testBank.get().getBalance());
+                sendMessage(sender, Message.BANKS_CURRENT_BALANCE.toString() + ": &a" + testBank.get().getBalance());
                 return;
             } else if (length == 3) {
                 final String arg1 = args[1].toLowerCase();
@@ -194,31 +194,31 @@ public class BankManager implements Listener {
                             final ClanBank theBank = testBank.get();
                             if ("deposit".equals(arg1)) {
                                 if (BanksPermission.USE_DEPOSIT.not(sender)) {
-                                    sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                                    sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
                                 if (theBank.deposit(sender, amount)) {
-                                    sendMessage(sender, Messages.DEPOSIT_MSG_PLAYER.toString()
+                                    sendMessage(sender, Message.DEPOSIT_MSG_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 } else {
-                                    sendMessage(sender, Messages.DEPOSIT_ERR_PLAYER.toString()
+                                    sendMessage(sender, Message.DEPOSIT_ERR_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 }
                             } else {
                                 if (BanksPermission.USE_WITHDRAW.not(sender)) {
-                                    sendMessage(sender, Messages.PERM_NOT_PLAYER_COMMAND.toString());
+                                    sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                                     return;
                                 }
                                 if (theBank.withdraw(sender, amount)) {
-                                    sendMessage(sender, Messages.WITHDRAW_MSG_PLAYER.toString()
+                                    sendMessage(sender, Message.WITHDRAW_MSG_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 } else {
-                                    sendMessage(sender, Messages.WITHDRAW_ERR_PLAYER.toString()
+                                    sendMessage(sender, Message.WITHDRAW_ERR_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 }
                             }
                         } catch (NumberFormatException exception) {
-                            sendMessage(sender, Messages.BANK_INVALID_AMOUNT.toString());
+                            sendMessage(sender, Message.BANK_INVALID_AMOUNT.toString());
                         }
                         return;
                     case "setperm":
@@ -230,17 +230,17 @@ public class BankManager implements Listener {
                             case "viewlog":
                             case "setperm":
                                 sender.spigot().sendMessage(textLib.textHoverable(
-                                        Messages.BANK_HELP_PREFIX + " setperm " + arg2,
-                                        "&7<&c" + Messages.LEVEL + "&7>",
-                                        Messages.VALID_LEVELS.toString()
+                                        Message.BANK_HELP_PREFIX + " setperm " + arg2,
+                                        "&7<&c" + Message.LEVEL + "&7>",
+                                        Message.VALID_LEVELS.toString()
                                 ));
                                 break;
                             default:
                                 sender.spigot().sendMessage(textLib.textHoverable(
-                                        Messages.BANK_HELP_PREFIX + " setperm &7<&c",
-                                        Messages.PERM.toString(),
-                                        "&7> &7<&f" + Messages.LEVEL + "&7>",
-                                        "&6" + Messages.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
+                                        Message.BANK_HELP_PREFIX + " setperm &7<&c",
+                                        Message.PERM.toString(),
+                                        "&7> &7<&f" + Message.LEVEL + "&7>",
+                                        "&6" + Message.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
                                 ));
                         }
                         return;
@@ -255,13 +255,13 @@ public class BankManager implements Listener {
                         level = -1;
                     }
                     if (level < 0 || level > 3) {
-                        sendMessage(sender, Messages.INVALID_LEVEL + " " + Messages.VALID_LEVELS);
+                        sendMessage(sender, Message.INVALID_LEVEL + " " + Message.VALID_LEVELS);
                         return;
                     }
                     switch (args[2].toLowerCase()) {
                         // "&7Setting &6xyz &7level to &a" + level
                         case "balance":
-                            sendMessage(sender, Messages.SETTING_LEVEL.toString()
+                            sendMessage(sender, Message.SETTING_LEVEL.toString()
                                     .replace("{0}", "balance")
                                     .replace("{1}", String.valueOf(level))
                             );
@@ -269,47 +269,47 @@ public class BankManager implements Listener {
                             BankAction.BALANCE.setRankForActionInClan(clan, level);
                             return;
                         case "deposit":
-                            sendMessage(sender, Messages.SETTING_LEVEL.toString()
+                            sendMessage(sender, Message.SETTING_LEVEL.toString()
                                     .replace("{0}", "deposit")
                                     .replace("{1}", String.valueOf(level))
                             );
                             BankAction.DEPOSIT.setRankForActionInClan(clan, level);
                             return;
                         case "withdraw":
-                            sendMessage(sender, Messages.SETTING_LEVEL.toString()
+                            sendMessage(sender, Message.SETTING_LEVEL.toString()
                                     .replace("{0}", "withdraw")
                                     .replace("{1}", String.valueOf(level))
                             );
                             BankAction.WITHDRAW.setRankForActionInClan(clan, level);
                             return;
                         case "setperm":
-                            sendMessage(sender, Messages.SETTING_LEVEL.toString()
+                            sendMessage(sender, Message.SETTING_LEVEL.toString()
                                     .replace("{0}", "setperm")
                                     .replace("{1}", String.valueOf(level))
                             );
                             BankAction.SET_PERM.setRankForActionInClan(clan, level);
                             return;
                         case "viewlog":
-                            sendMessage(sender, Messages.SETTING_LEVEL.toString()
+                            sendMessage(sender, Message.SETTING_LEVEL.toString()
                                     .replace("{0}", "viewlog")
                                     .replace("{1}", String.valueOf(level))
                             );
                             BankAction.VIEW_LOG.setRankForActionInClan(clan, level);
                             return;
                         default:
-                            sendMessage(sender, Messages.BANK_USAGE.toString());
+                            sendMessage(sender, Message.BANK_USAGE.toString());
                             sender.spigot().sendMessage(textLib.textHoverable(
-                                    Messages.BANK_HELP_PREFIX + " setperm ",
-                                    "&7<&c" + Messages.PERM + "&7>",
-                                    " &7<&f" + Messages.LEVEL + "&7>",
-                                    "&6" + Messages.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
+                                    Message.BANK_HELP_PREFIX + " setperm ",
+                                    "&7<&c" + Message.PERM + "&7>",
+                                    " &7<&f" + Message.LEVEL + "&7>",
+                                    "&6" + Message.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
                             ));
                             return;
                     }
                 }
             }
             // msg usage (invalid subcommand)
-            sendMessage(sender, Messages.BANK_INVALID_SUBCOMMAND.toString());
+            sendMessage(sender, Message.BANK_INVALID_SUBCOMMAND.toString());
         }
     }
 
@@ -360,7 +360,7 @@ public class BankManager implements Listener {
     private Optional<Clan> testClan(Player sender) {
         final Optional<Clan> clanOptional = optionalClan(sender);
         if (!clanOptional.isPresent()) {
-            sendMessage(sender, Messages.PLAYER_NO_CLAN.toString());
+            sendMessage(sender, Message.PLAYER_NO_CLAN.toString());
             return Optional.empty();
         }
         return clanOptional;

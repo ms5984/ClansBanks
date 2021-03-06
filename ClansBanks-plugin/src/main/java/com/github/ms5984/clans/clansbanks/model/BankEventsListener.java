@@ -24,7 +24,7 @@ import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
+import com.github.ms5984.clans.clansbanks.messaging.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -59,7 +59,7 @@ public class BankEventsListener implements Listener {
                 return;
             case VERBOSE:
                 ClansBanks.log().info(() -> event.toString() + " " +
-                        Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                        Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
                         .replace("{0}", event.getClanId())
                 );
         }
@@ -79,7 +79,7 @@ public class BankEventsListener implements Listener {
                         break;
                     case VERBOSE:
                         ClansBanks.log().info(() -> e.toString() + " " +
-                                Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                                Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
                                         .replace("{0}", e.getClanId())
                         );
                 }

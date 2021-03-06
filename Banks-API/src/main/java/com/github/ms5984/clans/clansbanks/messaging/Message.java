@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents plugin text that may be localized.
  */
-public enum Messages {
+public enum Message {
     BANKS_HEADER("banks.header"),
     CLANS_HELP_PREFIX("clans.help.prefix"),
     BANK_HELP_PREFIX("bank.help.prefix"),
@@ -73,7 +73,7 @@ public enum Messages {
 
     private final String s;
 
-    Messages(String key) {
+    Message(String key) {
         s = key;
     }
 
