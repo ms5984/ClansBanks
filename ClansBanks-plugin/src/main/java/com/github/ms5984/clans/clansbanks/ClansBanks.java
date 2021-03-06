@@ -22,8 +22,8 @@ package com.github.ms5984.clans.clansbanks;
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.commands.BankManager;
+import com.github.ms5984.clans.clansbanks.messaging.SimpleMessageProvider;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
 import com.github.ms5984.clans.clansbanks.util.BanksPermission;
@@ -71,7 +71,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         // register as BanksAPI provider
         getServer().getServicesManager().register(BanksAPI.class, this, this, ServicePriority.Normal);
         // initialize messages
-        Messages.setup(this, getConfig().getString("lang"));
+        SimpleMessageProvider.setup(this, getConfig().getString("lang"));
         // register command event listeners
         getServer().getPluginManager().registerEvents(new BankManager(), this);
         // register bank event listeners
