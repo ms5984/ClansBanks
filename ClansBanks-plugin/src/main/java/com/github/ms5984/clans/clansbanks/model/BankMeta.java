@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -31,15 +31,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class BankMeta implements Serializable {
     public static final int BANKS_META_ID = 100;
     private static final long serialVersionUID = 4445662686153606368L;
-    private static final Map<Clan, BankMeta> instances = new HashMap<>();
+    private static final Map<Clan, BankMeta> INSTANCES = new ConcurrentHashMap<>();
     private final transient JavaPlugin providingPlugin = JavaPlugin.getProvidingPlugin(BankMeta.class);
     private transient Clan clan;
     private final String clanId;
@@ -80,7 +80,7 @@ public final class BankMeta implements Serializable {
     }
     public void storeBankLog(BankLog bankLog) {
         try {
-            this.bank = new HFEncoded(bankLog).serialize();
+            this.bankLog = new HFEncoded(bankLog).serialize();
         } catch (IOException e) {
             providingPlugin.getLogger().warning(() -> "Unable to store bank log for clanId" + clanId);
             providingPlugin.getLogger().warning(e::getMessage);
@@ -89,7 +89,7 @@ public final class BankMeta implements Serializable {
     }
 
     public Optional<Bank> getBank() {
-        if (bank.isEmpty()) {
+        if (this.bank.isEmpty()) {
             final Bank newBankObject = new Bank(clanId);
             final AsyncNewBankEvent event = new AsyncNewBankEvent(Optional.ofNullable(clan)
                     .orElseGet(this::getClan), newBankObject);
@@ -102,7 +102,7 @@ public final class BankMeta implements Serializable {
             return Optional.of(newBankObject);
         }
         try {
-            return Optional.ofNullable((Bank) new HFEncoded(bank).deserialized());
+            return Optional.ofNullable((Bank) new HFEncoded(this.bank).deserialized());
         } catch (IOException | ClassNotFoundException e) {
             providingPlugin.getLogger().severe("Unable to load clan bank file! Prepare for NPEs.");
             return Optional.empty();
@@ -190,10 +190,10 @@ public final class BankMeta implements Serializable {
     }
 
     public static BankMeta get(Clan clan) {
-        return instances.computeIfAbsent(clan, BankMeta::new);
+        return INSTANCES.computeIfAbsent(clan, BankMeta::new);
     }
 
     public static void clearManagerCache() {
-        instances.clear();
+        INSTANCES.clear();
     }
 }
