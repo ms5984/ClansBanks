@@ -23,7 +23,6 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
-import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.ms5984.clans.clansbanks.messaging.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,17 +36,6 @@ import java.math.BigDecimal;
 public class BankEventsListener implements Listener {
 
     private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
-
-    @EventHandler
-    public void onCreate(AsyncNewBankEvent e) {
-        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
-            }
-        }.runTask(P);
-    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPreTransactionMonitor(BankPreTransactionEvent event) {

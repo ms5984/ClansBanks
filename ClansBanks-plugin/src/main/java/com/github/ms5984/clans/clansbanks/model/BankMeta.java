@@ -91,6 +91,7 @@ public final class BankMeta implements Serializable {
     public Optional<Bank> getBank() {
         if (this.bank.isEmpty()) {
             final Bank newBankObject = new Bank(clanId);
+            storeBank(newBankObject);
             final AsyncNewBankEvent event = new AsyncNewBankEvent(Optional.ofNullable(clan)
                     .orElseGet(this::getClan), newBankObject);
             new BukkitRunnable() {
