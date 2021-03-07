@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -28,6 +28,7 @@ import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
 import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import com.youtube.hempfest.clans.util.construct.Clan;
+import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.ServicePriority;
@@ -60,7 +61,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         new BukkitRunnable() {
             @Override
             public void run() {
-                final Economy eco = getServer().getServicesManager().load(Economy.class);
+                val eco = getServer().getServicesManager().load(Economy.class);
                 if (eco == null) {
                     getLogger().severe("Unable to load Vault economy provider!");
                     getServer().getPluginManager().disablePlugin(ClansBanks.this);
@@ -127,10 +128,10 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public @Nullable BigDecimal maxBalance() {
-        final String string = getConfig().getString("maximum-balance");
+        val string = getConfig().getString("maximum-balance");
         if (string != null) {
             try {
-                final BigDecimal bigDecimal = new BigDecimal(string);
+                val bigDecimal = new BigDecimal(string);
                 if (bigDecimal.signum() == -1) {
                     getLogger().info("Negative maximum balance given, leaving unset.");
                     return null;
@@ -146,7 +147,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public LogLevel logToConsole() {
-        final int anInt = getConfig().getInt("log-level");
+        val anInt = getConfig().getInt("log-level");
         if (anInt < 0 || anInt > 2) {
             getLogger().severe("Invalid log level! Using api default 1 - Quiet");
             return BanksAPI.super.logToConsole();

@@ -21,10 +21,12 @@ package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.sanctum.labyrinth.library.HFEncoded;
-import com.github.sanctum.labyrinth.library.HUID;
 import com.youtube.hempfest.clans.metadata.ClanMeta;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.clans.util.construct.Clan;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -36,16 +38,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class BankMeta implements Serializable {
     public static final int BANKS_META_ID = 100;
     private static final long serialVersionUID = 4445662686153606368L;
     private static final Map<Clan, BankMeta> INSTANCES = new ConcurrentHashMap<>();
-    private final transient JavaPlugin providingPlugin = JavaPlugin.getProvidingPlugin(BankMeta.class);
-    private transient Clan clan;
-    private final String clanId;
-    private String bank = "";
-    private String accessMap = "";
-    private String bankLog = "";
+    final transient JavaPlugin providingPlugin = JavaPlugin.getProvidingPlugin(BankMeta.class);
+    transient Clan clan;
+    final String clanId;
+    String bank = "";
+    String accessMap = "";
+    String bankLog = "";
 
     private BankMeta(Clan clan) {
         this.clan = clan;
@@ -90,10 +93,9 @@ public final class BankMeta implements Serializable {
 
     public Optional<Bank> getBank() {
         if (this.bank.isEmpty()) {
-            final Bank newBankObject = new Bank(clanId);
+            val newBankObject = new Bank(clanId);
             storeBank(newBankObject);
-            final AsyncNewBankEvent event = new AsyncNewBankEvent(Optional.ofNullable(clan)
-                    .orElseGet(this::getClan), newBankObject);
+            val event = new AsyncNewBankEvent(Optional.ofNullable(clan).orElseGet(this::getClan), newBankObject);
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -131,28 +133,28 @@ public final class BankMeta implements Serializable {
     }
 
     private synchronized void storeMetaToClan() {
-        final HUID huid = getClan().getId(BANKS_META_ID);
-        if (huid != null) PersistentClan.deleteInstance(huid);
-        final PersistentClan persistentClan = new PersistentClan(clanId);
+        val metaId = getClan().getId(BANKS_META_ID);
+        if (metaId != null) PersistentClan.deleteInstance(metaId);
+        val persistentClan = new PersistentClan(clanId);
         persistentClan.setValue(this);
         persistentClan.storeTemp();
         persistentClan.saveMeta(BANKS_META_ID);
     }
 
     private synchronized void loadMetaFromClan() {
-        final HUID huid = getClan().getId(BANKS_META_ID);
-        if (huid != null) {
-            ClanMeta meta = PersistentClan.loadTempInstance(huid);
+        val metaId = getClan().getId(BANKS_META_ID);
+        if (metaId != null) {
+            ClanMeta meta = PersistentClan.loadTempInstance(metaId);
             if (meta == null) {
-                meta = PersistentClan.loadSavedInstance(huid);
+                meta = PersistentClan.loadSavedInstance(metaId);
             }
             try {
                 try {
-                    final String legacyFormat = meta.value(0);
+                    val legacyFormat = meta.value(0);
                     if (legacyFormat != null) {
-                        final Object deserialized = new HFEncoded(legacyFormat).deserialized();
+                        val deserialized = new HFEncoded(legacyFormat).deserialized();
                         if (deserialized instanceof Bank) {
-                            final Bank legacyBank = (Bank) deserialized;
+                            val legacyBank = (Bank) deserialized;
                             providingPlugin.getLogger().info(
                                     () -> String.format("Legacy bank converted for clanId=%s with balance %s",
                                         legacyBank.clanId,
@@ -161,10 +163,10 @@ public final class BankMeta implements Serializable {
                             return;
                         }
                     }
-                } catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException ignored) {
                     // this means we have the new format, proceed with normal loading
                 }
-                final BankMeta saved = (BankMeta) new HFEncoded(meta.value()).deserialized();
+                val saved = (BankMeta) new HFEncoded(meta.value()).deserialized();
                 this.bank = saved.bank;
                 this.accessMap = saved.accessMap;
                 this.bankLog = saved.bankLog;

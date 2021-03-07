@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -20,7 +20,6 @@
 package com.github.ms5984.clans.clansbanks.commands;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
-import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.messaging.Message;
 import com.github.ms5984.clans.clansbanks.model.BankAction;
 import com.github.ms5984.clans.clansbanks.model.BankLog;
@@ -33,6 +32,9 @@ import com.youtube.hempfest.clans.util.construct.Clan;
 import com.youtube.hempfest.clans.util.events.CommandHelpEvent;
 import com.youtube.hempfest.clans.util.events.SubCommandEvent;
 import com.youtube.hempfest.clans.util.events.TabInsertEvent;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,10 +43,11 @@ import org.bukkit.event.Listener;
 import java.math.BigDecimal;
 import java.util.*;
 
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BankManager implements Listener {
 
-    private final TextLib textLib = TextLib.getInstance();
-    private final String clans_prefix = new StringLibrary().getPrefix();
+    TextLib textLib = TextLib.getInstance();
+    String clans_prefix = new StringLibrary().getPrefix();
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
@@ -55,26 +58,26 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onBank(SubCommandEvent e) {
-        final String[] args = e.getArgs();
-        final int length = args.length;
+        val args = e.getArgs();
+        val length = args.length;
         if (length >= 1) {
             if (!args[0].equalsIgnoreCase("bank")) {
                 return;
             }
             e.setReturn(true);
-            final Player sender = e.getSender();
+            val sender = e.getSender();
             if (BanksPermission.USE.not(sender)) {
                 sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
                 return;
             }
-            final Optional<Clan> optionalClan = testClan(sender);
+            val optionalClan = testClan(sender);
             if (!optionalClan.isPresent()) return;
-            final Clan clan = optionalClan.get();
-            final Optional<ClanBank> testBank = optionalClan.map(ClansBanks.getAPI()::getBank);
+            val clan = optionalClan.get();
+            val testBank = optionalClan.map(ClansBanks.getAPI()::getBank);
             sendMessage(sender, clans_prefix + Message.BANKS_HEADER);
             if (length == 1) { // "bank" print instructions
-                final String[] split = Message.BANKS_GREETING.toString().split("\\{0}");
-                final String greetingHover = Message.BANKS_GREETING_HOVER.toString();
+                val split = Message.BANKS_GREETING.toString().split("\\{0}");
+                val greetingHover = Message.BANKS_GREETING_HOVER.toString();
                 if (BanksPermission.USE_BALANCE.not(sender)) {
                     sender.spigot().sendMessage(textLib.textHoverable(
                             split[0], "&o" + sender.getName(), split[1],
@@ -123,7 +126,7 @@ public class BankManager implements Listener {
                 return;
             } else if (length == 2) { // "bank x" check if deposit/withdraw/balance/viewlog/setperm
                 if (!testBank.isPresent()) return;
-                final String arg = args[1];
+                val arg = args[1];
                 if (!arg.equalsIgnoreCase("balance")) {
                     if ("deposit".equalsIgnoreCase(arg)) {
                         if (BanksPermission.USE_DEPOSIT.not(sender)) {
@@ -184,14 +187,14 @@ public class BankManager implements Listener {
                 sendMessage(sender, Message.BANKS_CURRENT_BALANCE.toString() + ": &a" + testBank.get().getBalance());
                 return;
             } else if (length == 3) {
-                final String arg1 = args[1].toLowerCase();
+                val arg1 = args[1].toLowerCase();
                 switch (arg1) {
                     case "deposit":
                     case "withdraw":
                         try {
-                            final BigDecimal amount = new BigDecimal(args[2]);
+                            val amount = new BigDecimal(args[2]);
                             if (!testBank.isPresent()) return;
-                            final ClanBank theBank = testBank.get();
+                            val theBank = testBank.get();
                             if ("deposit".equals(arg1)) {
                                 if (BanksPermission.USE_DEPOSIT.not(sender)) {
                                     sendMessage(sender, Message.PERM_NOT_PLAYER_COMMAND.toString());
@@ -222,7 +225,7 @@ public class BankManager implements Listener {
                         }
                         return;
                     case "setperm":
-                        final String arg2 = args[2].toLowerCase();
+                        val arg2 = args[2].toLowerCase();
                         switch (arg2) {
                             case "balance":
                             case "deposit":
@@ -315,8 +318,8 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onBankTab(TabInsertEvent e) {
-        final String[] commandArgs = e.getCommandArgs();
-        final int length = commandArgs.length;
+        val commandArgs = e.getCommandArgs();
+        val length = commandArgs.length;
         if (length == 1) {
             if (e.getArgs(1).contains("bank")) return;
             e.add(1, "bank");
@@ -328,7 +331,7 @@ public class BankManager implements Listener {
             }
         } else if (length == 3) {
             if (!commandArgs[0].equalsIgnoreCase("bank")) return;
-            final String firstArg = commandArgs[1].toLowerCase();
+            val firstArg = commandArgs[1].toLowerCase();
             if ("deposit".equals(firstArg) || "withdraw".equals(firstArg)) {
                 if (!e.getArgs(3).contains("10")) {
                     e.add(3, "10");
@@ -358,7 +361,7 @@ public class BankManager implements Listener {
     }
 
     private Optional<Clan> testClan(Player sender) {
-        final Optional<Clan> clanOptional = optionalClan(sender);
+        val clanOptional = optionalClan(sender);
         if (!clanOptional.isPresent()) {
             sendMessage(sender, Message.PLAYER_NO_CLAN.toString());
             return Optional.empty();

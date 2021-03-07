@@ -19,9 +19,9 @@
 package com.github.ms5984.clans.clansbanks.messaging;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
+import lombok.val;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.Properties;
@@ -36,8 +36,8 @@ public final class SimpleMessageProvider extends MessageProvider {
     }
 
     public static void setup(ClansBanks clansBanks, String locale) {
-        final Properties properties = new Properties();
-        final InputStream inputStream = (locale == null) ?
+        val properties = new Properties();
+        val inputStream = (locale == null) ?
                 clansBanks.getResource("messages.properties") :
                 clansBanks.getResource("lang/messages_" + locale + ".properties");
         try {

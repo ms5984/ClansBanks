@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -24,6 +24,7 @@ import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
+import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,9 +52,9 @@ public final class Bank implements ClanBank, Serializable {
     public boolean deposit(Player player, BigDecimal amount) {
         if (!enabled) return false;
         if (amount.signum() != 1) return false;
-        final boolean has = ECO.has(player, player.getWorld().getName(), amount.doubleValue());
-        final BankPreTransactionEvent preTransactionEvent =
-                new BankPreTransactionEvent(player, this, amount, clanId, has, BankTransactionEvent.Type.DEPOSIT);
+        val has = ECO.has(player, player.getWorld().getName(), amount.doubleValue());
+        val preTransactionEvent = new BankPreTransactionEvent(player, this, amount, clanId,
+                has, BankTransactionEvent.Type.DEPOSIT);
         PM.callEvent(preTransactionEvent);
         return preTransactionEvent.isSuccess();
     }
@@ -62,9 +63,8 @@ public final class Bank implements ClanBank, Serializable {
     public boolean withdraw(Player player, BigDecimal amount) {
         if (!enabled) return false;
         if (amount.signum() != 1) return false;
-        final BankPreTransactionEvent preTransactionEvent =
-                new BankPreTransactionEvent(player, this, amount, clanId, ECO.hasAccount(player) && has(amount),
-                        BankTransactionEvent.Type.WITHDRAWAL);
+        val preTransactionEvent = new BankPreTransactionEvent(player, this, amount, clanId,
+                ECO.hasAccount(player) && has(amount), BankTransactionEvent.Type.WITHDRAWAL);
         PM.callEvent(preTransactionEvent);
         return preTransactionEvent.isSuccess();
     }
