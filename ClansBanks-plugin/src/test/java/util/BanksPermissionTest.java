@@ -1,6 +1,6 @@
 package util;
 
-import com.github.ms5984.clans.clansbanks.util.Permissions;
+import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PermissionsTest {
+public class BanksPermissionTest {
 
-    final Permissions PERMISSION = Permissions.BANKS_BALANCE;
+    final BanksPermission PERMISSION = BanksPermission.USE_BALANCE;
     @Mock
     CommandSender commandSender;
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -21,6 +21,8 @@ package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
 import com.youtube.hempfest.clans.util.construct.Clan;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import net.md_5.bungee.api.ChatColor;
 
 import java.io.Serializable;
@@ -34,12 +36,13 @@ import java.util.List;
 public final class BankLog implements Serializable {
     private static final long serialVersionUID = -3400485111996318187L;
 
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PUBLIC)
     public static final class Transaction implements Serializable {
         private static final long serialVersionUID = -679847970264259944L;
-        public final String entity;
-        public final BankTransactionEvent.Type type;
-        public final BigDecimal amount;
-        public final LocalDateTime localDateTime;
+        String entity;
+        BankTransactionEvent.Type type;
+        BigDecimal amount;
+        LocalDateTime localDateTime;
 
         public Transaction(String entity, BankTransactionEvent.Type type, BigDecimal amount) {
             this(entity, type, amount, LocalDateTime.now());

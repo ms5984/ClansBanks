@@ -19,16 +19,12 @@
  */
 package com.github.ms5984.clans.clansbanks.messaging;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Objects;
-import java.util.Properties;
-
-public enum Messages {
+/**
+ * Represents plugin text that may be localized.
+ */
+public enum Message {
     BANKS_HEADER("banks.header"),
     CLANS_HELP_PREFIX("clans.help.prefix"),
     BANK_HELP_PREFIX("bank.help.prefix"),
@@ -75,36 +71,15 @@ public enum Messages {
     PERM_NOT_PLAYER_COMMAND("permissions.not.player.command"),
     PERM_NOT_PLAYER_ACTION("permissions.not.player.action");
 
-    private static Properties properties;
-
     private final String s;
 
-    Messages(String key) {
+    Message(String key) {
         s = key;
-    }
-
-    public static void setup(JavaPlugin clansBanks, String locale) {
-        properties = new Properties();
-        final InputStream inputStream = (locale == null) ?
-                clansBanks.getResource("messages.properties") :
-                clansBanks.getResource("lang/messages_" + locale + ".properties");
-        try {
-            properties.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
-            clansBanks.getLogger().info(() -> "Loaded " + ((locale == null) ? "default" : "\"" + locale + "\"") + " lang file.");
-        } catch (IOException | NullPointerException e) {
-            try {
-                properties.load(clansBanks.getResource("messages.properties"));
-                clansBanks.getLogger().info("Something went wrong, loading default lang.");
-            } catch (IOException ioException) {
-                throw new IllegalStateException("Unable to load messages from jar.", ioException);
-            }
-            throw new IllegalArgumentException("Invalid region: " + locale, e);
-        }
     }
 
     @Nullable
     public String get() {
-        return properties.getProperty(s);
+        return MessageProvider.getInstance().properties.getProperty(s);
     }
 
     @Override

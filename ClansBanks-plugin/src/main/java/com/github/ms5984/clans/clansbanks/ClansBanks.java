@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -22,17 +22,18 @@ package com.github.ms5984.clans.clansbanks;
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.commands.BankManager;
+import com.github.ms5984.clans.clansbanks.messaging.SimpleMessageProvider;
 import com.github.ms5984.clans.clansbanks.model.BankEventsListener;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
 import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
-import com.github.ms5984.clans.clansbanks.util.Permissions;
+import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import com.youtube.hempfest.clans.util.construct.Clan;
+import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -49,23 +50,34 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        // write default config
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
         getConfig();
         // Permission setup moved into static method
-        Permissions.setup(getServer().getPluginManager());
-        final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            getLogger().severe("Unable to load Vault!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        this.economy = rsp.getProvider();
+        BanksPermission.setup(getServer().getPluginManager());
+        // load economy provider on first tick
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                val eco = getServer().getServicesManager().load(Economy.class);
+                if (eco == null) {
+                    getLogger().severe("Unable to load Vault economy provider!");
+                    getServer().getPluginManager().disablePlugin(ClansBanks.this);
+                }
+                economy = eco;
+            }
+        }.runTask(this);
+        // register as BanksAPI provider
         getServer().getServicesManager().register(BanksAPI.class, this, this, ServicePriority.Normal);
-        Messages.setup(this, getConfig().getString("lang"));
+        // initialize messages
+        SimpleMessageProvider.setup(this, getConfig().getString("lang"));
+        // register command event listeners
         getServer().getPluginManager().registerEvents(new BankManager(), this);
+        // register bank event listeners
         getServer().getPluginManager().registerEvents(new BankEventsListener(), this);
+        // setup bStats
         Metrics metrics = new Metrics(this, STATS_ID);
         metrics.addCustomChart(new Metrics.SimplePie("lang", () -> getConfig().getString("lang", "en-US")));
         metrics.addCustomChart(new Metrics.SimplePie("log_level", () -> String.valueOf(logToConsole().ordinal())));
@@ -75,6 +87,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
             if (maxBalance == null) return "None";
             return maxBalance.toString();
         }));
+        // register placeholders
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new BanksPlaceholders(this).register();
         }
@@ -115,10 +128,10 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public @Nullable BigDecimal maxBalance() {
-        final String string = getConfig().getString("maximum-balance");
+        val string = getConfig().getString("maximum-balance");
         if (string != null) {
             try {
-                final BigDecimal bigDecimal = new BigDecimal(string);
+                val bigDecimal = new BigDecimal(string);
                 if (bigDecimal.signum() == -1) {
                     getLogger().info("Negative maximum balance given, leaving unset.");
                     return null;
@@ -134,7 +147,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public LogLevel logToConsole() {
-        final int anInt = getConfig().getInt("log-level");
+        val anInt = getConfig().getInt("log-level");
         if (anInt < 0 || anInt > 2) {
             getLogger().severe("Invalid log level! Using api default 1 - Quiet");
             return BanksAPI.super.logToConsole();

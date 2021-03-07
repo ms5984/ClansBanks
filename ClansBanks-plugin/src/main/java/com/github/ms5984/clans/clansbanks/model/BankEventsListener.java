@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
@@ -23,31 +23,17 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.events.BankPreTransactionEvent;
 import com.github.ms5984.clans.clansbanks.events.BankSetBalanceEvent;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
-import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
-import com.github.ms5984.clans.clansbanks.messaging.Messages;
-import org.bukkit.entity.Player;
+import com.github.ms5984.clans.clansbanks.messaging.Message;
+import lombok.val;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.math.BigDecimal;
-
 public class BankEventsListener implements Listener {
 
     private static final JavaPlugin P = JavaPlugin.getProvidingPlugin(Bank.class);
-
-    @EventHandler
-    public void onCreate(AsyncNewBankEvent e) {
-        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
-            }
-        }.runTask(P);
-    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPreTransactionMonitor(BankPreTransactionEvent event) {
@@ -59,7 +45,7 @@ public class BankEventsListener implements Listener {
                 return;
             case VERBOSE:
                 ClansBanks.log().info(() -> event.toString() + " " +
-                        Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                        Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
                         .replace("{0}", event.getClanId())
                 );
         }
@@ -68,25 +54,20 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTransaction(BankTransactionEvent e) {
         if (e instanceof BankPreTransactionEvent) return;
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                switch (ClansBanks.getAPI().logToConsole()) {
-                    case SILENT:
-                        break;
-                    case QUIET:
-                        ClansBanks.log().info(e::toString);
-                        break;
-                    case VERBOSE:
-                        ClansBanks.log().info(() -> e.toString() + " " +
-                                Messages.TRANSACTION_VERBOSE_CLAN_ID.toString()
-                                        .replace("{0}", e.getClanId())
-                        );
-                }
-                if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
-            }
-        }.runTask(P);
+        switch (ClansBanks.getAPI().logToConsole()) {
+            case SILENT:
+                break;
+            case QUIET:
+                ClansBanks.log().info(e::toString);
+                break;
+            case VERBOSE:
+                ClansBanks.log().info(() -> e.toString() + " " +
+                        Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                                .replace("{0}", e.getClanId())
+                );
+        }
+        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -107,17 +88,17 @@ public class BankEventsListener implements Listener {
             event.setCancelled(true);
             return; // The player didn't have enough money or is not allowed, no transaction
         }
-        final Bank bank = (Bank) event.getClanBank();
-        final BigDecimal maxBalance = ClansBanks.getAPI().maxBalance();
+        val bank = (Bank) event.getClanBank();
+        val maxBalance = ClansBanks.getAPI().maxBalance();
         if (maxBalance != null) {
             if (bank.balance.add(event.getAmount()).compareTo(maxBalance) > 0) {
                 event.setCancelled(true);
                 return;
             }
         }
-        final Player player = event.getPlayer();
-        final BigDecimal amount = event.getAmount();
-        final boolean success = Bank.ECO.withdrawPlayer(player, player.getWorld().getName(),
+        val player = event.getPlayer();
+        val amount = event.getAmount();
+        val success = Bank.ECO.withdrawPlayer(player, player.getWorld().getName(),
                 amount.doubleValue()).transactionSuccess();
         if (success) bank.balance = bank.balance.add(amount);
         if (!success) event.setSuccess(false);
@@ -132,10 +113,10 @@ public class BankEventsListener implements Listener {
             event.setCancelled(true);
             return; // The bank didn't have enough money or is not allowed, no transaction
         }
-        final Bank bank = (Bank) event.getClanBank();
-        final Player player = event.getPlayer();
-        final BigDecimal amount = event.getAmount();
-        final boolean success = Bank.ECO.depositPlayer(player, player.getWorld().getName(), amount.doubleValue()).transactionSuccess();
+        val bank = (Bank) event.getClanBank();
+        val player = event.getPlayer();
+        val amount = event.getAmount();
+        val success = Bank.ECO.depositPlayer(player, player.getWorld().getName(), amount.doubleValue()).transactionSuccess();
         if (success) bank.balance = bank.balance.subtract(amount);
         if (!success) event.setSuccess(false);
         Bank.PM.callEvent(new BankTransactionEvent(player, bank, amount, bank.clanId, success, BankTransactionEvent.Type.WITHDRAWAL));
@@ -144,10 +125,9 @@ public class BankEventsListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onSetBalance(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        final Bank bank = (Bank) event.getClanBank();
-        final BigDecimal maxBalance = ClansBanks.getAPI().maxBalance();
+        val maxBalance = ClansBanks.getAPI().maxBalance();
         if (maxBalance != null) {
-            if (bank.balance.add(event.getNewBalance()).compareTo(maxBalance) > 0) {
+            if (event.getNewBalance().compareTo(maxBalance) > 0) {
                 event.setCancelled(true);
             }
         }
@@ -156,14 +136,9 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSetBalanceMonitor(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        final Bank bank = (Bank) event.getClanBank();
+        val bank = (Bank) event.getClanBank();
         bank.balance = event.getNewBalance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                BankMeta.get(event.getClan()).storeBank(bank);
-            }
-        }.runTask(P);
+        BankMeta.get(event.getClan()).storeBank(bank);
     }
 
 }
