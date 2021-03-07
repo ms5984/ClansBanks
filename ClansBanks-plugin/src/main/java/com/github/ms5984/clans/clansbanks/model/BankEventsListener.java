@@ -127,10 +127,9 @@ public class BankEventsListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onSetBalance(BankSetBalanceEvent event) {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-        final Bank bank = (Bank) event.getClanBank();
         final BigDecimal maxBalance = ClansBanks.getAPI().maxBalance();
         if (maxBalance != null) {
-            if (bank.balance.add(event.getNewBalance()).compareTo(maxBalance) > 0) {
+            if (event.getNewBalance().compareTo(maxBalance) > 0) {
                 event.setCancelled(true);
             }
         }
