@@ -68,25 +68,20 @@ public class BankEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTransaction(BankTransactionEvent e) {
         if (e instanceof BankPreTransactionEvent) return;
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                switch (ClansBanks.getAPI().logToConsole()) {
-                    case SILENT:
-                        break;
-                    case QUIET:
-                        ClansBanks.log().info(e::toString);
-                        break;
-                    case VERBOSE:
-                        ClansBanks.log().info(() -> e.toString() + " " +
-                                Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
-                                        .replace("{0}", e.getClanId())
-                        );
-                }
-                if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
-                BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
-            }
-        }.runTask(P);
+        switch (ClansBanks.getAPI().logToConsole()) {
+            case SILENT:
+                break;
+            case QUIET:
+                ClansBanks.log().info(e::toString);
+                break;
+            case VERBOSE:
+                ClansBanks.log().info(() -> e.toString() + " " +
+                        Message.TRANSACTION_VERBOSE_CLAN_ID.toString()
+                                .replace("{0}", e.getClanId())
+                );
+        }
+        if (!(e.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
+        BankMeta.get(e.getClan()).storeBank((Bank) e.getClanBank());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -158,12 +153,7 @@ public class BankEventsListener implements Listener {
         if (!(event.getClanBank() instanceof Bank)) return; // Only react on our ClanBank implementation
         final Bank bank = (Bank) event.getClanBank();
         bank.balance = event.getNewBalance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                BankMeta.get(event.getClan()).storeBank(bank);
-            }
-        }.runTask(P);
+        BankMeta.get(event.getClan()).storeBank(bank);
     }
 
 }
