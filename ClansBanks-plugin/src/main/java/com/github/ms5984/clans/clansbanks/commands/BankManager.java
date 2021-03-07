@@ -59,8 +59,7 @@ public class BankManager implements Listener {
     @EventHandler
     private void onBank(SubCommandEvent e) {
         val args = e.getArgs();
-        val length = args.length;
-        if (length >= 1) {
+        if (args.length >= 1) {
             if (!args[0].equalsIgnoreCase("bank")) {
                 return;
             }
@@ -75,7 +74,7 @@ public class BankManager implements Listener {
             val clan = optionalClan.get();
             val testBank = optionalClan.map(ClansBanks.getAPI()::getBank);
             sendMessage(sender, clans_prefix + Message.BANKS_HEADER);
-            if (length == 1) { // "bank" print instructions
+            if (args.length == 1) { // "bank" print instructions
                 val split = Message.BANKS_GREETING.toString().split("\\{0}");
                 val greetingHover = Message.BANKS_GREETING_HOVER.toString();
                 if (BanksPermission.USE_BALANCE.not(sender)) {
@@ -124,7 +123,7 @@ public class BankManager implements Listener {
                     ));
                 }
                 return;
-            } else if (length == 2) { // "bank x" check if deposit/withdraw/balance/viewlog/setperm
+            } else if (args.length == 2) { // "bank x" check if deposit/withdraw/balance/viewlog/setperm
                 if (!testBank.isPresent()) return;
                 val arg = args[1];
                 if (!arg.equalsIgnoreCase("balance")) {
@@ -186,7 +185,7 @@ public class BankManager implements Listener {
                 }
                 sendMessage(sender, Message.BANKS_CURRENT_BALANCE.toString() + ": &a" + testBank.get().getBalance());
                 return;
-            } else if (length == 3) {
+            } else if (args.length == 3) {
                 val arg1 = args[1].toLowerCase();
                 switch (arg1) {
                     case "deposit":
@@ -249,7 +248,7 @@ public class BankManager implements Listener {
                         return;
                     default: // yell at the user and send usage msg
                 }
-            } else if (length == 4) {
+            } else if (args.length == 4) {
                 if (args[1].equalsIgnoreCase("setperm")) {
                     int level;
                     try {
