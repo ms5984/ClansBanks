@@ -61,7 +61,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
         new BukkitRunnable() {
             @Override
             public void run() {
-                val eco = getServer().getServicesManager().load(Economy.class);
+                final Economy eco = getServer().getServicesManager().load(Economy.class);
                 if (eco == null) {
                     getLogger().severe("Unable to load Vault economy provider!");
                     getServer().getPluginManager().disablePlugin(ClansBanks.this);
