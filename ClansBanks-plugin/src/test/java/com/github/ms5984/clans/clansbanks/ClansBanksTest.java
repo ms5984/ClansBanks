@@ -1,4 +1,5 @@
-import com.github.ms5984.clans.clansbanks.ClansBanks;
+package com.github.ms5984.clans.clansbanks;
+
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ public class ClansBanksTest {
     ClansBanks clansBanks;
     @Mock
     FileConfiguration config;
-    Logger logger = Logger.getLogger("Test");
+    final Logger logger = Logger.getLogger("Test");
 
     /**
      * This test cannot use Mockito.spy because JavaPlugin's super()

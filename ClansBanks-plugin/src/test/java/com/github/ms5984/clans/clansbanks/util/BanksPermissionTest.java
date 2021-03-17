@@ -1,6 +1,5 @@
-package util;
+package com.github.ms5984.clans.clansbanks.util;
 
-import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

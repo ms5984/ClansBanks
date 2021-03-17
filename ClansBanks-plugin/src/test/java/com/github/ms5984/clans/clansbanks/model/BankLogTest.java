@@ -1,8 +1,7 @@
-package model;
+package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.events.BankTransactionEvent;
-import com.github.ms5984.clans.clansbanks.model.BankLog;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
