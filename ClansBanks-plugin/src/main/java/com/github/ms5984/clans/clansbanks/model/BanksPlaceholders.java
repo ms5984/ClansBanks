@@ -23,12 +23,12 @@ import com.github.ms5984.clans.clansbanks.ClansBanks;
 import com.github.ms5984.clans.clansbanks.api.BanksAPI;
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.youtube.hempfest.clans.HempfestClans;
-import lombok.val;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public final class BanksPlaceholders extends PlaceholderExpansion {
@@ -68,10 +68,9 @@ public final class BanksPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String params) {
-        val optionalPlayer = Optional.ofNullable(player);
-        return optionalPlayer.map(p -> {
+        return Optional.ofNullable(player).map(p -> {
             if ("balance".equals(params)) {
-                val optionalBalance = Optional.ofNullable(HempfestClans.getInstance().playerClan.get(player.getUniqueId()))
+                final Optional<BigDecimal> optionalBalance = Optional.ofNullable(HempfestClans.getInstance().playerClan.get(player.getUniqueId()))
                         .map(s -> HempfestClans.clanManager(player)).map(api::getBank).map(ClanBank::getBalance);
                 if (optionalBalance.isPresent()) {
                     return optionalBalance.get().toString();
