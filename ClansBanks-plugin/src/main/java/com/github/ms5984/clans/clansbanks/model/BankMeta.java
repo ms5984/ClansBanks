@@ -21,6 +21,7 @@ package com.github.ms5984.clans.clansbanks.model;
 
 import com.github.ms5984.clans.clansbanks.events.AsyncNewBankEvent;
 import com.github.sanctum.labyrinth.library.HFEncoded;
+import com.github.sanctum.labyrinth.library.HUID;
 import com.youtube.hempfest.clans.metadata.ClanMeta;
 import com.youtube.hempfest.clans.metadata.PersistentClan;
 import com.youtube.hempfest.clans.util.construct.Clan;
@@ -93,9 +94,10 @@ public final class BankMeta implements Serializable {
 
     public Optional<Bank> getBank() {
         if (this.bank.isEmpty()) {
-            val newBankObject = new Bank(clanId);
+            final Bank newBankObject = new Bank(clanId);
             storeBank(newBankObject);
-            val event = new AsyncNewBankEvent(Optional.ofNullable(clan).orElseGet(this::getClan), newBankObject);
+            final AsyncNewBankEvent event =
+                    new AsyncNewBankEvent(Optional.ofNullable(clan).orElseGet(this::getClan), newBankObject);
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -142,7 +144,7 @@ public final class BankMeta implements Serializable {
     }
 
     private synchronized void loadMetaFromClan() {
-        val metaId = getClan().getId(BANKS_META_ID);
+        final HUID metaId = getClan().getId(BANKS_META_ID);
         if (metaId != null) {
             ClanMeta meta = PersistentClan.loadTempInstance(metaId);
             if (meta == null) {
@@ -150,11 +152,11 @@ public final class BankMeta implements Serializable {
             }
             try {
                 try {
-                    val legacyFormat = meta.value(0);
+                    final String legacyFormat = meta.value(0);
                     if (legacyFormat != null) {
-                        val deserialized = new HFEncoded(legacyFormat).deserialized();
+                        final Object deserialized = new HFEncoded(legacyFormat).deserialized();
                         if (deserialized instanceof Bank) {
-                            val legacyBank = (Bank) deserialized;
+                            final Bank legacyBank = (Bank) deserialized;
                             providingPlugin.getLogger().info(
                                     () -> String.format("Legacy bank converted for clanId=%s with balance %s",
                                         legacyBank.clanId,

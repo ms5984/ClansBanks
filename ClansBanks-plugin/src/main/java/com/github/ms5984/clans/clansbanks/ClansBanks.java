@@ -28,7 +28,6 @@ import com.github.ms5984.clans.clansbanks.model.BankMeta;
 import com.github.ms5984.clans.clansbanks.model.BanksPlaceholders;
 import com.github.ms5984.clans.clansbanks.util.BanksPermission;
 import com.youtube.hempfest.clans.util.construct.Clan;
-import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.ServicePriority;
@@ -128,10 +127,10 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public @Nullable BigDecimal maxBalance() {
-        val string = getConfig().getString("maximum-balance");
+        final String string = getConfig().getString("maximum-balance");
         if (string != null) {
             try {
-                val bigDecimal = new BigDecimal(string);
+                final BigDecimal bigDecimal = new BigDecimal(string);
                 if (bigDecimal.signum() == -1) {
                     getLogger().info("Negative maximum balance given, leaving unset.");
                     return null;
@@ -147,7 +146,7 @@ public final class ClansBanks extends JavaPlugin implements BanksAPI {
 
     @Override
     public LogLevel logToConsole() {
-        val anInt = getConfig().getInt("log-level");
+        final int anInt = getConfig().getInt("log-level");
         if (anInt < 0 || anInt > 2) {
             getLogger().severe("Invalid log level! Using api default 1 - Quiet");
             return BanksAPI.super.logToConsole();

@@ -58,7 +58,7 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onBank(SubCommandEvent e) {
-        val args = e.getArgs();
+        final String[] args = e.getArgs();
         if (args.length >= 1) {
             if (!args[0].equalsIgnoreCase("bank")) {
                 return;
@@ -75,7 +75,7 @@ public class BankManager implements Listener {
             val testBank = optionalClan.map(ClansBanks.getAPI()::getBank);
             sendMessage(sender, clans_prefix + Message.BANKS_HEADER);
             if (args.length == 1) { // "bank" print instructions
-                val split = Message.BANKS_GREETING.toString().split("\\{0}");
+                final String[] split = Message.BANKS_GREETING.toString().split("\\{0}");
                 val greetingHover = Message.BANKS_GREETING_HOVER.toString();
                 if (BanksPermission.USE_BALANCE.not(sender)) {
                     sender.spigot().sendMessage(textLib.textHoverable(
@@ -317,18 +317,17 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onBankTab(TabInsertEvent e) {
-        val commandArgs = e.getCommandArgs();
-        val length = commandArgs.length;
-        if (length == 1) {
+        final String[] commandArgs = e.getCommandArgs();
+        if (commandArgs.length == 1) {
             if (e.getArgs(1).contains("bank")) return;
             e.add(1, "bank");
-        } else if (length == 2) {
+        } else if (commandArgs.length == 2) {
             if (!commandArgs[0].equalsIgnoreCase("bank")) return;
             setPermTabComplete(e, 2);
             if (!e.getArgs(2).contains("viewperms")) {
                 e.add(2, "viewperms");
             }
-        } else if (length == 3) {
+        } else if (commandArgs.length == 3) {
             if (!commandArgs[0].equalsIgnoreCase("bank")) return;
             val firstArg = commandArgs[1].toLowerCase();
             if ("deposit".equals(firstArg) || "withdraw".equals(firstArg)) {
