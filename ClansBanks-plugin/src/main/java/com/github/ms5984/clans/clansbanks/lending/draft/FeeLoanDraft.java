@@ -16,25 +16,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.github.ms5984.clans.clansbanks.lending;
+package com.github.ms5984.clans.clansbanks.lending.draft;
 
-import com.github.ms5984.clans.clansbanks.api.lending.HasFee;
+import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.api.lending.HasFeeDraft;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
 /**
- * Base class for loans with flat fee at origination/end.
+ * Represents a draft for a loan with a flat fee.
  */
-@SuppressWarnings("serial")
-public abstract class FeeLoan extends AbstractLoan implements HasFee {
+public final class FeeLoanDraft extends BaseDraft implements HasFeeDraft {
 
-    protected BigDecimal fee;
-    protected boolean paid;
+    private BigDecimal fee;
 
-    protected FeeLoan(@NotNull BigDecimal principal, @NotNull BigDecimal fee) {
-        super(principal);
-        this.fee = fee;
+    public FeeLoanDraft(@NotNull ClanBank clanBank, @NotNull BigDecimal principal, BigDecimal fee) {
+        super(clanBank, principal);
+        this.fee = (fee == null) ? BigDecimal.ZERO : fee;
     }
 
     @Override
@@ -43,7 +42,8 @@ public abstract class FeeLoan extends AbstractLoan implements HasFee {
     }
 
     @Override
-    public boolean feePaid() {
-        return paid;
+    public void setFee(@NotNull BigDecimal newFee) {
+        this.fee = newFee;
     }
+
 }

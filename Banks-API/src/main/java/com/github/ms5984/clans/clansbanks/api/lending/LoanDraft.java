@@ -70,9 +70,16 @@ public interface LoanDraft {
     }
 
     /**
-     * Set whether the loan can be called.
+     * Whether or not the loan can be called.
      * <p>
      * Defaults to false.
+     *
+     * @return whether the loan can be called
+     */
+    boolean isCallable();
+
+    /**
+     * Set whether the loan can be called.
      *
      * @param canCall whether the loan can be called
      */

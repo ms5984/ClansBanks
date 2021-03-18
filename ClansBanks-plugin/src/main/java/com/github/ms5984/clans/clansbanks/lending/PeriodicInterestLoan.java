@@ -18,7 +18,6 @@
  */
 package com.github.ms5984.clans.clansbanks.lending;
 
-import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.api.lending.HasInterest;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +28,7 @@ import java.time.ZoneOffset;
 /**
  * Base class for loans with periodic interest collection.
  */
+@SuppressWarnings("serial")
 public abstract class PeriodicInterestLoan extends AbstractLoan implements HasInterest {
 
     protected BigDecimal interestRate;
@@ -36,11 +36,10 @@ public abstract class PeriodicInterestLoan extends AbstractLoan implements HasIn
     protected long lastInterest = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     protected long tempInterest = 0L;
 
-    protected PeriodicInterestLoan(@NotNull ClanBank clanBank,
-                                   @NotNull BigDecimal principal,
+    protected PeriodicInterestLoan(@NotNull BigDecimal principal,
                                    @NotNull BigDecimal interestRate,
                                    long periodInSeconds) {
-        super(clanBank, principal);
+        super(principal);
         this.interestRate = interestRate;
         this.period = periodInSeconds;
     }

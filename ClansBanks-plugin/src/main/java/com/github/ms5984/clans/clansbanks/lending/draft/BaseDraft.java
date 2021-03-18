@@ -16,34 +16,40 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.github.ms5984.clans.clansbanks.lending;
+package com.github.ms5984.clans.clansbanks.lending.draft;
 
-import com.github.ms5984.clans.clansbanks.api.lending.HasFee;
+import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
-/**
- * Base class for loans with flat fee at origination/end.
- */
-@SuppressWarnings("serial")
-public abstract class FeeLoan extends AbstractLoan implements HasFee {
+public abstract class BaseDraft {
+    protected final ClanBank clanBank;
+    protected BigDecimal principal;
+    private boolean callable;
 
-    protected BigDecimal fee;
-    protected boolean paid;
-
-    protected FeeLoan(@NotNull BigDecimal principal, @NotNull BigDecimal fee) {
-        super(principal);
-        this.fee = fee;
+    protected BaseDraft(@NotNull ClanBank clanBank, @NotNull BigDecimal principal) {
+        this.clanBank = clanBank;
+        this.principal = principal;
     }
 
-    @Override
-    public BigDecimal getFee() {
-        return fee;
+    public ClanBank getBank() {
+        return clanBank;
     }
 
-    @Override
-    public boolean feePaid() {
-        return paid;
+    public BigDecimal principal() {
+        return principal;
+    }
+
+    public void setPrincipal(@NotNull BigDecimal newPrincipal) {
+        this.principal = newPrincipal;
+    }
+
+    public boolean isCallable() {
+        return callable;
+    }
+
+    public void setCallable(boolean canCall) {
+        this.callable = canCall;
     }
 }

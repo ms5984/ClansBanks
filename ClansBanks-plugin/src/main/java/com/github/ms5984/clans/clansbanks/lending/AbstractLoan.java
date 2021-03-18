@@ -18,10 +18,10 @@
  */
 package com.github.ms5984.clans.clansbanks.lending;
 
-import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.api.lending.Loan;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -29,20 +29,14 @@ import java.util.function.Consumer;
 /**
  * Base class for loan implementations.
  */
-public abstract class AbstractLoan implements Loan {
+@SuppressWarnings("serial")
+public abstract class AbstractLoan implements Loan, Serializable {
 
-    protected final ClanBank clanBank;
     protected final BigDecimal principal;
     protected BigDecimal currentBalance;
 
-    protected AbstractLoan(@NotNull ClanBank clanBank, @NotNull BigDecimal principal) {
-        this.clanBank = Objects.requireNonNull(clanBank);
+    protected AbstractLoan(@NotNull BigDecimal principal) {
         this.principal = Objects.requireNonNull(principal);
-    }
-
-    @Override
-    public ClanBank getBank() {
-        return clanBank;
     }
 
     @Override
