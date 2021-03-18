@@ -43,8 +43,12 @@ public final class PendingLoanEvent extends LoanEvent implements Cancellable {
      * Get the draft loan object.
      * <p>
      * Changes in the draft loan will update the final loan.
+     * <p>
+     * Note that by the time this event is called the loan
+     * draft will already be determined to be fee-based or
+     * interest-based and cannot be changed.
      *
-     * @return draft loan
+     * @return draft of loan
      */
     public LoanDraft getLoanDraft() {
         return loanDraft;

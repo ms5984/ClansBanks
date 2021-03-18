@@ -23,14 +23,21 @@ import com.github.ms5984.clans.clansbanks.api.lending.Loan;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Called when a new loan is successfully created.
  */
 public final class NewLoanEvent extends LoanEvent {
     private static final HandlerList HANDLERS = new HandlerList();
 
-    public NewLoanEvent(ClanBank clanBank, String clanId, Loan loan) {
-        super(clanBank, clanId, loan);
+    public NewLoanEvent(ClanBank clanBank, String clanId, @NotNull Loan loan) {
+        super(clanBank, clanId, Objects.requireNonNull(loan));
+    }
+
+    @Override
+    public @NotNull Loan getLoan() {
+        return loan;
     }
 
     @Override
