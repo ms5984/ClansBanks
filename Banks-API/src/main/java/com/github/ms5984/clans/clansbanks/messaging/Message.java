@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 ms5984 (Matt) <https://github.com/ms5984>
+ *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *  Copyright 2020 Hempfest <https://github.com/Hempfest>
  *
  *  This file is part of ClansBanks.
