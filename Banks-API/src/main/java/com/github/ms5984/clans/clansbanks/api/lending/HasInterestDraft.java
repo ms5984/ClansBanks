@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 /**
  * Describes a potential instrument that will accrue interest.
  */
-public interface HasInterestDraft extends LoanDraft {
+public interface HasInterestDraft {
     /**
      * Get the interest rate per period.
      *

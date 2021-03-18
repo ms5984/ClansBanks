@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 /**
  * Describe a potential instrument that will have a fee.
  */
-public interface HasFeeDraft extends LoanDraft {
+public interface HasFeeDraft {
     /**
      * Get the amount of the fee.
      *
