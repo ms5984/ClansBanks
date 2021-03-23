@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 public class LoanDraftTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private static LoanDraft loanDraft;
+    LoanDraft loanDraft;
     final BigDecimal testAmount = BigDecimal.TEN;
     final double testDouble = 100d;
 

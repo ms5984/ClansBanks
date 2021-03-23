@@ -9,19 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class NewLoanEventTest {
-
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    void constructor(@Mock Loan loan) {
-        // Test throws on null loan
-        assertThrows(Exception.class, () -> new NewLoanEvent(null, null, null));
-        // Test successful on non-null loan
-        assertDoesNotThrow(() -> new NewLoanEvent(null, null, loan));
-    }
+class LoanEventTest {
 
     @Test
     void getLoan(@Mock Loan loan) {
-        assertSame(loan, new NewLoanEvent(null, null, loan).loan);
+        assertSame(loan, new LoanEvent(null, null, loan){}.loan);
     }
 }
