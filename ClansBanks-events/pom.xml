@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>banks-api</artifactId>
+    <artifactId>clans-banks-events</artifactId>
 
-    <name>BanksAPI</name>
-    <description>The official API of ClansBanks</description>
+    <name>ClansBanksEvents</name>
+    <description>The official events of ClansBanks</description>
 
     <licenses>
         <license>
@@ -21,5 +21,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ms5984.clans</groupId>
+            <artifactId>banks-api</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -81,4 +81,31 @@ public interface ClanBank {
     default void setBalance(BigDecimal newBalance) {
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException();
     }
+
+    // NEW as of v1.2.0
+
+    /**
+     * Get the net worth of the bank.
+     *
+     * @return the net worth of the bank
+     */
+    default BigDecimal getBankValue() {
+        return getAssets().add(getLiabilities());
+    }
+
+    /**
+     * Get the value of the bank's assets.
+     *
+     * @return value of the bank's assets
+     */
+    BigDecimal getAssets();
+
+    /**
+     * Get the value of the bank's liabilities.
+     * <p>
+     * Returns zero or a negative value.
+     *
+     * @return value of the bank's liabilities
+     */
+    BigDecimal getLiabilities();
 }

@@ -96,6 +96,16 @@ public final class Bank implements ClanBank, Serializable {
         PM.callEvent(new BankSetBalanceEvent(this, clanId, newBalance));
     }
 
+    @Override
+    public BigDecimal getAssets() {
+        return getBalance();
+    }
+
+    @Override
+    public BigDecimal getLiabilities() {
+        return BigDecimal.ZERO;
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
