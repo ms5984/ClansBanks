@@ -11,7 +11,7 @@
 
     <artifactId>clans-banks-events</artifactId>
 
-    <name>ClansBanksEvents</name>
+    <name>ClansBanks-events</name>
     <description>The official events of ClansBanks</description>
 
     <licenses>
