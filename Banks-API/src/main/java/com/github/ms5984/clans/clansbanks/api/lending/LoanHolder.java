@@ -18,31 +18,16 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
-import java.math.BigDecimal;
-import java.util.function.Consumer;
+import java.util.Set;
 
 /**
- * Describes an instrument that has a fee.
+ * Describes an entity that can possess loans.
  */
-public interface HasFee {
+public interface LoanHolder {
     /**
-     * Get the amount of the fee.
+     * Get all loans held by this entity.
      *
-     * @return fee as BigDecimal
+     * @return loans held by this entity
      */
-    BigDecimal getFee();
-
-    /**
-     * Pay the fee. This method does nothing if feePaid is true.
-     *
-     * @param callback logic to run with completion status
-     */
-    void payFee(Consumer<Boolean> callback);
-
-    /**
-     * Returns true if the fee has already been paid.
-     *
-     * @return true; otherwise false
-     */
-    boolean feePaid();
+    Set<Loan> getLoans();
 }

@@ -1,14 +1,14 @@
 /*
  *  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
  *
- *  This file is part of ClansBanks.
+ *  This file is part of Banks-API.
  *
- *  ClansBanks is free software: you can redistribute it and/or modify
+ *  Banks-API is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as
  *  published by the Free Software Foundation, either version 3 of the
  *  License, or (at your option) any later version.
  *
- *  ClansBanks is distributed in the hope that it will be useful,
+ *  Banks-API is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
@@ -25,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Properties;
 
 /**
- * Provide the Properties backing object for the Message class.
+ * Provide the Properties backing for the Message class.
  */
 public abstract class MessageProvider {
     private static MessageProvider instance;

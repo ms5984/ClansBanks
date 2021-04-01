@@ -11,7 +11,7 @@
 
     <artifactId>banks-api</artifactId>
 
-    <name>BanksAPI</name>
+    <name>Banks-API</name>
     <description>The official API of ClansBanks</description>
 
     <licenses>
