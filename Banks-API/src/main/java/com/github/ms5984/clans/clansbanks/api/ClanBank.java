@@ -21,6 +21,7 @@ package com.github.ms5984.clans.clansbanks.api;
 
 import com.github.ms5984.clans.clansbanks.api.lending.LoanHolder;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
@@ -64,7 +65,7 @@ public interface ClanBank extends LoanHolder {
      * Get the balance of the bank
      * @return balance as BigDecimal
      */
-    BigDecimal getBalance();
+    @NotNull BigDecimal getBalance();
 
     /**
      * Set the balance of the bank
@@ -93,7 +94,7 @@ public interface ClanBank extends LoanHolder {
      *
      * @return the net worth of the bank
      */
-    default BigDecimal getBankValue() {
+    default @NotNull BigDecimal getBankValue() {
         return getAssets().add(getLiabilities());
     }
 
@@ -102,7 +103,7 @@ public interface ClanBank extends LoanHolder {
      *
      * @return value of the bank's assets
      */
-    BigDecimal getAssets();
+    @NotNull BigDecimal getAssets();
 
     /**
      * Get the value of the bank's liabilities.
@@ -111,5 +112,5 @@ public interface ClanBank extends LoanHolder {
      *
      * @return value of the bank's liabilities
      */
-    BigDecimal getLiabilities();
+    @NotNull BigDecimal getLiabilities();
 }

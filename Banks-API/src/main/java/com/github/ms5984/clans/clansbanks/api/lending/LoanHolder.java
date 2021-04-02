@@ -18,6 +18,8 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Set;
 
 /**
@@ -29,5 +31,5 @@ public interface LoanHolder {
      *
      * @return loans held by this entity
      */
-    Set<Loan> getLoans();
+    @NotNull Set<Loan> getLoans();
 }
