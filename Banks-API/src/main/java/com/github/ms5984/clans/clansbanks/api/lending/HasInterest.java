@@ -20,6 +20,7 @@ package com.github.ms5984.clans.clansbanks.api.lending;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Describes an instrument that accrues interest.
@@ -34,10 +35,13 @@ public interface HasInterest {
 
     /**
      * Depends on perspective; could be income or expense.
+     * <p>
+     * This method does nothing if the interest is not being collected.
      *
-     * @param callback logic to run with completion status
+     * @param check logic to run to verify payer can pay
+     * @param callback logic to collect interest
      */
-    void collectInterest(Consumer<Boolean> callback);
+    void collectInterest(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback);
 
     /**
      * Return the frequency in seconds of interest accrual.

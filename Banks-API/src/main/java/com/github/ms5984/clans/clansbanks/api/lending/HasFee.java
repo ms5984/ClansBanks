@@ -20,6 +20,7 @@ package com.github.ms5984.clans.clansbanks.api.lending;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Describes an instrument that has a fee.
@@ -33,11 +34,12 @@ public interface HasFee {
     BigDecimal getFee();
 
     /**
-     * Pay the fee. This method does nothing if feePaid is true.
+     * Pay the fee. This method does nothing if {@link #feePaid()} is true.
      *
-     * @param callback logic to run with completion status
+     * @param check logic to run to verify payer can pay
+     * @param callback logic to collect fee
      */
-    void payFee(Consumer<Boolean> callback);
+    void payFee(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback);
 
     /**
      * Returns true if the fee has already been paid.

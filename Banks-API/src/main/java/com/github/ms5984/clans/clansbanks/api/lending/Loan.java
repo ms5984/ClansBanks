@@ -19,9 +19,11 @@
 package com.github.ms5984.clans.clansbanks.api.lending;
 
 import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Describes a loan held by a clan bank.
@@ -55,11 +57,15 @@ public interface Loan {
 
     /**
      * Make a payment to the loan.
+     * <p>
+     * If callback receives null, amount provided exceeded
+     * owed balance and was rejected.
      *
      * @param amount payment amount as BigDecimal
-     * @param callback function to call with success/fail
+     * @param check logic to test for payment amount
+     * @param callback logic to collect amount
      */
-    void makePayment(BigDecimal amount, Consumer<Boolean> callback);
+    void makePayment(@NotNull BigDecimal amount, Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback);
 
     /**
      * Get the current remaining balance.

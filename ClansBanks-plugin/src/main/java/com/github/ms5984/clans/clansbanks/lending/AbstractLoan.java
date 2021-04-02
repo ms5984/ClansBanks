@@ -18,13 +18,19 @@
  */
 package com.github.ms5984.clans.clansbanks.lending;
 
+import com.github.ms5984.clans.clansbanks.ClansBanks;
+import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.api.lending.Loan;
+import com.youtube.hempfest.clans.util.construct.Clan;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Base class for loan implementations.
@@ -34,9 +40,18 @@ public abstract class AbstractLoan implements Loan, Serializable {
 
     protected final BigDecimal principal;
     protected BigDecimal currentBalance;
+    protected String clanId;
 
-    protected AbstractLoan(@NotNull BigDecimal principal) {
+    protected AbstractLoan(@NotNull BigDecimal principal, @Nullable String clanId) {
         this.principal = Objects.requireNonNull(principal);
+        this.clanId = clanId;
+    }
+
+    @Override
+    public ClanBank getBank() {
+        return Optional.ofNullable(Clan.clanUtil.getClan(clanId))
+                .map(ClansBanks.getAPI()::getBank)
+                .orElse(null);
     }
 
     @Override
@@ -45,8 +60,18 @@ public abstract class AbstractLoan implements Loan, Serializable {
     }
 
     @Override
-    public void makePayment(BigDecimal amount, Consumer<Boolean> callback) {
+    public void makePayment(@NotNull BigDecimal amount, Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("You cannot make negative payments.");
+        if (currentBalance.compareTo(amount) < 0) {
+            // do not allow overpay
+            callback.accept(null);
+            return;
+        }
+        if (check.apply(amount)) {
+            // has amount, update balance + collect amount
+            currentBalance = currentBalance.subtract(amount);
+            callback.accept(amount);
+        }
     }
 
     @Override

@@ -20,26 +20,38 @@ package com.github.ms5984.clans.clansbanks.lending;
 
 import com.github.ms5984.clans.clansbanks.api.lending.HasFee;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * Base class for loans with flat fee at origination/end.
+ * Class for loans with flat fee at origination/end.
  */
-@SuppressWarnings("serial")
-public abstract class FeeLoan extends AbstractLoan implements HasFee {
+public final class FeeLoan extends AbstractLoan implements HasFee {
 
+    private static final long serialVersionUID = 7728639506115607319L;
     protected BigDecimal fee;
     protected boolean paid;
 
-    protected FeeLoan(@NotNull BigDecimal principal, @NotNull BigDecimal fee) {
-        super(principal);
+    protected FeeLoan(@NotNull BigDecimal principal, @NotNull BigDecimal fee, @Nullable String clanId) {
+        super(principal, clanId);
         this.fee = fee;
     }
 
     @Override
     public BigDecimal getFee() {
         return fee;
+    }
+
+    @Override
+    public void payFee(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback) {
+        if (paid) return;
+        if (check.apply(fee)) {
+            paid = true;
+            callback.accept(fee);
+        }
     }
 
     @Override
