@@ -21,65 +21,88 @@ package com.github.ms5984.clans.clansbanks.messaging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Field;
+import java.util.EnumMap;
+
 /**
  * Represents plugin text that may be localized.
  */
 public enum Message {
-    BANKS_HEADER("banks.header"),
-    CLANS_HELP_PREFIX("clans.help.prefix"),
-    BANK_HELP_PREFIX("bank.help.prefix"),
-    BANK_HELP_AMOUNT_COMMANDS("bank.help.amount_commands"),
-    BANKS_CURRENT_BALANCE("banks.current_balance"),
-    BANKS_COMMAND_LISTING("banks.command_listing"),
-    AMOUNT("amount"),
-    PERM("perm"),
-    LEVEL("level"),
-    BANKS_GREETING("banks.greeting"),
-    BANKS_GREETING_HOVER("banks.greeting.hover"),
-    HOVER_BALANCE("banks.hover.balance"),
-    HOVER_DEPOSIT("banks.hover.deposit"),
-    HOVER_WITHDRAW("banks.hover.withdraw"),
-    HOVER_VIEW_LOG("banks.hover.view_log"),
-    HOVER_SET_PERM("banks.hover.set_perm"),
-    HOVER_NO_AMOUNT("banks.hover.no_amount"),
-    VALID_LEVELS("valid.levels"),
-    VALID_OPTIONS("valid.options"),
-    INVALID_LEVEL("invalid.level"),
-    SETTING_LEVEL("setting.level"),
-    BANK_USAGE("bank.usage"),
-    BANK_INVALID_SUBCOMMAND("bank.invalid_subcommand"),
-    NOT_ON_CLAN_LAND("not_on_clan_land"),
-    DEPOSIT_MSG_PLAYER("deposit.message.player"),
-    DEPOSIT_MSG_ANNOUNCE("deposit.message.announce"),
-    WITHDRAW_MSG_PLAYER("withdraw.message.player"),
-    WITHDRAW_MSG_ANNOUNCE("withdraw.message.announce"),
-    DEPOSIT_ERR_PLAYER("deposit.error.player"),
-    WITHDRAW_ERR_PLAYER("withdraw.error.player"),
-    BANK_INVALID_AMOUNT("bank.invalid_amount"),
-    PLAYER_NO_CLAN("player.no_clan"),
-    TRANSACTION_DEPOSIT_PRE("transaction.deposit_pre"),
-    TRANSACTION_DEPOSIT_PRE_CANCELLED("transaction.deposit_pre_cancelled"),
-    TRANSACTION_WITHDRAW_PRE("transaction.withdraw_pre"),
-    TRANSACTION_WITHDRAW_PRE_CANCELLED("transaction.withdraw_pre_cancelled"),
-    TRANSACTION_DEPOSIT("transaction.deposit"),
-    TRANSACTION_WITHDRAW("transaction.withdraw"),
-    TRANSACTION_VERBOSE_CLAN_ID("transaction.verbose.id"),
-    PRETRANSACTION_PENDING("transaction.success.pre"),
-    PRETRANSACTION_FAILURE("transaction.failure.pre"),
-    TRANSACTION_SUCCESS("transaction.success"),
-    TRANSACTION_FAILED("transaction.failed"),
-    PERM_NOT_PLAYER_COMMAND("permissions.not.player.command"),
-    PERM_NOT_PLAYER_ACTION("permissions.not.player.action");
+    BANKS_HEADER,
+    CLANS_HELP_PREFIX,
+    BANK_HELP_PREFIX,
+    @Key("bank.help.amount_commands") BANK_HELP_AMOUNT_COMMANDS,
+    @Key("banks.current_balance") BANKS_CURRENT_BALANCE,
+    @Key("banks.command_listing") BANKS_COMMAND_LISTING,
+    AMOUNT,
+    PERM,
+    LEVEL,
+    BANKS_GREETING,
+    BANKS_GREETING_HOVER,
+    HOVER_BALANCE,
+    HOVER_DEPOSIT,
+    HOVER_WITHDRAW,
+    @Key("hover.view_log") HOVER_VIEW_LOG,
+    @Key("hover.set_perm") HOVER_SET_PERM,
+    @Key("hover.no_amount") HOVER_NO_AMOUNT,
+    VALID_LEVELS,
+    VALID_OPTIONS,
+    INVALID_LEVEL,
+    SETTING_LEVEL,
+    BANK_USAGE,
+    @Key("bank.invalid_subcommand") BANK_INVALID_SUBCOMMAND,
+    @Key("not_on_clan_land") NOT_ON_CLAN_LAND,
+    @Key("deposit.message.player") DEPOSIT_MSG_PLAYER,
+    @Key("deposit.message.announce") DEPOSIT_MSG_ANNOUNCE,
+    @Key("withdraw.message.player") WITHDRAW_MSG_PLAYER,
+    @Key("withdraw.message.announce") WITHDRAW_MSG_ANNOUNCE,
+    @Key("deposit.error.player") DEPOSIT_ERR_PLAYER,
+    @Key("withdraw.error.player") WITHDRAW_ERR_PLAYER,
+    @Key("bank.invalid_amount") BANK_INVALID_AMOUNT,
+    @Key("player.no_clan") PLAYER_NO_CLAN,
+    @Key("transaction.deposit_pre") TRANSACTION_DEPOSIT_PRE,
+    @Key("transaction.deposit_pre_cancelled") TRANSACTION_DEPOSIT_PRE_CANCELLED,
+    @Key("transaction.withdraw_pre") TRANSACTION_WITHDRAW_PRE,
+    @Key("transaction.withdraw_pre_cancelled") TRANSACTION_WITHDRAW_PRE_CANCELLED,
+    TRANSACTION_DEPOSIT,
+    TRANSACTION_WITHDRAW,
+    @Key("transaction.verbose.id") TRANSACTION_VERBOSE_CLAN_ID,
+    @Key("transaction.success.pre") PRETRANSACTION_PENDING,
+    @Key("transaction.failure.pre") PRETRANSACTION_FAILURE,
+    TRANSACTION_SUCCESS,
+    TRANSACTION_FAILED,
+    @Key("permissions.not.player.command") PERM_NOT_PLAYER_COMMAND,
+    @Key("permissions.not.player.action") PERM_NOT_PLAYER_ACTION;
 
+    private static final EnumMap<Message, String> RESOLVED_KEYS = new EnumMap<>(Message.class);
     private final String s;
 
     Message(String key) {
         s = key;
     }
+    Message() {
+        this("blah");
+    }
 
     @Nullable
     public String get() {
-        return MessageProvider.getInstance().properties.getProperty(s);
+        final String key = RESOLVED_KEYS.computeIfAbsent(this, m -> {
+            try {
+                final Field field = getClass().getField(m.name());
+                field.setAccessible(true);
+                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                    if (annotation.annotationType().isInstance(Key.class)) {
+                        return ((Key) annotation).value();
+                    }
+                }
+                // convert MESSAGE_EXAMPLE into message.example
+                return m.name().toLowerCase().replaceAll("_", ".");
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("Impossible.", e);
+            }
+        });
+        return MessageProvider.getInstance().properties.getProperty(key);
     }
 
     @NotNull
@@ -96,6 +119,22 @@ public enum Message {
     public String toString() {
         final String s = get();
         return (s != null) ? s : "null";
+    }
+
+    /**
+     * An annotation to detail messages whose enum signature does not
+     * map naturally with the format MESSAGE_HERE -&gt; message.here
+     * that is used for key resolution.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Key {
+        /**
+         * A custom key.
+         *
+         * @return custom key
+         */
+        @NotNull String value();
     }
 
 }
