@@ -1,0 +1,84 @@
+###
+##  Copyright 2021 ms5984 (Matt) <https://github.com/ms5984>
+##  Copyright 2020 Hempfest <https://github.com/Hempfest>
+##
+##  This file is part of ClansBanks.
+##
+##  ClansBanks is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published
+##  by the Free Software Foundation, either version 3 of the License,
+##  or (at your option) any later version.
+##
+##  ClansBanks is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+###
+Messages:
+  clans:
+    help-prefix: "&7|&e)"
+    not-on-clan-land: "Vous n’êtes pas sur le territoire du clan"
+    player-no-clan: "&cVous n’es pas dans un clan."
+  banks:
+    header: "&fLes banques"
+    help:
+      prefix: "&6/clan &fbank"
+      amount-commands: "&f<&adeposit&7,&cwithdraw&f> <&7{amount}&f>"
+    current-balance: "&bSolde bancaire actuel"
+    command-listing: "&6Des commandes:"
+    usage: "&6Utilisation:"
+    greeting: "&bBienvenue, {0}&b." # {0} = Player name
+    greeting-hover: "&6En clan: &f{0}\n&aCliquez ici pour obtenir la solde" # {0} = clan tag
+    invalid-subcommand: "&cSous-commandement invalide!"
+    invalid-amount: "&cSomme invalide!"
+    hover:
+      balance: "Obtenez le solde bancaire actuel"
+      deposit: "Déposer de l’argent dans la banque du clan"
+      withdraw: "Retirer de l'argent de la banque du clan"
+      view-log: "Consulter l’historique des transactions récentes"
+      set-perm: "Définir l’accès aux fonctions bancaires"
+      no-amount: "Aucun valeur donnée!"
+      valid-options-header: "Options valides :"
+    words:
+      amount: "somme"
+      perm: "perm"
+      level: "niveau"
+    levels:
+      valid: "Niveaux valides : [0-3]"
+      invalid: "&7Niveau non valide!"
+      setting: "&7Réglage du niveau &6{0} à &a{1}" # {0} = action, {1} = level
+    deposit:
+      message:
+        player: "&7Vous avez déposé &a{0} &7dans la banque du clan."
+        announce: "{0} &6a ajouté &a{1} &6à la banque du clan!"
+      error:
+        player: "&cImpossible de déposer {0}"
+    withdraw:
+      message:
+        player: "&7Vous avez retiré &c{0} &7de la banque du clan."
+        announce: "{0} &4a pris &c{1} &4de la banque du clan!"
+      error:
+        player: "&cImpossible de retirer {0}"
+  # Event messages
+  events:
+    transaction:
+      ## {0} = cancelled, {1} = success, {2} = name, {3} = amount, {4} = clan tag
+      deposit-pre: ">>PRÉ [{0}]: {1} de déposer {2} avec clan {3}"
+      deposit-pre-cancelled: ">>PRÉ-Annulé [{0}]: {1} de déposer {2} avec clan {3}"
+      withdraw-pre: ">>PRÉ [{0}]: {1} de retirer {2} du clan {3}"
+      withdraw-pre-cancelled: ">>PRÉ-Annulé [{0}]: {1} de retirer {2} du clan {3}"
+      ## {0} = success, {1} = name, {2} = amount, {3} = clanId
+      deposit: "Transaction [{0}]: {1} payé {2} avec clan {3}"
+      withdraw: "Transaction [{0}]: {1} retiré {2} du clan {3}"
+      verbose-clan-id: "clanId={0}"
+      success: "SUCCÈS"
+      failed: "A ÉCHOUÉ"
+      success-pre: "EN SUSPENS"
+      failure-pre: "REFUSÉE"
+  no-permission:
+    player:
+      command: "&cVous n’avez pas la permission d’exécuter cette commande."
+      action: "&cVous n’avez pas la permission d’effectuer cette action."
