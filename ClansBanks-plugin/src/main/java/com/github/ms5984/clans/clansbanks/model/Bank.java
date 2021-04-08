@@ -42,7 +42,7 @@ public final class Bank implements ClanBank, Serializable {
     private static final long serialVersionUID = -5283828168295980464L;
     protected static final Economy ECO = ClansBanks.getEconomy();
     protected static final PluginManager PM = Bukkit.getServer().getPluginManager();
-    protected final Set<Portfolio> portfolios = new HashSet<>();
+    protected final Set<PortfolioImpl> portfolios = new HashSet<>();
     protected BigDecimal balance;
     protected boolean enabled;
     protected final String clanId;

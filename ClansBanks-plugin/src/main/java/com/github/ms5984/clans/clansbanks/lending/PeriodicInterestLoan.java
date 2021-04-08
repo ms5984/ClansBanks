@@ -31,7 +31,7 @@ import java.util.function.Function;
 /**
  * Class for loans with periodic interest collection.
  */
-public final class PeriodicInterestLoan extends AbstractLoan implements HasInterest {
+public class PeriodicInterestLoan extends AbstractLoan implements HasInterest {
 
     private static final long serialVersionUID = -4920729108108931359L;
     protected BigDecimal interestRate;

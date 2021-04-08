@@ -29,7 +29,7 @@ import java.util.function.Function;
 /**
  * Class for loans with flat fee at origination/end.
  */
-public final class FeeLoan extends AbstractLoan implements HasFee {
+public class FeeLoan extends AbstractLoan implements HasFee {
 
     private static final long serialVersionUID = 7728639506115607319L;
     protected BigDecimal fee;
