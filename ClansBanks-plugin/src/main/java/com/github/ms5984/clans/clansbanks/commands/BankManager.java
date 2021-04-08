@@ -200,10 +200,10 @@ public class BankManager implements Listener {
                                     return;
                                 }
                                 if (theBank.deposit(sender, amount)) {
-                                    sendMessage(sender, Message.DEPOSIT_MSG_PLAYER.toString()
+                                    sendMessage(sender, Message.DEPOSIT_MESSAGE_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 } else {
-                                    sendMessage(sender, Message.DEPOSIT_ERR_PLAYER.toString()
+                                    sendMessage(sender, Message.DEPOSIT_ERROR_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 }
                             } else {
@@ -212,10 +212,10 @@ public class BankManager implements Listener {
                                     return;
                                 }
                                 if (theBank.withdraw(sender, amount)) {
-                                    sendMessage(sender, Message.WITHDRAW_MSG_PLAYER.toString()
+                                    sendMessage(sender, Message.WITHDRAW_MESSAGE_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 } else {
-                                    sendMessage(sender, Message.WITHDRAW_ERR_PLAYER.toString()
+                                    sendMessage(sender, Message.WITHDRAW_ERROR_PLAYER.toString()
                                             .replace("{0}", amount.toString()));
                                 }
                             }
