@@ -18,6 +18,7 @@
  */
 package com.github.ms5984.clans.clansbanks.messaging;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -79,6 +80,16 @@ public enum Message {
     @Nullable
     public String get() {
         return MessageProvider.getInstance().properties.getProperty(s);
+    }
+
+    @NotNull
+    public String replace(Object... replacements) {
+        int i = 0;
+        String toString = toString();
+        for (Object obj : replacements) {
+            toString = toString.replaceAll("\\{" + i++ + "}", String.valueOf(obj));
+        }
+        return toString;
     }
 
     @Override
