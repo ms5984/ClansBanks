@@ -17,16 +17,12 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
-import java.util.function.Consumer;
-
 /**
- * Describes a loan that can be called.
+ * Store and perform operations on a group of loans.
  */
-public interface CallableLoan extends Loan {
+public interface Portfolio extends LoanHolder {
     /**
-     * Call the loan.
-     *
-     * @param callback logic to run with success
+     * Add a new loan to this portfolio.
      */
-    void call(Consumer<Boolean> callback);
+    void addNewLoan(Loan loan);
 }

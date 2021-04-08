@@ -17,16 +17,18 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
-import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 /**
- * Describes a loan that can be called.
+ * Describes an entity that can possess loans.
  */
-public interface CallableLoan extends Loan {
+public interface LoanHolder {
     /**
-     * Call the loan.
+     * Get all loans held by this entity.
      *
-     * @param callback logic to run with success
+     * @return loans held by this entity
      */
-    void call(Consumer<Boolean> callback);
+    @NotNull Set<Loan> getLoans();
 }

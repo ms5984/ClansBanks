@@ -17,33 +17,40 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * Describes an instrument that accrues interest.
+ * Describes a potential instrument that will accrue interest.
  */
-public interface HasInterest {
+public interface HasInterestDraft {
     /**
-     * Calculate the interest for the loan.
+     * Get the interest rate per period.
      *
-     * @return calculated interest
+     * @return interest rate as BigDecimal
      */
-    BigDecimal calculateInterest();
+    BigDecimal getInterestRate();
 
     /**
-     * Depends on perspective; could be income or expense.
-     * <p>
-     * This method does nothing if the interest is not being collected.
+     * Set the interest rate per period.
      *
-     * @param check logic to run to verify payer can pay
-     * @param callback logic to collect interest
+     * @param interestRate new interest rate as BigDecimal
+     * @throws IllegalArgumentException if rate less than 0 or greater than 1.
      */
-    void collectInterest(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback);
+    void setInterestRate(@NotNull BigDecimal interestRate) throws IllegalArgumentException;
 
     /**
      * Return the frequency in seconds of interest accrual.
      */
     long getPeriodInSeconds();
+
+    /**
+     * Set the frequency in seconds of interest accrual.
+     * <p>
+     * Interest will be paid after each elapsed period.
+     *
+     * @param periodInSeconds amount of time in seconds
+     */
+    void setPeriodInSeconds(long periodInSeconds);
 }

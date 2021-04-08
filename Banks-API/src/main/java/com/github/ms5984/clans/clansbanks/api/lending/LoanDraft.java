@@ -21,29 +21,34 @@ import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * Describes a loan held by a clan bank.
+ * Describes a potential loan.
  */
-public interface Loan {
+public interface LoanDraft {
     /**
-     * Get the clan bank that holds this loan.
+     * Get the clan bank that will hold this loan.
      *
-     * @return the clan bank that holds the loan
+     * @return the clan bank that will hold the loan
      */
     ClanBank getBank();
 
     /**
-     * Returns the nominal principal of the loan.
+     * Returns the nominal principal of the draft loan.
      *
      * @return as BigDecimal
      */
     BigDecimal principal();
 
     /**
-     * Returns the nominal principal of the loan.
+     * Set a different principal amount.
+     *
+     * @param newPrincipal amount as BigDecimal
+     */
+    void setPrincipal(@NotNull BigDecimal newPrincipal);
+
+    /**
+     * Returns the nominal principal of the draft loan.
      * <p>
      * May return {@link Double#POSITIVE_INFINITY}
      * if BigDecimal value is out of range.
@@ -55,21 +60,27 @@ public interface Loan {
     }
 
     /**
-     * Make a payment to the loan.
-     * <p>
-     * If callback receives null, amount provided exceeded
-     * owed balance and was rejected.
+     * Set a different principal amount.
      *
-     * @param amount payment amount as BigDecimal
-     * @param check logic to test for payment amount
-     * @param callback logic to collect amount
+     * @param newPrincipal amount as a double
      */
-    void makePayment(@NotNull BigDecimal amount, Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback);
+    default void setPrincipalDouble(double newPrincipal) {
+        setPrincipal(BigDecimal.valueOf(newPrincipal));
+    }
 
     /**
-     * Get the current remaining balance.
+     * Whether or not the loan can be called.
+     * <p>
+     * Defaults to false.
      *
-     * @return principal plus interest/fees less payments
+     * @return whether the loan can be called
      */
-    BigDecimal remainingBalance();
+    boolean isCallable();
+
+    /**
+     * Set whether the loan can be called.
+     *
+     * @param canCall whether the loan can be called
+     */
+    void setCallable(boolean canCall);
 }

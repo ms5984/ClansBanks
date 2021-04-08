@@ -18,29 +18,32 @@
  */
 package com.github.ms5984.clans.clansbanks.lending;
 
-import com.github.ms5984.clans.clansbanks.api.ClanBank;
 import com.github.ms5984.clans.clansbanks.api.lending.HasInterest;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * Base class for loans with periodic interest collection.
+ * Class for loans with periodic interest collection.
  */
-public abstract class PeriodicInterestLoan extends AbstractLoan implements HasInterest {
+public class PeriodicInterestLoan extends AbstractLoan implements HasInterest {
 
+    private static final long serialVersionUID = -4920729108108931359L;
     protected BigDecimal interestRate;
     protected long period;
     protected long lastInterest = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     protected long tempInterest = 0L;
 
-    protected PeriodicInterestLoan(@NotNull ClanBank clanBank,
-                                   @NotNull BigDecimal principal,
+    protected PeriodicInterestLoan(@NotNull BigDecimal principal,
                                    @NotNull BigDecimal interestRate,
-                                   long periodInSeconds) {
-        super(clanBank, principal);
+                                   long periodInSeconds,
+                                   @Nullable String clanId) {
+        super(principal, clanId);
         this.interestRate = interestRate;
         this.period = periodInSeconds;
     }
@@ -48,6 +51,22 @@ public abstract class PeriodicInterestLoan extends AbstractLoan implements HasIn
     @Override
     public BigDecimal calculateInterest() {
         return currentBalance.multiply(interestRate);
+    }
+
+    @Override
+    public void collectInterest(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback) {
+        tempInterest = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        if (tempInterest - lastInterest > period) {
+            lastInterest += period; // Slowly catch up if server has been offline for a while.
+            final BigDecimal calc = calculateInterest();
+            if (check.apply(calc)) {
+                // take interest
+                callback.accept(calc);
+            } else {
+                // capitalize interest
+                currentBalance = currentBalance.add(calc);
+            }
+        }
     }
 
     @Override

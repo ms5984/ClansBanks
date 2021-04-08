@@ -17,16 +17,25 @@
  */
 package com.github.ms5984.clans.clansbanks.api.lending;
 
-import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
 
 /**
- * Describes a loan that can be called.
+ * Describe a potential instrument that will have a fee.
  */
-public interface CallableLoan extends Loan {
+public interface HasFeeDraft {
     /**
-     * Call the loan.
+     * Get the amount of the fee.
      *
-     * @param callback logic to run with success
+     * @return fee as BigDecimal
      */
-    void call(Consumer<Boolean> callback);
+    BigDecimal getFee();
+
+    /**
+     * Set the fee amount.
+     *
+     * @param newFee amount as BigDecimal
+     */
+    void setFee(@NotNull BigDecimal newFee);
 }

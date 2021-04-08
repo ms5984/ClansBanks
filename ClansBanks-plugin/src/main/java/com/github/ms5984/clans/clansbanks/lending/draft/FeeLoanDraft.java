@@ -16,28 +16,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.github.ms5984.clans.clansbanks.lending;
+package com.github.ms5984.clans.clansbanks.lending.draft;
 
-import com.github.ms5984.clans.clansbanks.api.lending.HasFee;
+import com.github.ms5984.clans.clansbanks.api.ClanBank;
+import com.github.ms5984.clans.clansbanks.api.lending.HasFeeDraft;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * Class for loans with flat fee at origination/end.
+ * Represents a draft for a loan with a flat fee.
  */
-public class FeeLoan extends AbstractLoan implements HasFee {
+public final class FeeLoanDraft extends BaseDraft implements HasFeeDraft {
 
-    private static final long serialVersionUID = 7728639506115607319L;
-    protected BigDecimal fee;
-    protected boolean paid;
+    private BigDecimal fee;
 
-    protected FeeLoan(@NotNull BigDecimal principal, @NotNull BigDecimal fee, @Nullable String clanId) {
-        super(principal, clanId);
-        this.fee = fee;
+    public FeeLoanDraft(@NotNull ClanBank clanBank, @NotNull BigDecimal principal, BigDecimal fee) {
+        super(clanBank, principal);
+        this.fee = (fee == null) ? BigDecimal.ZERO : fee;
     }
 
     @Override
@@ -46,16 +42,8 @@ public class FeeLoan extends AbstractLoan implements HasFee {
     }
 
     @Override
-    public void payFee(Function<BigDecimal, Boolean> check, Consumer<BigDecimal> callback) {
-        if (paid) return;
-        if (check.apply(fee)) {
-            paid = true;
-            callback.accept(fee);
-        }
+    public void setFee(@NotNull BigDecimal newFee) {
+        this.fee = newFee;
     }
 
-    @Override
-    public boolean feePaid() {
-        return paid;
-    }
 }
