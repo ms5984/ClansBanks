@@ -35,8 +35,8 @@ public enum Message {
     @Section("clans") PLAYER_NO_CLAN,
     // Banks-related messages
     BANKS_HEADER("header"),
-    BANK_HELP_PREFIX("help.prefix"),
-    BANK_HELP_AMOUNT_COMMANDS("help.amount-commands"),
+    @Dot_Replace({0}) HELP_PREFIX,
+    @Dot_Replace({0}) HELP_AMOUNT_COMMANDS,
     CURRENT_BALANCE,
     COMMAND_LISTING,
     USAGE,

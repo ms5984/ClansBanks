@@ -51,8 +51,8 @@ public class BankManager implements Listener {
 
     @EventHandler
     private void onClansHelp(CommandHelpEvent e) {
-        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.BANK_HELP_PREFIX + " &fbalance");
-        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.BANK_HELP_PREFIX + " " + Message.BANK_HELP_AMOUNT_COMMANDS.toString()
+        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.HELP_PREFIX + " &fbalance");
+        e.insert(Message.CLANS_HELP_PREFIX + " " + Message.HELP_PREFIX + " " + Message.HELP_AMOUNT_COMMANDS.toString()
                 .replace("{amount}", Message.AMOUNT.toString()));
     }
 
@@ -92,11 +92,11 @@ public class BankManager implements Listener {
                 }
                 sendMessage(sender, Message.COMMAND_LISTING.toString());
                 final List<BaseComponent> textComponents = new ArrayList<>();
-                sender.spigot().sendMessage(textLib.textSuggestable(Message.BANK_HELP_PREFIX + " ",
+                sender.spigot().sendMessage(textLib.textSuggestable(Message.HELP_PREFIX + " ",
                         "&7balance", Message.HOVER_BALANCE.toString(),
                         "clan bank balance"));
                 textComponents.add(textLib.textSuggestable(
-                        Message.BANK_HELP_PREFIX + " &f<",
+                        Message.HELP_PREFIX + " &f<",
                         "&adeposit", Message.HOVER_DEPOSIT.toString(),
                         "clan bank deposit 1"
                 ));
@@ -110,14 +110,14 @@ public class BankManager implements Listener {
                 sender.spigot().sendMessage(textComponents.toArray(new BaseComponent[0]));
                 if (BankAction.VIEW_LOG.testForPlayer(clan, sender)) {
                     sender.spigot().sendMessage(textLib.textSuggestable(
-                            Message.BANK_HELP_PREFIX + " ",
+                            Message.HELP_PREFIX + " ",
                             "&7viewlog", Message.HOVER_VIEW_LOG.toString(),
                             "clan bank viewlog"
                     ));
                 }
                 if (BankAction.SET_PERM.testForPlayer(clan, sender)) {
                     sender.spigot().sendMessage(textLib.textSuggestable(
-                            Message.BANK_HELP_PREFIX + " ",
+                            Message.HELP_PREFIX + " ",
                             "&7setperm", Message.HOVER_SET_PERM.toString(),
                             "clan bank viewlog"
                     ));
@@ -135,7 +135,7 @@ public class BankManager implements Listener {
                         // msg usage (need amount param)
                         sendMessage(sender, Message.USAGE.toString());
                         sender.spigot().sendMessage(textLib.textHoverable(
-                                Message.BANK_HELP_PREFIX + " ",
+                                Message.HELP_PREFIX + " ",
                                 "&7<&fdeposit&7>",
                                 " ",
                                 "&7<&c" + Message.AMOUNT + "&7>",
@@ -151,7 +151,7 @@ public class BankManager implements Listener {
                         // msg usage (need amount param)
                         sendMessage(sender, Message.USAGE.toString());
                         sender.spigot().sendMessage(textLib.textHoverable(
-                                Message.BANK_HELP_PREFIX + " ",
+                                Message.HELP_PREFIX + " ",
                                 "&7<&fwithdraw&7>",
                                 " ",
                                 "&7<&c" + Message.AMOUNT + "&7>",
@@ -232,14 +232,14 @@ public class BankManager implements Listener {
                             case "viewlog":
                             case "setperm":
                                 sender.spigot().sendMessage(textLib.textHoverable(
-                                        Message.BANK_HELP_PREFIX + " setperm " + arg2,
+                                        Message.HELP_PREFIX + " setperm " + arg2,
                                         "&7<&c" + Message.LEVEL + "&7>",
                                         Message.VALID_LEVELS.toString()
                                 ));
                                 break;
                             default:
                                 sender.spigot().sendMessage(textLib.textHoverable(
-                                        Message.BANK_HELP_PREFIX + " setperm &7<&c",
+                                        Message.HELP_PREFIX + " setperm &7<&c",
                                         Message.PERM.toString(),
                                         "&7> &7<&f" + Message.LEVEL + "&7>",
                                         "&6" + Message.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
@@ -301,7 +301,7 @@ public class BankManager implements Listener {
                         default:
                             sendMessage(sender, Message.USAGE.toString());
                             sender.spigot().sendMessage(textLib.textHoverable(
-                                    Message.BANK_HELP_PREFIX + " setperm ",
+                                    Message.HELP_PREFIX + " setperm ",
                                     "&7<&c" + Message.PERM + "&7>",
                                     " &7<&f" + Message.LEVEL + "&7>",
                                     "&6" + Message.VALID_OPTIONS + "&7\n&o*&f balance&7\n&o*&f deposit&7\n&o*&f withdraw&7\n&o*&f viewlog"
