@@ -29,51 +29,51 @@ import java.util.EnumMap;
  * Represents plugin text that may be localized.
  */
 public enum Message {
-    BANKS_HEADER,
-    CLANS_HELP_PREFIX,
-    BANK_HELP_PREFIX,
-    @Key("bank.help.amount_commands") BANK_HELP_AMOUNT_COMMANDS,
-    @Key("banks.current_balance") BANKS_CURRENT_BALANCE,
-    @Key("banks.command_listing") BANKS_COMMAND_LISTING,
-    AMOUNT,
-    PERM,
-    LEVEL,
-    BANKS_GREETING,
-    BANKS_GREETING_HOVER,
-    HOVER_BALANCE,
-    HOVER_DEPOSIT,
-    HOVER_WITHDRAW,
-    @Key("hover.view_log") HOVER_VIEW_LOG,
-    @Key("hover.set_perm") HOVER_SET_PERM,
-    @Key("hover.no_amount") HOVER_NO_AMOUNT,
-    VALID_LEVELS,
-    VALID_OPTIONS,
-    INVALID_LEVEL,
-    SETTING_LEVEL,
-    BANK_USAGE,
-    @Key("bank.invalid_subcommand") BANK_INVALID_SUBCOMMAND,
-    @Key("not_on_clan_land") NOT_ON_CLAN_LAND,
-    DEPOSIT_MESSAGE_PLAYER,
-    DEPOSIT_MESSAGE_ANNOUNCE,
-    WITHDRAW_MESSAGE_PLAYER,
-    WITHDRAW_MESSAGE_ANNOUNCE,
-    DEPOSIT_ERROR_PLAYER,
-    WITHDRAW_ERROR_PLAYER,
-    @Key("bank.invalid_amount") BANK_INVALID_AMOUNT,
-    @Key("player.no_clan") PLAYER_NO_CLAN,
-    @Key("transaction.deposit_pre") TRANSACTION_DEPOSIT_PRE,
-    @Key("transaction.deposit_pre_cancelled") TRANSACTION_DEPOSIT_PRE_CANCELLED,
-    @Key("transaction.withdraw_pre") TRANSACTION_WITHDRAW_PRE,
-    @Key("transaction.withdraw_pre_cancelled") TRANSACTION_WITHDRAW_PRE_CANCELLED,
-    TRANSACTION_DEPOSIT,
-    TRANSACTION_WITHDRAW,
-    @Key("transaction.verbose.id") TRANSACTION_VERBOSE_CLAN_ID,
-    @Key("transaction.success.pre") PRETRANSACTION_PENDING,
-    @Key("transaction.failure.pre") PRETRANSACTION_FAILURE,
-    TRANSACTION_SUCCESS,
-    TRANSACTION_FAILED,
-    @Key("permissions.not.player.command") PERM_NOT_PLAYER_COMMAND,
-    @Key("permissions.not.player.action") PERM_NOT_PLAYER_ACTION;
+    BANKS_HEADER("header"),
+    @Section("clans") CLANS_HELP_PREFIX("help-prefix"),
+    BANK_HELP_PREFIX("help.prefix"),
+    BANK_HELP_AMOUNT_COMMANDS("help.amount-commands"),
+    CURRENT_BALANCE,
+    COMMAND_LISTING,
+    @SubSection("words") AMOUNT,
+    @SubSection("words") PERM,
+    @SubSection("words") LEVEL,
+    GREETING,
+    GREETING_HOVER,
+    @Dot_Replace({0}) HOVER_BALANCE,
+    @Dot_Replace({0}) HOVER_DEPOSIT,
+    @Dot_Replace({0}) HOVER_WITHDRAW,
+    @Dot_Replace({0}) HOVER_VIEW_LOG,
+    @Dot_Replace({0}) HOVER_SET_PERM,
+    @Dot_Replace({0}) HOVER_NO_AMOUNT,
+    VALID_LEVELS("levels.valid"),
+    VALID_OPTIONS("hover.valid-options-header"),
+    INVALID_LEVEL("levels.invalid"),
+    SETTING_LEVEL("levels.setting"),
+    USAGE,
+    INVALID_SUBCOMMAND,
+    @Section("clans") NOT_ON_CLAN_LAND,
+    @Dot_Replace({0,1}) DEPOSIT_MESSAGE_PLAYER,
+    @Dot_Replace({0,1}) DEPOSIT_MESSAGE_ANNOUNCE,
+    @Dot_Replace({0,1}) WITHDRAW_MESSAGE_PLAYER,
+    @Dot_Replace({0,1}) WITHDRAW_MESSAGE_ANNOUNCE,
+    @Dot_Replace({0,1}) DEPOSIT_ERROR_PLAYER,
+    @Dot_Replace({0,1}) WITHDRAW_ERROR_PLAYER,
+    INVALID_AMOUNT,
+    @Section("clans") PLAYER_NO_CLAN,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT_PRE,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT_PRE_CANCELLED,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW_PRE,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW_PRE_CANCELLED,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_VERBOSE_CLAN_ID,
+    @Section("events") PRETRANSACTION_PENDING,
+    @Section("events") PRETRANSACTION_FAILURE,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_SUCCESS,
+    @Section("events") @Dot_Replace({0}) TRANSACTION_FAILED,
+    @Section("no-permission") NO_PERM_PLAYER_COMMAND("player.command"),
+    @Section("no-permission") NO_PERM_PLAYER_ACTION("player.action");
 
     private static final EnumMap<Message, String> RESOLVED_KEYS = new EnumMap<>(Message.class);
     private final String s;
@@ -92,8 +92,8 @@ public enum Message {
                 final Field field = getClass().getField(m.name());
                 field.setAccessible(true);
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation.annotationType().isInstance(Key.class)) {
-                        return ((Key) annotation).value();
+                    if (annotation.annotationType().isInstance(Section.class)) {
+                        return ((Section) annotation).value();
                     }
                 }
                 // convert MESSAGE_EXAMPLE into message.example
@@ -122,19 +122,30 @@ public enum Message {
     }
 
     /**
-     * An annotation to detail messages whose enum signature does not
-     * map naturally with the format MESSAGE_HERE -&gt; message.here
-     * that is used for key resolution.
+     * An annotation to detail message location
+     * relative to the root node.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Key {
+    @interface Section {
         /**
-         * A custom key.
+         * A section key.
          *
-         * @return custom key
+         * @return section key
          */
         @NotNull String value();
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface SubSection {
+        @NotNull String value();
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Dot_Replace {
+        int[] value();
     }
 
 }

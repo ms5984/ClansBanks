@@ -76,8 +76,8 @@ Messages:
       verbose-clan-id: "clanId={0}"
       success: SUCCESS
       failed: FAILED
-      success-pre: PENDING
-      failure-pre: DENIED
+      pretransaction-pending: PENDING
+      pretransaction-failure: DENIED
   no-permission:
     player:
       command: "&cYou do not have permission to run this command."

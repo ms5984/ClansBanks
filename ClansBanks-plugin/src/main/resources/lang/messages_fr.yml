@@ -76,8 +76,8 @@ Messages:
       verbose-clan-id: "clanId={0}"
       success: "SUCCÈS"
       failed: "A ÉCHOUÉ"
-      success-pre: "EN SUSPENS"
-      failure-pre: "REFUSÉE"
+      pretransaction-pending: "EN SUSPENS"
+      pretransaction-failure: "REFUSÉE"
   no-permission:
     player:
       command: "&cVous n’avez pas la permission d’exécuter cette commande."
