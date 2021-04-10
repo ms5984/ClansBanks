@@ -18,20 +18,19 @@
 package com.github.ms5984.clans.clansbanks.messaging;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Properties;
-
 /**
- * Provide the Properties backing for the Message class.
+ * Provide the configurable backing for the Message class.
  */
 public abstract class MessageProvider {
     private static MessageProvider instance;
-    protected final Properties properties;
+    protected final FileConfiguration fileConfiguration;
 
-    protected MessageProvider(Properties properties) {
-        this.properties = properties;
+    protected MessageProvider(FileConfiguration fileConfiguration) {
+        this.fileConfiguration = fileConfiguration;
     }
 
     protected void register(JavaPlugin plugin) {
