@@ -20,38 +20,74 @@ package com.github.ms5984.clans.clansbanks.messaging;
 
 import com.github.ms5984.clans.clansbanks.ClansBanks;
 import lombok.val;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.Properties;
+import java.util.Optional;
 
 /**
  * A simple MessageProvider.
  */
 public final class SimpleMessageProvider extends MessageProvider {
-    private SimpleMessageProvider(Properties properties, ClansBanks clansBanks) {
-        super(properties);
+    private SimpleMessageProvider(FileConfiguration fileConfiguration, ClansBanks clansBanks) {
+        super(fileConfiguration);
         register(clansBanks);
     }
 
     public static void setup(ClansBanks clansBanks, String locale) {
-        val properties = new Properties();
+        final YamlConfiguration defaults = new YamlConfiguration();
         val inputStream = (locale == null) ?
-                clansBanks.getResource("messages.properties") :
-                clansBanks.getResource("lang/messages_" + locale + ".properties");
+                clansBanks.getResource("messages.yml") :
+                clansBanks.getResource("lang/messages_" + locale + ".yml");
         try {
-            properties.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
+            defaults.load(new InputStreamReader(Objects.requireNonNull(inputStream)));
             clansBanks.getLogger().info(() -> "Loaded " + ((locale == null) ? "default" : "\"" + locale + "\"") + " lang file.");
-        } catch (IOException | NullPointerException e) {
+            final Optional<File> userConfig = Arrays
+                    .stream(clansBanks.getDataFolder().listFiles(f -> f.isFile() && f.getName().endsWith(".yml")))
+                    .filter(f -> {
+                        final String fileName = f.getName();
+                        if (!fileName.startsWith("messages"))
+                        if (locale != null) {
+                            if (fileName.startsWith("messages_")) {
+                                // Check if it's the configured region
+                                return fileName.equals("messages_" + locale + ".yml");
+                            }
+                        } else {
+                            return fileName.equals("messages.yml");
+                        }
+                        return false;
+                    }).findAny();
+            if (!userConfig.isPresent()) {
+                // Use internal defaults but also save file out for user to modify if desired.
+                final StringBuilder newFilename = new StringBuilder("messages");
+                if (locale != null) {
+                    newFilename.append("_").append(locale);
+                }
+                newFilename.append(".yml");
+                clansBanks.saveResource(newFilename.toString(), false);
+                new SimpleMessageProvider(defaults, clansBanks);
+            } else {
+                // Load the user's config
+                final YamlConfiguration userYmlConfig = YamlConfiguration.loadConfiguration(userConfig.get());
+                userYmlConfig.addDefaults(defaults);
+                new SimpleMessageProvider(userYmlConfig, clansBanks);
+            }
+        } catch (IOException | NullPointerException | InvalidConfigurationException e) {
             try {
-                properties.load(clansBanks.getResource("messages.properties"));
+                final YamlConfiguration alternate = new YamlConfiguration();
+                alternate.load(new InputStreamReader(Objects.requireNonNull(clansBanks.getResource("messages.yml"))));
                 clansBanks.getLogger().info("Something went wrong, loading default lang.");
-            } catch (IOException ioException) {
+                new SimpleMessageProvider(alternate, clansBanks);
+            } catch (IOException | InvalidConfigurationException ioException) {
                 throw new IllegalStateException("Unable to load messages from jar.", ioException);
             }
             throw new IllegalArgumentException("Invalid region: " + locale, e);
         }
-        new SimpleMessageProvider(properties, clansBanks);
     }
 }
