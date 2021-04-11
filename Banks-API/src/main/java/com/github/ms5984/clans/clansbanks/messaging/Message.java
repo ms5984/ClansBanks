@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Represents plugin text that may be localized.
  */
-public enum Message {
+public enum Message implements ProvidedMessage {
     // Clans-related messages
     @Section("clans") CLANS_HELP_PREFIX("help-prefix"),
     @Section("clans") NOT_ON_CLAN_LAND,
@@ -127,25 +127,15 @@ public enum Message {
         }
     }
 
+    @Override
     @Nullable
     public String get() {
         return MessageProvider.getInstance().fileConfiguration.getString(key);
     }
 
-    @NotNull
-    public String replace(Object... replacements) {
-        int i = 0;
-        String toString = toString();
-        for (Object obj : replacements) {
-            toString = toString.replaceAll("\\{" + i++ + "}", String.valueOf(obj));
-        }
-        return toString;
-    }
-
     @Override
     public String toString() {
-        final String s = get();
-        return (s != null) ? s : "null";
+        return String.valueOf(get());
     }
 
     /**
