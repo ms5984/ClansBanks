@@ -86,7 +86,7 @@ public class BankManager implements Listener {
                 } else {
                     sender.spigot().sendMessage(textLib.textRunnable(
                             split[0], "&o" + sender.getName(), split[1],
-                            greetingHover.replace("{0}", clan.getClanTag()),
+                            Message.GREETING_HOVER.replace(clan.getClanTag()),
                             "clan bank balance")
                     );
                 }
@@ -200,11 +200,9 @@ public class BankManager implements Listener {
                                     return;
                                 }
                                 if (theBank.deposit(sender, amount)) {
-                                    sendMessage(sender, Message.DEPOSIT_MESSAGE_PLAYER.toString()
-                                            .replace("{0}", amount.toString()));
+                                    sendMessage(sender, Message.DEPOSIT_MESSAGE_PLAYER.replace(amount));
                                 } else {
-                                    sendMessage(sender, Message.DEPOSIT_ERROR_PLAYER.toString()
-                                            .replace("{0}", amount.toString()));
+                                    sendMessage(sender, Message.DEPOSIT_ERROR_PLAYER.replace(amount));
                                 }
                             } else {
                                 if (BanksPermission.USE_WITHDRAW.not(sender)) {
@@ -212,11 +210,9 @@ public class BankManager implements Listener {
                                     return;
                                 }
                                 if (theBank.withdraw(sender, amount)) {
-                                    sendMessage(sender, Message.WITHDRAW_MESSAGE_PLAYER.toString()
-                                            .replace("{0}", amount.toString()));
+                                    sendMessage(sender, Message.WITHDRAW_MESSAGE_PLAYER.replace(amount));
                                 } else {
-                                    sendMessage(sender, Message.WITHDRAW_ERROR_PLAYER.toString()
-                                            .replace("{0}", amount.toString()));
+                                    sendMessage(sender, Message.WITHDRAW_ERROR_PLAYER.replace(amount));
                                 }
                             }
                         } catch (NumberFormatException exception) {
@@ -263,39 +259,24 @@ public class BankManager implements Listener {
                     switch (args[2].toLowerCase()) {
                         // "&7Setting &6xyz &7level to &a" + level
                         case "balance":
-                            sendMessage(sender, Message.SETTING_LEVEL.toString()
-                                    .replace("{0}", "balance")
-                                    .replace("{1}", String.valueOf(level))
-                            );
+                            sendMessage(sender, Message.SETTING_LEVEL.replace("balance", level));
 //                            sendMessage(sender, "&7Setting &6balance &7level to &a" + level);
                             BankAction.BALANCE.setRankForActionInClan(clan, level);
                             return;
                         case "deposit":
-                            sendMessage(sender, Message.SETTING_LEVEL.toString()
-                                    .replace("{0}", "deposit")
-                                    .replace("{1}", String.valueOf(level))
-                            );
+                            sendMessage(sender, Message.SETTING_LEVEL.replace("deposit", level));
                             BankAction.DEPOSIT.setRankForActionInClan(clan, level);
                             return;
                         case "withdraw":
-                            sendMessage(sender, Message.SETTING_LEVEL.toString()
-                                    .replace("{0}", "withdraw")
-                                    .replace("{1}", String.valueOf(level))
-                            );
+                            sendMessage(sender, Message.SETTING_LEVEL.replace("withdraw", level));
                             BankAction.WITHDRAW.setRankForActionInClan(clan, level);
                             return;
                         case "setperm":
-                            sendMessage(sender, Message.SETTING_LEVEL.toString()
-                                    .replace("{0}", "setperm")
-                                    .replace("{1}", String.valueOf(level))
-                            );
+                            sendMessage(sender, Message.SETTING_LEVEL.replace("setperm", level));
                             BankAction.SET_PERM.setRankForActionInClan(clan, level);
                             return;
                         case "viewlog":
-                            sendMessage(sender, Message.SETTING_LEVEL.toString()
-                                    .replace("{0}", "viewlog")
-                                    .replace("{1}", String.valueOf(level))
-                            );
+                            sendMessage(sender, Message.SETTING_LEVEL.replace("viewlog", level));
                             BankAction.VIEW_LOG.setRankForActionInClan(clan, level);
                             return;
                         default:
