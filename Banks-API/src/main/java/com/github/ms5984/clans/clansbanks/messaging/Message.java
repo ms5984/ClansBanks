@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.util.EnumMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Represents plugin text that may be localized.
@@ -35,8 +35,8 @@ public enum Message {
     @Section("clans") PLAYER_NO_CLAN,
     // Banks-related messages
     BANKS_HEADER("header"),
-    @Dot_Replace({0}) HELP_PREFIX,
-    @Dot_Replace({0}) HELP_AMOUNT_COMMANDS,
+    @Dot_Replace HELP_PREFIX,
+    @Dot_Replace HELP_AMOUNT_COMMANDS,
     CURRENT_BALANCE,
     COMMAND_LISTING,
     USAGE,
@@ -44,12 +44,12 @@ public enum Message {
     GREETING_HOVER,
     INVALID_SUBCOMMAND,
     INVALID_AMOUNT,
-    @Dot_Replace({0}) HOVER_BALANCE,
-    @Dot_Replace({0}) HOVER_DEPOSIT,
-    @Dot_Replace({0}) HOVER_WITHDRAW,
-    @Dot_Replace({0}) HOVER_VIEW_LOG,
-    @Dot_Replace({0}) HOVER_SET_PERM,
-    @Dot_Replace({0}) HOVER_NO_AMOUNT,
+    @Dot_Replace HOVER_BALANCE,
+    @Dot_Replace HOVER_DEPOSIT,
+    @Dot_Replace HOVER_WITHDRAW,
+    @Dot_Replace HOVER_VIEW_LOG,
+    @Dot_Replace HOVER_SET_PERM,
+    @Dot_Replace HOVER_NO_AMOUNT,
     VALID_OPTIONS("hover.valid-options-header"),
     @SubSection("words") AMOUNT,
     @SubSection("words") PERM,
@@ -57,56 +57,79 @@ public enum Message {
     VALID_LEVELS("levels.valid"),
     INVALID_LEVEL("levels.invalid"),
     SETTING_LEVEL("levels.setting"),
-    @Dot_Replace({0,1}) DEPOSIT_MESSAGE_PLAYER,
-    @Dot_Replace({0,1}) DEPOSIT_MESSAGE_ANNOUNCE,
-    @Dot_Replace({0,1}) DEPOSIT_ERROR_PLAYER,
-    @Dot_Replace({0,1}) WITHDRAW_MESSAGE_PLAYER,
-    @Dot_Replace({0,1}) WITHDRAW_MESSAGE_ANNOUNCE,
-    @Dot_Replace({0,1}) WITHDRAW_ERROR_PLAYER,
+    @Dot_Replace(1) DEPOSIT_MESSAGE_PLAYER,
+    @Dot_Replace(1) DEPOSIT_MESSAGE_ANNOUNCE,
+    @Dot_Replace(1) DEPOSIT_ERROR_PLAYER,
+    @Dot_Replace(1) WITHDRAW_MESSAGE_PLAYER,
+    @Dot_Replace(1) WITHDRAW_MESSAGE_ANNOUNCE,
+    @Dot_Replace(1) WITHDRAW_ERROR_PLAYER,
     // Banks event-related messages
-    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT_PRE,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT_PRE_CANCELLED,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW_PRE,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW_PRE_CANCELLED,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_DEPOSIT,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_WITHDRAW,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_VERBOSE_CLAN_ID,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_SUCCESS,
-    @Section("events") @Dot_Replace({0}) TRANSACTION_FAILED,
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT_PRE,
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT_PRE_CANCELLED,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW_PRE,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW_PRE_CANCELLED,
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW,
+    @Section("events") @Dot_Replace TRANSACTION_VERBOSE_CLAN_ID,
+    @Section("events") @Dot_Replace TRANSACTION_SUCCESS,
+    @Section("events") @Dot_Replace TRANSACTION_FAILED,
     @Section("events") @SubSection("transaction") PRETRANSACTION_PENDING,
     @Section("events") @SubSection("transaction") PRETRANSACTION_FAILURE,
     // No permission messages
     @Section("no-permission") NO_PERM_PLAYER_COMMAND("player.command"),
     @Section("no-permission") NO_PERM_PLAYER_ACTION("player.action");
 
-    private static final EnumMap<Message, String> RESOLVED_KEYS = new EnumMap<>(Message.class);
-    private final String s;
+    private final String key;
 
     Message(String key) {
-        s = key;
+        // convert MESSAGE_EXAMPLE into message-example
+        String resolvedPrefix = "banks";
+        final StringBuilder resolvedSubSection = new StringBuilder(".");
+        try {
+            final Field field = getDeclaringClass().getField(name());
+            field.setAccessible(true);
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                final Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (annotationType == Section.class) {
+                    resolvedPrefix = ((Section) annotation).value();
+                } else if (annotationType == SubSection.class) {
+                    resolvedSubSection.append(((SubSection) annotation).value()).append(".");
+                }
+            }
+            this.key = "Messages." + resolvedPrefix + resolvedSubSection + key;
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Impossible.", e);
+        }
     }
     Message() {
-        this("blah");
+        // convert MESSAGE_EXAMPLE into message-example
+        final AtomicReference<String> resolvedKey = new AtomicReference<>(name().toLowerCase().replaceAll("_", "-"));
+        String resolvedPrefix = "banks";
+        final StringBuilder resolvedSubSection = new StringBuilder(".");
+        try {
+            final Field field = getClass().getField(name());
+            field.setAccessible(true);
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                final Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (annotationType == Section.class) {
+                    resolvedPrefix = ((Section) annotation).value();
+                } else if (annotationType == SubSection.class) {
+                    resolvedSubSection.append(((SubSection) annotation).value()).append(".");
+                } else if (annotationType == Dot_Replace.class) {
+                    for (int i = 0; i <= ((Dot_Replace) annotation).value(); ++i) {
+                        resolvedKey.updateAndGet(k -> k.replaceFirst("-", "."));
+                    }
+                }
+            }
+            this.key = "Messages." + resolvedPrefix + resolvedSubSection + resolvedKey.get();
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Impossible.", e);
+        }
     }
 
     @Nullable
     public String get() {
-        final String key = RESOLVED_KEYS.computeIfAbsent(this, m -> {
-            try {
-                final Field field = getClass().getField(m.name());
-                field.setAccessible(true);
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation.annotationType().isInstance(Section.class)) {
-                        return ((Section) annotation).value();
-                    }
-                }
-                // convert MESSAGE_EXAMPLE into message.example
-                return m.name().toLowerCase().replaceAll("_", ".");
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException("Impossible.", e);
-            }
-        });
-        return MessageProvider.getInstance().properties.getProperty(key);
+        return MessageProvider.getInstance().fileConfiguration.getString(key);
     }
 
     @NotNull
@@ -149,7 +172,7 @@ public enum Message {
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Dot_Replace {
-        int[] value();
+        int value() default 0;
     }
 
 }
