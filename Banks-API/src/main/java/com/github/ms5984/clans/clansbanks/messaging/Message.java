@@ -21,81 +21,148 @@ package com.github.ms5984.clans.clansbanks.messaging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Represents plugin text that may be localized.
  */
-public enum Message {
-    BANKS_HEADER("banks.header"),
-    CLANS_HELP_PREFIX("clans.help.prefix"),
-    BANK_HELP_PREFIX("bank.help.prefix"),
-    BANK_HELP_AMOUNT_COMMANDS("bank.help.amount_commands"),
-    BANKS_CURRENT_BALANCE("banks.current_balance"),
-    BANKS_COMMAND_LISTING("banks.command_listing"),
-    AMOUNT("amount"),
-    PERM("perm"),
-    LEVEL("level"),
-    BANKS_GREETING("banks.greeting"),
-    BANKS_GREETING_HOVER("banks.greeting.hover"),
-    HOVER_BALANCE("banks.hover.balance"),
-    HOVER_DEPOSIT("banks.hover.deposit"),
-    HOVER_WITHDRAW("banks.hover.withdraw"),
-    HOVER_VIEW_LOG("banks.hover.view_log"),
-    HOVER_SET_PERM("banks.hover.set_perm"),
-    HOVER_NO_AMOUNT("banks.hover.no_amount"),
-    VALID_LEVELS("valid.levels"),
-    VALID_OPTIONS("valid.options"),
-    INVALID_LEVEL("invalid.level"),
-    SETTING_LEVEL("setting.level"),
-    BANK_USAGE("bank.usage"),
-    BANK_INVALID_SUBCOMMAND("bank.invalid_subcommand"),
-    NOT_ON_CLAN_LAND("not_on_clan_land"),
-    DEPOSIT_MSG_PLAYER("deposit.message.player"),
-    DEPOSIT_MSG_ANNOUNCE("deposit.message.announce"),
-    WITHDRAW_MSG_PLAYER("withdraw.message.player"),
-    WITHDRAW_MSG_ANNOUNCE("withdraw.message.announce"),
-    DEPOSIT_ERR_PLAYER("deposit.error.player"),
-    WITHDRAW_ERR_PLAYER("withdraw.error.player"),
-    BANK_INVALID_AMOUNT("bank.invalid_amount"),
-    PLAYER_NO_CLAN("player.no_clan"),
-    TRANSACTION_DEPOSIT_PRE("transaction.deposit_pre"),
-    TRANSACTION_DEPOSIT_PRE_CANCELLED("transaction.deposit_pre_cancelled"),
-    TRANSACTION_WITHDRAW_PRE("transaction.withdraw_pre"),
-    TRANSACTION_WITHDRAW_PRE_CANCELLED("transaction.withdraw_pre_cancelled"),
-    TRANSACTION_DEPOSIT("transaction.deposit"),
-    TRANSACTION_WITHDRAW("transaction.withdraw"),
-    TRANSACTION_VERBOSE_CLAN_ID("transaction.verbose.id"),
-    PRETRANSACTION_PENDING("transaction.success.pre"),
-    PRETRANSACTION_FAILURE("transaction.failure.pre"),
-    TRANSACTION_SUCCESS("transaction.success"),
-    TRANSACTION_FAILED("transaction.failed"),
-    PERM_NOT_PLAYER_COMMAND("permissions.not.player.command"),
-    PERM_NOT_PLAYER_ACTION("permissions.not.player.action");
+public enum Message implements ProvidedMessage {
+    // Clans-related messages
+    @Section("clans") CLANS_HELP_PREFIX("help-prefix"),
+    @Section("clans") NOT_ON_CLAN_LAND,
+    @Section("clans") PLAYER_NO_CLAN,
+    // Banks-related messages
+    BANKS_HEADER("header"),
+    @Dot_Replace HELP_PREFIX,
+    @Dot_Replace HELP_AMOUNT_COMMANDS,
+    CURRENT_BALANCE,
+    COMMAND_LISTING,
+    USAGE,
+    GREETING,
+    GREETING_HOVER,
+    INVALID_SUBCOMMAND,
+    INVALID_AMOUNT,
+    @Dot_Replace HOVER_BALANCE,
+    @Dot_Replace HOVER_DEPOSIT,
+    @Dot_Replace HOVER_WITHDRAW,
+    @Dot_Replace HOVER_VIEW_LOG,
+    @Dot_Replace HOVER_SET_PERM,
+    @Dot_Replace HOVER_NO_AMOUNT,
+    VALID_OPTIONS("hover.valid-options-header"),
+    @SubSection("words") AMOUNT,
+    @SubSection("words") PERM,
+    @SubSection("words") LEVEL,
+    VALID_LEVELS("levels.valid"),
+    INVALID_LEVEL("levels.invalid"),
+    SETTING_LEVEL("levels.setting"),
+    @Dot_Replace(1) DEPOSIT_MESSAGE_PLAYER,
+    @Dot_Replace(1) DEPOSIT_MESSAGE_ANNOUNCE,
+    @Dot_Replace(1) DEPOSIT_ERROR_PLAYER,
+    @Dot_Replace(1) WITHDRAW_MESSAGE_PLAYER,
+    @Dot_Replace(1) WITHDRAW_MESSAGE_ANNOUNCE,
+    @Dot_Replace(1) WITHDRAW_ERROR_PLAYER,
+    // Banks event-related messages
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT_PRE,
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT_PRE_CANCELLED,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW_PRE,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW_PRE_CANCELLED,
+    @Section("events") @Dot_Replace TRANSACTION_DEPOSIT,
+    @Section("events") @Dot_Replace TRANSACTION_WITHDRAW,
+    @Section("events") @Dot_Replace TRANSACTION_VERBOSE_CLAN_ID,
+    @Section("events") @Dot_Replace TRANSACTION_SUCCESS,
+    @Section("events") @Dot_Replace TRANSACTION_FAILED,
+    @Section("events") @SubSection("transaction") PRETRANSACTION_PENDING,
+    @Section("events") @SubSection("transaction") PRETRANSACTION_FAILURE,
+    // No permission messages
+    @Section("no-permission") NO_PERM_PLAYER_COMMAND("player.command"),
+    @Section("no-permission") NO_PERM_PLAYER_ACTION("player.action");
 
-    private final String s;
+    private final String key;
 
     Message(String key) {
-        s = key;
+        // convert MESSAGE_EXAMPLE into message-example
+        String resolvedPrefix = "banks";
+        final StringBuilder resolvedSubSection = new StringBuilder(".");
+        try {
+            final Field field = getDeclaringClass().getField(name());
+            field.setAccessible(true);
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                final Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (annotationType == Section.class) {
+                    resolvedPrefix = ((Section) annotation).value();
+                } else if (annotationType == SubSection.class) {
+                    resolvedSubSection.append(((SubSection) annotation).value()).append(".");
+                }
+            }
+            this.key = "Messages." + resolvedPrefix + resolvedSubSection + key;
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Impossible.", e);
+        }
+    }
+    Message() {
+        // convert MESSAGE_EXAMPLE into message-example
+        final AtomicReference<String> resolvedKey = new AtomicReference<>(name().toLowerCase().replaceAll("_", "-"));
+        String resolvedPrefix = "banks";
+        final StringBuilder resolvedSubSection = new StringBuilder(".");
+        try {
+            final Field field = getClass().getField(name());
+            field.setAccessible(true);
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                final Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (annotationType == Section.class) {
+                    resolvedPrefix = ((Section) annotation).value();
+                } else if (annotationType == SubSection.class) {
+                    resolvedSubSection.append(((SubSection) annotation).value()).append(".");
+                } else if (annotationType == Dot_Replace.class) {
+                    for (int i = 0; i <= ((Dot_Replace) annotation).value(); ++i) {
+                        resolvedKey.updateAndGet(k -> k.replaceFirst("-", "."));
+                    }
+                }
+            }
+            this.key = "Messages." + resolvedPrefix + resolvedSubSection + resolvedKey.get();
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Impossible.", e);
+        }
     }
 
+    @Override
     @Nullable
     public String get() {
-        return MessageProvider.getInstance().properties.getProperty(s);
-    }
-
-    @NotNull
-    public String replace(Object... replacements) {
-        int i = 0;
-        String toString = toString();
-        for (Object obj : replacements) {
-            toString = toString.replaceAll("\\{" + i++ + "}", String.valueOf(obj));
-        }
-        return toString;
+        return MessageProvider.getInstance().fileConfiguration.getString(key);
     }
 
     @Override
     public String toString() {
-        final String s = get();
-        return (s != null) ? s : "null";
+        return String.valueOf(get());
+    }
+
+    /**
+     * An annotation to detail message location
+     * relative to the root node.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Section {
+        /**
+         * A section key.
+         *
+         * @return section key
+         */
+        @NotNull String value();
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface SubSection {
+        @NotNull String value();
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Dot_Replace {
+        int value() default 0;
     }
 
 }
