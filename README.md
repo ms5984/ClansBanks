@@ -1,4 +1,5 @@
 # Clans\[Banks]
+###### This project will be superseded and archived soon.
 ### An official [Clans\[Free\]](https://github.com/Hempfest/Clans) addon
 [![banks-banner](banks.png)**Spigot**](https://www.spigotmc.org/resources/clans-banks-addon-for-clans-free.87018/)
 |
